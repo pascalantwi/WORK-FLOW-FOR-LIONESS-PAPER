@@ -118,5 +118,5 @@ for (k in seq_along(qs)) {
   segments(m[, k] - 2 * e[, k], y, m[, k] + 2 * e[, k], y, col = cols[k])
   points(m[, k], y, pch = 19, col = cols[k], cex = 0.65)
 }
-legend("bottomright", legend = qs, col = cols, pch = 19, cex = 0.7, bg = "white")
+legend("topright", legend = qs, col = cols, pch = 19, cex = 0.7, bg = "white")
 dev.off()

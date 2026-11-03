@@ -68,13 +68,13 @@ cell_lab <- function(cl) {
 
 **Scope.** This document reports the re-pilot[^pilot] for revision 3 of the proposal `proposal.md` (section 12, "after the pilot"), run in `pilot-b/` after the first pilot failed by its rule (`pilot/pilot-report.html`). It covers the revised idea, how the re-pilot was run, what it found, the draft project spec, and the decisions made along the way. It was built from `project-spec.md`, `decisions.md`, the saved results in `pilot-b/results/`, and, read-only, the first pilot's results and its two files of dataset facts in `pilot/`; every number in the text and figures is computed from those files when the document renders.
 
-**Status.** In `STATUS.md` the re-pilot is marked `` `r status` ``[^pf]. STATUS_SENTENCE
+**Status.** In `STATUS.md` the re-pilot is marked `` `r status` ``[^pf]. Every clause of the pre-registered rule passed except the size of the IFN artifact at a large IFN difference, which landed on its threshold: the estimate is above 0.02, but within three MCSE of it. The reading that passes takes the estimate; the reading that fails notes that the data do not exclude an artifact below 0.02. Neither reading touches the main claims: the exact and first-order edges performed the same in every cell, and the squared score removed the artifact in every IFN-only cell.
 
 | Pilot question | Answer | Key evidence |
 |---------|-------------|---------------------------------------------|
-| 1. Does the equivalence hold? | ANSWER1 | Edges with $R_1$ gained `r gm(7, "gain_N1R1_vs_R1")` over $R_1$ in `r cell_lab(7)`; edges and first-order edges differed by `r fmt_range(c1b$value, 4)` across all `r nrow(design)` cells. |
-| 2. Large enough at realistic n? | ANSWER2 | The IFN artifact was `r gm(2, "gain_N1R0_vs_R0")` at a large IFN difference; the co-expression signal at 40 per class was `r gm(8, "gain_N1R1_vs_R1")`. |
-| 3. Obvious fix or diagnostic? | ANSWER3 | With the squared score in the reference, edges added `r fmt_range(c3a$value, 4)` in the IFN-only cells, and `r gm(4, "gain_N1R1_vs_R1", 4)` with a two-gene score. |
+| 1. Does the equivalence hold? | Yes | Edges with $R_1$ gained `r gm(7, "gain_N1R1_vs_R1")` over $R_1$ in `r cell_lab(7)`; edges and first-order edges differed by `r fmt_range(c1b$value, 4)` across all `r nrow(design)` cells. |
+| 2. Large enough at realistic n? | Signal yes; artifact a close call | The IFN artifact was `r gm(2, "gain_N1R0_vs_R0")` at a large IFN difference; the co-expression signal at 40 per class was `r gm(8, "gain_N1R1_vs_R1")`. |
+| 3. Obvious fix or diagnostic? | Yes | With the squared score in the reference, edges added `r fmt_range(c3a$value, 4)` in the IFN-only cells, and `r gm(4, "gain_N1R1_vs_R1", 4)` with a two-gene score. |
 
 **What needs your decision** (details in [Action items and limitations](#action-items-and-limitations)): the status call; the open `[TO CONFIRM]` items in the spec (highlighted in yellow): the PRECISESADS access request and the milestone dates; and the two open items carried from the proposal (the data contingency, and the check of a supplement for the novelty claim).
 
@@ -92,7 +92,7 @@ LIONESS builds one network per sample from an aggregate network and has an R imp
 
 Users compare edges between groups and feed them to classifiers, and read the result as rewired gene coupling. If the first-order edges match the exact edges, a network result is a result about a specific quadratic function of expression that any reader can recompute, and the network computation, which costs one refit per sample, is not needed. If the squared interferon score removes the interferon artifact, a reference model with it becomes the standard check for any edge-based claim in interferon-driven disease.
 
-IMPACT_RESULTS
+The re-pilot supports both. Across all `r nrow(design)` cells, the exact and first-order edges differed by `r fmt_range(c1b$value, 4)` in AUC (@fig-gains), including cells where edges gained up to `r fmt(max(sapply(net_cells, G, q = "gain_N1R1_vs_R1")), 3)` over the reference and cells with heavy-tailed noise. With the squared score in the reference, edges added nothing in any IFN-only cell (@tbl-verdict). The same quadratic information given as separate products and squares gained only `r gm(7, "gain_E5_vs_R1")` where the first-order edges gained `r gm(7, "gain_F1R1_vs_R1")` (@tbl-auc), so the edge form is a better way to present co-expression to a penalized classifier. The application to PRECISESADS, once access is granted, will show whether these hold in real blood.
 
 ## Application: the study behind the data
 
@@ -267,7 +267,13 @@ knitr::include_graphics("results/auc_gains.png")
 
 Each finding is a claim followed by the output behind it. Read the claim, open the output, and check that you can see the claim there before accepting it. A claim that cannot be seen in the output is a question to raise with the user.
 
-FINDINGS
+1. **Exact and first-order edges perform the same.** Their AUC difference ranged over `r fmt_range(c1b$value, 4)` across all `r nrow(design)` cells (@tbl-verdict, purple points in @fig-gains), within the pre-registered margin of 0.01 in every cell. The largest difference, `r gm(10, "diff_N1R1_vs_F1R1", 4)`, was in `r cell_lab(10)`, and favored the first-order edges.
+2. **There was a real signal to match.** In `r cell_lab(7)`, edges with $R_1$ gained `r gm(7, "gain_N1R1_vs_R1")` over $R_1$, and `r gm(8, "gain_N1R1_vs_R1")` with 40 in the smaller class (@tbl-verdict).
+3. **The squared score removes the IFN artifact.** Edges with $R_1$ against $R_1$ ranged over `r fmt_range(c3a$value, 4)` in the IFN-only cells with five score genes, and was `r gm(4, "gain_N1R1_vs_R1", 4)` with a two-gene score (@tbl-verdict, blue points).
+4. **Without the squared score, the artifact is about 0.02 at a large IFN difference.** Edges with $R_0$ gained `r gm(2, "gain_N1R0_vs_R0", 4)` over $R_0$ in `r cell_lab(2)`, on the threshold of 0.02 (a close call), `r gm(4, "gain_N1R0_vs_R0")` with the two-gene score, `r gm(5, "gain_N1R0_vs_R0")` with $t_5$ noise, and `r gm(3, "gain_N1R0_vs_R0", 4)` at a moderate IFN difference (red points).
+5. **The edge form beats separate products and squares.** In the network cells, first-order edges gained over E5 by `r fmt_range(sapply(net_cells, G, q = "diff_F1R1_vs_E5"), 3)`, although both hold the same quadratic information (@tbl-auc, orange against green points).
+6. **A mean shift is linear information neither quadratic form carries.** In `r cell_lab(6)`, E1 gained `r gm(6, "gain_E1_vs_R1")` over $R_1$, edges `r gm(6, "gain_N1R1_vs_R1", 4)` (@tbl-auc).
+7. **The known-answer checks hold, with one flag.** Every code identity agreed to better than $10^{-13}$ and the mean-shift formula held; in the null cell every model's AUC sat `r fmt_range((0.5 - ka$computed[grepl("Null", ka$check)]) / ka$mcse[grepl("Null", ka$check)], 1)` MCSE below 0.5, shared by all models, so the paired differences are unaffected (@tbl-known-answer; decisions log, D6).
 
 ## Tables
 
@@ -346,7 +352,10 @@ cat(read_md_part("decisions.md"), "\n")
 
 ## Action items
 
-ACTIONS
+1. **Decide the status.** The rule gives `piloted-close-call`, from the size of the IFN artifact alone. Reading it as a pass starts stage 3, whose design stop writes `protocol.md` from the revised design.
+2. **Resolve the yellow `[TO CONFIRM]` items** in the spec: the PRECISESADS access request and the milestone dates.
+3. **Verify the citations.** Every citation was checked against its Crossref or PubMed record and read in full text at stage 1, except @devlin1975robust and @croux2010influence, whose full texts are pending.
+4. **Decide on fold-averaged AUC** beside pooled AUC for stage 3 (decisions log, D6).
 
 ## Limitations
 

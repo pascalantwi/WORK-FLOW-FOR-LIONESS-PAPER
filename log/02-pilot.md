@@ -56,3 +56,13 @@ Time: about two hours of agent time around 54 minutes of compute.
 - `pilot-b/preregistration.md` committed alone before any re-pilot code ("Stage 2, step 2 (pilot-b): pre-registration").
 - Code for the re-pilot (commit "Stage 2, step 3 (pilot-b)"): t5 noise, first-order edge features, the F1R1 model, the score size, `PilotBDesign()`. The first pilot's replicates 1 of cells 3 and 13 reproduce exactly after the change. A test found that the pre-registered seeds collided with the first pilot's; corrected by an amendment before any run. 46 tests pass, with one glmnet convergence warning in a test that fits 990 features on 50 samples (glmnet returns the solutions for larger penalties; the run's cells are larger); `devtools::check()` clean.
 - Timing: 146 seconds for 10 replicates per cell; 200 replicates per cell, entered as an amendment before the run.
+- Run: 12 cells by 200 replicates in 2,822 seconds (`pilot-b/results/run_info.rds`); no restart. (The container had restarted once before the run started; the run itself was uninterrupted.)
+- Verdict (`Rscript pilot-b/verdict.R`): `piloted-close-call`. Every clause passed except 2(a), at its threshold (0.0201, MCSE 0.0027, against 0.02). Neither open case of the pre-registration's section 5 arose.
+- Known-answer checks: code identities hold; the null cell's AUCs sat 1.9 to 2.5 MCSE below 0.5 for every model (decisions D6), as the first pilot's did to a smaller degree.
+- Report: `pilot-b/pilot-report.qmd`, reading the first pilot's dataset files read-only; the checker reports no errors or warnings; looked at the rendered summary and figure. Revision pass: the impact and plain-language sections read once as a new reader; no section changed by more than three sentences.
+
+## Process feedback (re-pilot)
+
+1. A test of the design table caught a seed collision that the pre-registration's own text denied; seed rules should be tested, not described.
+2. The verdict script of the first pilot could be reused only by rewriting; a rule-table format (clause, quantity, cells, threshold, type) that one script reads would make re-pilots cheaper and less error-prone.
+3. The first pilot's lesson (pair a matching clause with a signal clause) worked as intended: clause 1(a) showed there was a signal of 0.118 to match.

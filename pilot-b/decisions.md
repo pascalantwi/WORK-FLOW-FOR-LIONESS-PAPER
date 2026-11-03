@@ -6,7 +6,11 @@ As for the first pilot (`pilot/decisions.md`, D0): the proposal's section 5, rea
 
 ## D1. Status call
 
-STATUS_CALL
+**What.** `piloted-close-call`, by the pre-registered rule (`pilot-b/results/verdict.rds`). Every clause passed except 2(a), which is a close call for itself: the IFN artifact at a large IFN difference was 0.0201 (MCSE 0.0027) against a threshold of 0.02.
+**The reading that passes.** The estimate is above the threshold, and two other cells with the same large IFN difference (the two-gene score and $t_5$ noise, not part of the clause) gave 0.032 and 0.023 (`pilot-b/results/cell_summaries.rds`).
+**The reading that fails.** Three MCSE on either side of 0.0201 run from about 0.012 to 0.028, so the data do not exclude an artifact below 0.02 in the pre-registered cell.
+**What it changes.** Nothing in the paper's main claims rests on clause 2(a): equivalence (1(a), 1(b)) and the fix (3(a), 3(b)) passed in every cell. The size of the artifact, about 0.02 in AUC at a large IFN difference and below 0.01 at a moderate one, is reported as it is.
+**What the user should check.** Whether to read the close call as a pass and go on to stage 3.
 
 ## D2. Seeds amended before the run
 
@@ -28,6 +32,12 @@ STATUS_CALL
 ## D5. Replicates
 
 **What.** 200 per cell, from the timing run (146 seconds for ten), entered before the run.
+
+## D6. Null-cell AUC below 0.5
+
+**What.** In the null cell every model's AUC was about 0.49, between 1.9 and 2.5 MCSE below 0.5 (`pilot-b/results/known_answers.rds`); the first pilot's null cells were 0.49 to 0.50.
+**Reading.** The models share it, so every paired difference is unaffected. The agent's explanation, not checked against a source: out-of-fold scores pooled across folds whose fitted intercepts differ tend to rank slightly against the labels under the null.
+**Check.** Whether stage 3 should report fold-averaged AUC beside pooled AUC.
 
 ## What was not done
 

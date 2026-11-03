@@ -41,6 +41,12 @@ Pass if 1, 2, and 3 pass; close call if 1 and 3 pass and the gain of question 2 
 2. Is it large enough to matter at realistic sample sizes? No: -0.0017 (MCSE 0.0019) at 40 per class.
 3. Is there an obvious fix or diagnostic? The squared score in the reference removes the gain (edges with $R_1$ against $R_1$: within 0.003 of zero in every IFN-only cell), and clause 3(a) passed in all seven cells; but the pre-registered matched quadratic model reached only a quarter of the edges' gain in the network cell (clause 3(b) value -0.075, MCSE 0.003). An exploratory probe after the verdict found that first-order edges as features match the exact edges (`pilot/decisions.md`, D9).
 
+**The re-pilot (`pilot-b/`, revision 3, after the first pilot failed):** verdict file `pilot-b/results/verdict.rds`, status `piloted-close-call`; 200 replicates per cell, 12 cells, 47 minutes on three cores.
+
+1. Does the equivalence hold? Yes: edges with $R_1$ gained 0.118 (MCSE 0.005) over $R_1$ in the strong network cell, and edges and first-order edges differed by -0.0054 to 0.0017 in AUC across all 12 cells.
+2. Is it large enough to matter at realistic sizes? The co-expression signal yes: 0.048 (MCSE 0.005) at 40 per class. The IFN artifact at a large IFN difference is a close call: 0.0201 (MCSE 0.0027) against 0.02.
+3. Is there an obvious fix or diagnostic? Yes: with the squared score in the reference, edges added -0.0025 to -0.0019 in the IFN-only cells, and -0.0022 with a two-gene score.
+
 ## 4. ADEMP skeleton
 
 **Aims.** (1) How much AUC do LIONESS edges add over a reference with the IFN score but not its square, when the classes differ only in the IFN factor? (2) Does the gain vanish against the matched quadratic model, in cells with and without a true co-expression difference? (3) How does the group mean of an edge depend on group balance under a pure mean shift?
