@@ -73,4 +73,4 @@ The AUC of every model in every cell with its MCSE; the gains of section 2 in ev
 
 ## 6. Amendments before the run
 
-- [replicate count, entered after the timing run]
+- 2026-11-03, after the timing run and before the run. Replicates per cell: 180. The timing run (10 replicates per cell, three workers loaded, the run's own scheduling; `pilot/results/timing.rds`) took 181 seconds, which projects 200 replicates to about 3,620 seconds, over the one-hour box; 180 is the largest multiple of 20 that fits (projected about 3,260 seconds). At 180 replicates the MCSE of a gain with replicate standard deviation 0.04 is about 0.003.
