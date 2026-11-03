@@ -15,7 +15,10 @@ RunReplicate(
 
 \item{rep}{Replicate index; the seed is the cell seed plus \code{rep}.}
 
-\item{models}{Which models to fit (all seven by default).}
+\item{models}{Which models to fit: the first pilot's seven by default;
+\code{"F1R1"} adds the first-order edge features with the \code{R_1} terms.
+The row's optional \code{noise} and \code{n_score} columns set the noise
+distribution and the number of score genes (defaults \code{"normal"} and 5).}
 }
 \value{
 A one-row data frame.

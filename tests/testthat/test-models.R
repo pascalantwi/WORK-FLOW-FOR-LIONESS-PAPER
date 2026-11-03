@@ -77,3 +77,52 @@ test_that("RunReplicate returns one AUC per model", {
   expect_equal(nrow(r), 1)
   expect_true(all(r[, c("R0", "R1", "E1")] >= 0 & r[, c("R0", "R1", "E1")] <= 1))
 })
+
+test_that("PilotBDesign has the 12 pre-registered cells and new seeds", {
+  d <- PilotBDesign()
+  expect_equal(nrow(d), 12)
+  expect_equal(d$n_score[d$cell == 4], 2L)
+  expect_equal(d$noise[d$cell %in% c(5, 10)], c("t5", "t5"))
+  # replicate streams are seed + 1 to seed + 200; no overlap with the first pilot
+  gaps <- outer(d$seed, PilotDesign()$seed, "-")
+  expect_gt(min(abs(gaps)), 200)
+})
+
+test_that("t5 noise has unit variance and heavier tails", {
+  set.seed(12)
+  d <- SimulateCohort("null", "", 4000, 4000, noise = "t5")
+  e <- d$x[, 6:20] - 0.8 * d$f
+  expect_lt(abs(var(as.vector(e)) - 1), 0.05)
+  k <- mean(as.vector(e)^4) / var(as.vector(e))^2
+  expect_gt(k, 4)
+})
+
+test_that("the default noise leaves the first pilot's draws unchanged", {
+  set.seed(13)
+  a <- SimulateCohort("ifn", "large", 20, 20)
+  set.seed(13)
+  b <- SimulateCohort("ifn", "large", 20, 20, noise = "normal")
+  expect_identical(a, b)
+})
+
+test_that("first-order features use only the training fold", {
+  set.seed(14)
+  d <- SimulateCohort("null", "", 40, 40)
+  tr <- rep(c(TRUE, FALSE), 40)
+  a <- PilotFeatures(d, tr)
+  d2 <- d
+  d2$x[!tr, ] <- d2$x[!tr, ] + 50
+  b <- PilotFeatures(d2, tr)
+  expect_equal(a$train$fo, b$train$fo)
+  expect_equal(a$train$fo, LionessEdgesFirstOrder(d$x[tr, 6:50]))
+  expect_equal(a$test$fo, LionessTestEdgesFirstOrder(d$x[!tr, 6:50],
+                                                      d$x[tr, 6:50]))
+})
+
+test_that("RunReplicate fits F1R1 and the two-gene score", {
+  d <- PilotBDesign()[4, ]
+  d$n1 <- 25
+  d$n0 <- 25
+  r <- RunReplicate(d, 1, models = c("R1", "F1R1"))
+  expect_true(all(c("R1", "F1R1") %in% names(r)))
+})

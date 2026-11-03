@@ -66,4 +66,5 @@ The AUC of every model in every cell with its MCSE; every paired difference of s
 
 ## 6. Amendments before the run
 
+- 2026-11-03, before any run. Seeds corrected. Section 3 gave cell $c$ the seed $20261103 + 2000c$ and called it different from every seed of the first pilot; it is not ($2000c = 1000c'$ for $c' = 2c$, eight collisions), which a test caught. Corrected to $20261103 + 2000c + 500$, at least 500 from every seed of the first pilot, so that no replicate stream (cell seed plus 1 to 200) overlaps.
 - [replicate count, entered after the timing run]

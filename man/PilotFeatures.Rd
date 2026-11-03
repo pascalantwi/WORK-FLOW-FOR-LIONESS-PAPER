@@ -16,7 +16,9 @@ network gene set.}
 }
 \value{
 A list with \code{train} and \code{test} elements, each holding \code{r0}, \code{r1}
-(reference covariate matrices), \code{genes}, \code{quad}, and \code{edges}.
+(reference covariate matrices), \code{genes}, \code{quad}, \code{edges}, and \code{fo} (the
+first-order edge features, with the training fold's correlation and
+standardization for both parts).
 }
 \description{
 The IFN score is the mean of genes 1 to 5 standardized by the training

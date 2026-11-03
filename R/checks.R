@@ -6,10 +6,13 @@
 #'
 #' @param summaries Optional output of [SummarizeCells()] from the run.
 #' @param seed Seed for the simulated inputs of the code-identity checks.
+#' @param design The design the summaries come from ([PilotDesign()] or
+#'   [PilotBDesign()]).
 #' @return A data frame: `check`, `setting`, `known`, `computed`, `mcse`
 #'   (`NA` for exact identities), and `type` (`"identity"` or `"mcse"`).
 #' @export
-KnownAnswerChecks <- function(summaries = NULL, seed = 1L) {
+KnownAnswerChecks <- function(summaries = NULL, seed = 1L,
+                              design = PilotDesign()) {
   set.seed(seed)
   rows <- list()
   add <- function(check, setting, known, computed, mcse = NA_real_,
@@ -40,9 +43,10 @@ KnownAnswerChecks <- function(summaries = NULL, seed = 1L) {
   add("AUC of tied scores", "all scores equal", 0.5,
       Auc(rep(1, 10), rep(0:1, each = 5)))
   if (!is.null(summaries)) {
-    design <- PilotDesign()
+    models <- intersect(c("R0", "R1", "E1", "E4", "E5", "F1R1", "N1R0", "N1R1"),
+                        unique(summaries$quantity[!is.na(summaries$mean)]))
     for (cl in design$cell[design$mechanism == "null"]) {
-      for (m in c("R0", "R1", "E1", "E4", "E5", "N1R0", "N1R1")) {
+      for (m in models) {
         s <- summaries[summaries$cell == cl & summaries$quantity == m, ]
         add(sprintf("Null cell: AUC of %s is 0.5", m),
             sprintf("cell %d (share %.1f, n %d), %d replicates", cl,

@@ -42,7 +42,9 @@ StratifiedFolds <- function(y, k = 5) {
 #' @param score_genes,gene_set Column indices of the score genes and the
 #'   network gene set.
 #' @return A list with `train` and `test` elements, each holding `r0`, `r1`
-#'   (reference covariate matrices), `genes`, `quad`, and `edges`.
+#'   (reference covariate matrices), `genes`, `quad`, `edges`, and `fo` (the
+#'   first-order edge features, with the training fold's correlation and
+#'   standardization for both parts).
 #' @export
 PilotFeatures <- function(cohort, train, score_genes = 1:5,
                           gene_set = 6:50) {
@@ -63,10 +65,14 @@ PilotFeatures <- function(cohort, train, score_genes = 1:5,
   edges_train <- LionessEdges(g[train, , drop = FALSE])
   edges_test <- LionessTestEdges(g[!train, , drop = FALSE],
                                  g[train, , drop = FALSE])
+  r_tr <- stats::cor(g[train, , drop = FALSE])[pairs]
+  r_mat <- matrix(r_tr, nrow = nrow(z), ncol = length(r_tr), byrow = TRUE)
+  fo <- r_mat + z[, pairs[, 1]] * z[, pairs[, 2]] -
+    r_mat / 2 * (z[, pairs[, 1]]^2 + z[, pairs[, 2]]^2)
   part <- function(rows, edges) {
     list(r0 = r0[rows, , drop = FALSE], r1 = r1[rows, , drop = FALSE],
          genes = g[rows, , drop = FALSE], quad = quad[rows, , drop = FALSE],
-         edges = edges)
+         edges = edges, fo = fo[rows, , drop = FALSE])
   }
   list(train = part(train, edges_train), test = part(!train, edges_test))
 }
@@ -170,22 +176,27 @@ FitRda <- function(x_train, y, x_test, grid = seq(0, 1, by = 0.25), k = 5) {
 #'
 #' @param design_row One row of [PilotDesign()].
 #' @param rep Replicate index; the seed is the cell seed plus `rep`.
-#' @param models Which models to fit (all seven by default).
+#' @param models Which models to fit: the first pilot's seven by default;
+#'   `"F1R1"` adds the first-order edge features with the `R_1` terms.
+#'   The row's optional `noise` and `n_score` columns set the noise
+#'   distribution and the number of score genes (defaults `"normal"` and 5).
 #' @return A one-row data frame.
 #' @export
 RunReplicate <- function(design_row, rep,
                          models = c("R0", "R1", "E1", "E4", "E5", "N1R0",
                                     "N1R1")) {
   set.seed(design_row$seed + rep)
+  noise <- if (is.null(design_row$noise)) "normal" else design_row$noise
+  n_score <- if (is.null(design_row$n_score)) 5L else design_row$n_score
   coh <- SimulateCohort(design_row$mechanism, design_row$level,
-                        design_row$n1, design_row$n0)
+                        design_row$n1, design_row$n0, noise = noise)
   y <- coh$y
   folds <- StratifiedFolds(y, 5)
   pred <- matrix(NA_real_, length(y), length(models),
                  dimnames = list(NULL, models))
   for (f in 1:5) {
     tr <- folds != f
-    ft <- PilotFeatures(coh, tr)
+    ft <- PilotFeatures(coh, tr, score_genes = seq_len(n_score))
     a <- ft$train
     b <- ft$test
     ytr <- y[tr]
@@ -197,7 +208,8 @@ RunReplicate <- function(design_row, rep,
                              cbind(b$genes, b$r0[, c("comp", "ifn")])),
       E5 = function() FitElasticNet(a$r1, a$quad, ytr, b$r1, b$quad),
       N1R0 = function() FitElasticNet(a$r0, a$edges, ytr, b$r0, b$edges),
-      N1R1 = function() FitElasticNet(a$r1, a$edges, ytr, b$r1, b$edges)
+      N1R1 = function() FitElasticNet(a$r1, a$edges, ytr, b$r1, b$edges),
+      F1R1 = function() FitElasticNet(a$r1, a$fo, ytr, b$r1, b$fo)
     )
     for (m in models) pred[!tr, m] <- out[[m]]()
   }
@@ -233,6 +245,10 @@ SummarizeCells <- function(reps) {
     gain_E4_vs_R1 = reps$E4 - reps$R1,
     diff_N1R1_vs_E5 = reps$N1R1 - reps$E5,
     b_clause = (reps$E5 - reps$R1) - 0.9 * (reps$N1R1 - reps$R1),
+    F1R1 = reps$F1R1,
+    gain_F1R1_vs_R1 = reps$F1R1 - reps$R1,
+    diff_N1R1_vs_F1R1 = reps$N1R1 - reps$F1R1,
+    diff_F1R1_vs_E5 = reps$F1R1 - reps$E5,
     shift_gap = reps$shift_gap
   )
   out <- do.call(rbind, lapply(split(seq_len(nrow(reps)), reps$cell),

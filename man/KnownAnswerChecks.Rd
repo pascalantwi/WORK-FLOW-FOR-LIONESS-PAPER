@@ -4,12 +4,15 @@
 \alias{KnownAnswerChecks}
 \title{Known-answer checks of the pilot}
 \usage{
-KnownAnswerChecks(summaries = NULL, seed = 1L)
+KnownAnswerChecks(summaries = NULL, seed = 1L, design = PilotDesign())
 }
 \arguments{
 \item{summaries}{Optional output of \code{\link[=SummarizeCells]{SummarizeCells()}} from the run.}
 
 \item{seed}{Seed for the simulated inputs of the code-identity checks.}
+
+\item{design}{The design the summaries come from (\code{\link[=PilotDesign]{PilotDesign()}} or
+\code{\link[=PilotBDesign]{PilotBDesign()}}).}
 }
 \value{
 A data frame: \code{check}, \code{setting}, \code{known}, \code{computed}, \code{mcse}

@@ -36,10 +36,15 @@ PilotDesign <- function() {
 #'   mean shift; for `"network"`, the correlation change; ignored for null.
 #' @param n1,n0 Sizes of class 1 and class 0.
 #' @param p Number of genes (50 in the pilot).
+#' @param noise `"normal"`, or `"t5"` for noise drawn from a t distribution
+#'   with 5 degrees of freedom scaled to unit variance (before the module's
+#'   correlation is applied).
 #' @return A list with `x` (samples by genes), `y` (0 or 1), `age`, `sex`,
 #'   `comp`, and `f`.
 #' @export
-SimulateCohort <- function(mechanism, level, n1, n0, p = 50) {
+SimulateCohort <- function(mechanism, level, n1, n0, p = 50,
+                           noise = c("normal", "t5")) {
+  noise <- match.arg(noise)
   stopifnot(p >= 50)
   n <- n1 + n0
   y <- c(rep(1L, n1), rep(0L, n0))
@@ -52,7 +57,11 @@ SimulateCohort <- function(mechanism, level, n1, n0, p = 50) {
   load_f <- c(rep(0.8, 20), rep(0, p - 20))
   load_c <- c(rep(0, 30), rep(0.4, 20), rep(0, p - 50))
   module <- 21:30
-  eps <- matrix(stats::rnorm(n * p), n, p)
+  eps <- if (noise == "normal") {
+    matrix(stats::rnorm(n * p), n, p)
+  } else {
+    matrix(stats::rt(n * p, df = 5) / sqrt(5 / 3), n, p)
+  }
   rho <- c(`0` = 0.3, `1` = 0.3)
   if (mechanism == "network") rho["1"] <- 0.3 + as.numeric(level)
   for (cl in c(0L, 1L)) {
@@ -69,4 +78,32 @@ SimulateCohort <- function(mechanism, level, n1, n0, p = 50) {
   colnames(x) <- paste0("g", seq_len(p))
   list(x = x, y = y, age = stats::rnorm(n), sex = stats::rbinom(n, 1, 0.5),
        comp = comp, f = f)
+}
+
+#' The re-pilot's design table
+#'
+#' The 12 cells of `pilot-b/preregistration.md`, section 3, with the seed,
+#' the noise distribution, and the number of score genes of each cell.
+#'
+#' @return A data frame as [PilotDesign()], plus `stress`, `noise`, and
+#'   `n_score`.
+#' @export
+PilotBDesign <- function() {
+  d <- data.frame(
+    cell = 1:12,
+    mechanism = c("null", "ifn", "ifn", "ifn", "ifn", "shift", rep("network", 6)),
+    level = c("", "large", "moderate", "large", "large", "0.5", "0.4", "0.4",
+              "0.2", "0.4", "0.4", "0.2"),
+    stress = c("", "", "", "two-gene score", "t5 noise", "", "", "", "",
+               "t5 noise", "", ""),
+    share = c(rep(0.5, 5), 0.3, 0.5, 0.5, 0.5, 0.5, 0.3, 0.5),
+    n1 = c(80, 80, 80, 80, 80, 80, 80, 40, 150, 80, 80, 80),
+    stringsAsFactors = FALSE
+  )
+  d$n0 <- round(d$n1 * (1 - d$share) / d$share)
+  # amended before the run: 2000c alone collided with the first pilot's 1000c
+  d$seed <- 20261103L + 2000L * d$cell + 500L
+  d$noise <- ifelse(d$stress == "t5 noise", "t5", "normal")
+  d$n_score <- ifelse(d$stress == "two-gene score", 2L, 5L)
+  d
 }

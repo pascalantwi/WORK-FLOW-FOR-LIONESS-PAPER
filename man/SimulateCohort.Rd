@@ -4,7 +4,7 @@
 \alias{SimulateCohort}
 \title{Simulate one cohort for a pilot cell}
 \usage{
-SimulateCohort(mechanism, level, n1, n0, p = 50)
+SimulateCohort(mechanism, level, n1, n0, p = 50, noise = c("normal", "t5"))
 }
 \arguments{
 \item{mechanism}{One of \code{"null"}, \code{"ifn"}, \code{"shift"}, \code{"network"}.}
@@ -15,6 +15,10 @@ mean shift; for \code{"network"}, the correlation change; ignored for null.}
 \item{n1, n0}{Sizes of class 1 and class 0.}
 
 \item{p}{Number of genes (50 in the pilot).}
+
+\item{noise}{\code{"normal"}, or \code{"t5"} for noise drawn from a t distribution
+with 5 degrees of freedom scaled to unit variance (before the module's
+correlation is applied).}
 }
 \value{
 A list with \code{x} (samples by genes), \code{y} (0 or 1), \code{age}, \code{sex},
