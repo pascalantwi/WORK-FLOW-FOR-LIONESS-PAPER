@@ -6,7 +6,7 @@
 | Project | LIONESS beyond the IFN score in SLE and RA |
 | Package | [FILL: package name, set by tools/init.R] |
 | Stage | 1, proposal final |
-| Open stop | none: stage 2 (the pilot) starts when the user asks for it; the reference check waits for network access |
+| Open stop | none: stage 2 (the pilot) starts when the user asks for it; two open items in `proposal.md` (the data contingency, section 6; the supplement check, section 5) |
 | Last update | 2026-11-03 |
 
 The Stage row reads "stage number, state". The states a stage can be in:

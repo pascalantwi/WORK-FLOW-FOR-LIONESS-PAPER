@@ -8,7 +8,7 @@
 
 ## 1. Summary and verdict
 
-A LIONESS edge has an exact closed form. For Pearson correlation it is a function of the reference correlation and the sample's two standardized expression values only, and for partial correlation it adds the sample's Mahalanobis distance; we checked both against LIONESS to machine precision. To first order, each edge is the reference correlation plus the influence function of the correlation, a quadratic function of the sample's own expression, as the idea proposed; for partial correlation the deviations must be residuals on the conditioning set, and the edge is inflated by a factor that grows with the sample's distance from the rest. Three consequences shape the study. First, a classifier on edges is, to first order, a classifier on a quadratic form of expression, so its matched comparators are quadratic discriminant analysis and a linear model on pairwise products and squares. Second, edges between genes that share a factor carry the square of that factor, so a reference model with the IFN score but not its square leaves IFN signal to be counted as network signal. Third, a pure difference in mean expression between unbalanced groups shifts the group mean of an edge in proportion to one minus twice the smaller group's share, with no change in co-expression. No reachable source states these results for LIONESS; the verdict waits on two full texts this session could not open (section 5). No public dataset holding SLE and RA whole blood from one study was confirmed. Recommendation: pilot as specified in section 7, with the decisions of section 9.
+A LIONESS edge has an exact closed form. For Pearson correlation it is a function of the reference correlation and the sample's two standardized expression values only, and for partial correlation it adds the sample's Mahalanobis distance; we checked both against LIONESS to machine precision. To first order, each edge is the reference correlation plus the influence function of the correlation, a quadratic function of the sample's own expression, as the idea proposed; for partial correlation the deviations must be residuals on the conditioning set, and the edge is inflated by a factor that grows with the sample's distance from the rest. Three consequences shape the study. First, a classifier on edges is, to first order, a classifier on a quadratic form of expression, so its matched comparators are quadratic discriminant analysis and a linear model on pairwise products and squares. Second, edges between genes that share a factor carry the square of that factor, so a reference model with the IFN score but not its square leaves IFN signal to be counted as network signal. Third, a pure difference in mean expression between unbalanced groups shifts the group mean of an edge in proportion to one minus twice the smaller group's share, with no change in co-expression. The leading product term was published for a related method, and the subpopulation effect was documented empirically; the exact forms, the reference-correlation term, the inflation factor, the formula behind the subpopulation effect, and the squared-factor consequence were found in no source read (section 5). The one public data set holding SLE and RA whole blood from one study (GSE45291) has disease aliased with processing batch; PRECISESADS, under controlled access, is the only usable candidate (section 6). Recommendation: pilot as specified in section 7, with the decisions of section 9.
 
 ## 2. Question and why it matters
 
@@ -27,7 +27,7 @@ $R_1$ is defined in section 7. The second contrast is tested only if the first i
 
 | Step | Answer | What is missing |
 |---|---|---|
-| 1. A procedure in wide use | LIONESS with Pearson correlation as its network function (the lionessR default), edges then compared between groups or used as classifier features [@kuijjer2019lioness; @kuijjer2019lionessr]. | The default was confirmed only through search results. |
+| 1. A procedure in wide use | LIONESS with Pearson correlation as its network function (the lionessR default), edges then compared between groups or used as classifier features [@kuijjer2019lioness; @kuijjer2019lionessr]. | none |
 | 2. A setting it was not built for | Whole blood in SLE and RA: one latent factor (type I IFN activity) and cell composition move many genes together; the IFN score differs between the diseases in level and spread; disease groups are unbalanced; treatment and batch shift expression [@elsherbiny2018twoscore]. | A confirmed dataset (section 6). |
 | 3. The estimand, as a functional | What users believe an edge estimates: $\rho_{ij}(P_q) = \operatorname{corr}_{P_q}(X_i, X_j)$, the correlation in the subpopulation $P_q$ the sample comes from; for groups, $\rho_{ij}(P_1) - \rho_{ij}(P_0)$. | How users read edges is argued from how papers report them, not measured. |
 | 4. The target and the bias term | Exact: equations (1) and (2). First order: $\rho_{ij}(P) + \mathrm{IF}_P(x_q)$ with $P$ the pooled reference. Group mean: equation (3); the mean-shift part is proportional to $(1 - 2\pi)$. | The remainder bound in closed form for heavy tails. |
@@ -75,7 +75,7 @@ $$
 E_1[e] - E_0[e] \approx (1 - 2\pi)\left[\Delta_i \Delta_j - \frac{r}{2}\left(\Delta_i^2 + \Delta_j^2\right)\right],
 $$
 
-zero for balanced groups and growing with imbalance. Numerical check (D13, 400 replicates of $N$ = 200, two genes with no co-expression in either group): at $\pi$ = 0.5, 0.3, and 0.15 the observed differences were 0.001, 0.188, and 0.354 against 0.000, 0.186, and 0.362 from the formula, each within 0.8 Monte Carlo standard errors. This is a mechanism for the "subpopulation size bias" that SWEET was built to remove [@sweet2023]; the formula says where it comes from.
+zero for balanced groups and growing with imbalance. Numerical check (D13, 400 replicates of $N$ = 200, two genes with no co-expression in either group): at $\pi$ = 0.5, 0.3, and 0.15 the observed differences were 0.001, 0.188, and 0.354 against 0.000, 0.186, and 0.362 from the formula, each within 0.8 Monte Carlo standard errors. This is a mechanism for the "subpopulation size bias" that SWEET was built to remove [@chen2023sweet]; the formula says where it comes from.
 
 **Result 4 (shared factor).** When genes load on a factor $F$, $z_{qi} z_{qj} \approx a_i a_j F_q^2$, so their edge carries $F^2$. Sketch (D7): with classes differing only in the spread of $F$, the mean edge was 0.23 in one class and 0.80 in the other and correlated 0.74 with $F^2$; after conditioning on $F$, 0.007. A reference model holding the IFN score but not its square therefore credits the squared IFN signal to the network.
 
@@ -90,38 +90,44 @@ zero for balanced groups and growing with imbalance. Numerical check (D13, 400 r
 
 ## 5. Prior work and novelty
 
+The sources below were read in full text from PubMed Central (2026-11-03), except where marked.
+
 | Source | What it did | What it did not do | Relation to the idea |
 |---|---|---|---|
-| @kuijjer2019lioness | Introduced LIONESS as a linear interpolation between a network with and without a sample; validated it on simulated per-sample networks. | No closed form for Pearson or partial-correlation edges. | The procedure in question. |
-| @kuijjer2019lionessr | lionessR, with Pearson correlation as the default. | No analysis of what the default's edges estimate. | The default the study evaluates. |
-| @devlin1975robust | Derived the influence function of the Pearson correlation and showed it is unbounded. | Nothing on single-sample networks. | The first-order form of Result 1. |
-| @yu2017iena | iENA: single-sample Pearson correlation (sPCC) edges from a reference set, used for disease prediction. | Formula not opened in this stage. | The closest method whose edges may already be explicit products of deviations; must be read before the verdict is final. |
-| @liu2016ssn | SSN: per-sample change in Pearson correlation against a control set. | Not opened. | A perturbation of the same kind; Result 5 gives its edge in closed form, since its change in correlation is $r_{(+q)} - r$. |
-| @npj2024evaluation | Compared SSN, LIONESS, SWEET, iENA, CSN, and SSPGI on cell lines; reported a near-perfect linear relation between SSN and LIONESS edges sharing an aggregate network, and LIONESS edges ranging over tens of units. | No closed form; no classification against expression-based baselines in the snippets read. | Both findings follow from (1): the two methods share $z_i z_j$, and the edge's spread does not shrink with $N$. |
-| @kuijjer2026challenges | Compared five single-sample methods and reported an accuracy-specificity trade-off; noted that SWEET and BONOBO pull edges toward the background correlation. | Full text not reachable. | The most recent and closest critique; must be read before the verdict is final. |
-| @sweet2023 | SWEET, a sample-weighted variant built to correct subpopulation size bias. | No closed form for the bias seen. | Result 3 gives the bias's form, $(1 - 2\pi)$. |
-| @jpr2020metabolomics | Evaluated single-sample methods on metabolomics; edges separated patients from controls but not disease causes. | No derivation. | Evidence that edges add little discrimination. |
-| @bonobo2024 | BONOBO, a Bayesian single-sample covariance method. | Not compared with quadratic expression models. | One of the network comparators. |
-| @pseudovalue2023microbiome | Used jackknife pseudo-values of co-abundance to adjust networks for covariates. | Not about LIONESS. | The pseudo-value reading in a neighboring field. |
+| @kuijjer2019lioness | Introduced LIONESS, which reverse engineers sample-specific networks from aggregate networks by a linear interpolation between the network with and without a sample; validated it on simulated per-sample networks. | No closed form for Pearson or partial-correlation edges. | The procedure in question. |
+| @kuijjer2019lionessr | lionessR; "the default network inference algorithm in netFun() is Pearson correlation". | No analysis of what the default's edges estimate. | The default the study evaluates. |
+| @devlin1975robust | Derived the influence function of the Pearson correlation (full text not read; the form is stated through @croux2010influence and checked numerically in D5). | Nothing on single-sample networks. | The first-order form of Result 1. |
+| @yu2017iena | iENA. Showed that per-sample changes in Pearson correlation reduce, when the reference set is large, to a single-sample PCC, $\mathrm{sPCC} = (x_i - \mu_i)(x_j - \mu_j)/\sqrt{V_i V_j}$: the product of the sample's standardized deviations (their equation 5). | No term in the reference correlation; not about LIONESS; no comparison with quadratic expression models. | The leading term of Result 1 is published here. Result 1 adds the term in $r$, without which the product correlated only 0.66 to 0.88 with the edge when $r$ was 0.5 or 0.9 (D5). |
+| @liu2016ssn | SSN: the per-sample change in Pearson correlation against a reference set, with its mean and variance under the null. | No closed form in standardized expression. | Result 5 gives its edge in closed form, since its change in correlation is $r_{(+q)} - r$. |
+| @deschildre2024evaluation | Compared SSN, LIONESS, SWEET, iENA, CSN, and SSPGI on cell lines; "an almost perfect linear relationship between edge weights of LIONESS and SSN" sharing an aggregate network; LIONESS edges ranged over $[-25, 30]$ in lung samples. | No closed form; no classification against expression-based baselines. | Both findings follow from (1): the two methods share $z_i z_j$, and the edge's spread does not shrink with $N$. |
+| @kuijjer2026challenges | Recast LIONESS::PCC, SSN, SWEET, and BONOBO in common variables (a differential-correlation term, scale factors, and a background-correlation term). On GTEx esophagus data with varied subpopulation shares, found that for an edge with differential expression and no differential correlation "all methods predict higher edge weights for samples from the smaller population". | No closed form in standardized expression in the main text; Supplement 1, which holds the recast equations, could not be downloaded; no formula for the subpopulation effect. | The closest critique. Result 3 is the formula for their empirical finding, with the same direction: for $r$ near 0 and both genes shifted the same way, the smaller group's mean edge is higher by $(1-2\pi)\Delta_i\Delta_j$. |
+| @chen2023sweet | SWEET, built to "address the network edge number bias caused by sample size differences". | No closed form for the bias. | Result 3 gives the bias's form. |
+| @jahagirdar2021metabolomics | Evaluated ssPCC and LIONESS on metabolomics; in random-forest classification, ssPCC edges gave better or equal accuracy than concentrations in 13 of 22 data sets, LIONESS edges better in 5 of 22. | No reference model with quadratic features; no derivation. | Evidence that edge gains are inconsistent; the matched comparison explains when they arise. |
+| @saha2024bonobo | BONOBO, a Bayesian model for sample-specific coexpression matrices. | Not compared with quadratic expression models. | One of the network comparators. |
+| @ahn2024pseudovalue | SOHPIE-DNA, a regression on jackknife pseudo-values of network connectivity, adjusted for covariates. | Not about LIONESS. | The pseudo-value reading of a network statistic, in a neighboring field. |
 
-**Verdict:** new as stated, built from known parts. The first-order form is assembled from classical results; the exact forms (1) and (2), the Mahalanobis inflation, and the $(1 - 2\pi)$ law were not found in any source reached. What the study adds beyond the closest sources: the closed forms, the three consequences of section 1, and a benchmark designed from them. [TO CONFIRM: the verdict after reading the full texts of @kuijjer2026challenges and @yu2017iena, which this session could not open]{.tc}
+**Verdict:** partly known. The product-of-deviations form is published for per-sample changes in correlation [@yu2017iena], and the effect of differential expression and subpopulation size on LIONESS edges is documented empirically [@kuijjer2026challenges]. New, in no source read: the exact closed forms (1) and (2); the term in the reference correlation and the size of the error without it; the Mahalanobis inflation of partial-correlation edges; the $(1-2\pi)$ formula behind the documented subpopulation effect; the squared-factor consequence for a reference model; and a benchmark designed from them. The paper frames Results 1 to 3 as the closed-form account of what @yu2017iena reduced to its leading term and @kuijjer2026challenges observed. [TO CONFIRM: that Supplement 1 of @kuijjer2026challenges does not already give the closed form; it could not be downloaded in this session]{.tc}
 
 Searches are logged in `log/01-idea-review.md`.
 
 ## 6. Datasets
 
-No dataset could be opened in this stage: the network policy of the session blocked GEO, PubMed, and every publisher. Every status is `verify`.
+Opened 2026-11-03: the GEO series records and every sample record of the GEO series below, the ELIXIR Luxembourg landing page of PRECISESADS, and the PRECISESADS paper [@barturen2021precisesads]. A search of GEO for human series naming lupus and rheumatoid arthritis in blood returned 36 series; those with both diseases and at least 50 samples are listed.
 
 | Dataset | Accession | What is deposited (samples by group, format, access) | Status | Opened |
 |---|---|---|---|---|
-| PRECISESADS | ELIXIR Luxembourg, doi 10.17881/th9v-xt85 | Whole-blood RNA-seq, methylome, flow cytometry, and clinical data on SLE, RA, and other systemic autoimmune diseases with controls, from one study [@barturen2021precisesads; @precisesads2021data]; controlled access on request. | verify | no |
-| GSE45291 | GEO | Reported as a whole-blood array cohort; papers disagree on whether it holds SLE only (about 290 patients and 20 controls) or also about 490 RA patients. | verify | no |
-| GSE17755 | GEO | PBMC arrays from one series: RA, SLE, two forms of juvenile arthritis, healthy children and adults, 248 patients in all; treatment information unknown. | verify | no |
-| GSE93272 | GEO | Whole-blood arrays (GPL570) of RA with controls and drug-response groups [@tasaki2018multiomics]; RA only. | verify | no |
+| PRECISESADS | ELIXIR Luxembourg ELU-2-E592B0-1, doi 10.17881/th9v-xt85 | Cross-sectional cohort of 955 patients with 7 systemic autoimmune diseases (SLE and RA among them) and 267 healthy controls, plus an inception cohort of 113; whole-blood transcriptome and methylome, flow cytometry of B and T lymphocytes, monocytes, and neutrophils, treatment groups (steroids, biologics, immunosuppressants, antimalarials, antibiotics), 18 recruitment centres [@barturen2021precisesads; @precisesads2017data]. Controlled access on request; use limited to non-commercial research on systemic autoimmune diseases, with acknowledgement and notification of publications. Counts by diagnosis are in the paper's Supplementary Table 1, not read. | verified (records opened; data not accessed) | 2026-11-03 |
+| GSE45291 | GEO, GPL13158 | 805 whole-blood arrays at baseline: SLE 292, RA DMARD-inadequate responders 378, RA TNF-inadequate responders 115, controls 20. Every processing date holds one group only (RA from March 2009 to April 2010, controls March 2010, SLE July 2010), and each set was normalized separately. No age, sex, or treatment fields. | verified, unusable: disease is aliased with processing batch, and every RA patient was treated | 2026-11-03 |
+| GSE17755 | GEO, GPL1291 | Peripheral blood cells: RA 112, SLE 22, polyarticular JIA 6, systemic JIA 51, healthy 53. | verified, too few SLE (22) | 2026-11-03 |
+| GSE235508 | GEO, GPL20301 | 335 whole-blood RNA-seq samples from 84 pregnancies (SLE 25, RA 38, healthy 21) at up to seven time points; medication and prednisolone fields; processed counts only (raw data withheld under Norwegian law). | verified, too few patients and a pregnancy population; a secondary data set at most | 2026-11-03 |
+| GSE93272 | GEO, GPL570 (SubSeries of GSE93777) | Whole-blood arrays of RA with and without methotrexate, infliximab, or tocilizumab, and healthy volunteers [@tasaki2018multiomics]. | verified, RA only | 2026-11-03 |
+| GSE149050 | GEO | Sorted immune cells of SLE (203 samples) and healthy controls (85); no RA. | verified, no RA | 2026-11-03 |
 
-**Recommended:** PRECISESADS, because its flow cytometry measures cell composition instead of estimating it, and its clinical data record treatment; GSE45291 is the fallback if its GEO record confirms both diseases. Combining an SLE series with an RA series from another study is ruled out: disease would equal study, and no batch adjustment separates them. **What the application shows:** whether LIONESS edges raise the cross-validated AUC for SLE against RA beyond $R_1$, and beyond the matched quadratic model.
+**Recommended:** PRECISESADS, the only data set found that holds SLE and RA from one study with measured composition and recorded treatment. Submit the access request now, since the stage 3 application depends on it. GSE45291, the previous fallback, is ruled out: a classifier trained on it learns processing date along with disease. **What the application shows:** whether LIONESS edges raise the cross-validated AUC for SLE against RA beyond $R_1$, and beyond the matched quadratic model.
 
-**Checks on the chosen dataset before any analysis** (a data-description script in stage 2): disease by batch table (batches with one disease only are dropped or analyzed as a sensitivity); untreated counts by disease (the design needs at least 40 per disease, the pilot's smallest size); IFN score distribution by disease (overlap reported); composition by disease.
+**Checks on PRECISESADS before any analysis** (a data-description script in stage 2): diagnosis by recruitment centre and by sequencing batch (centres or batches with one disease only are dropped or analyzed as a sensitivity); untreated counts by disease (at least 40 per disease needed); IFN score distribution by disease; composition by disease.
+
+[TO CONFIRM: the contingency if PRECISESADS access is refused or delayed past stage 3. Recommended: the paper stands on the theory and the simulation, and GSE45291 enters only as a cautionary example of disease aliased with batch, not as an application]{.tc}
 
 ## 7. Study design and pilot plan
 
@@ -142,14 +148,14 @@ No dataset could be opened in this stage: the network policy of the session bloc
 | 11 | N2 | $R_1$ + LIONESS edges of the partial correlation given the IFN score and composition | the conditioned network |
 | 12 | N3 | $R_1$ + SSN edges [@liu2016ssn] | a sister perturbation method |
 | 13 | N4 | $R_1$ + iENA sPCC edges [@yu2017iena] | an explicit-deviation method |
-| 14 | N5 | $R_1$ + SWEET edges [@sweet2023] | a size-weighted method |
-| 15 | N6 | $R_1$ + BONOBO edges [@bonobo2024] | a Bayesian method |
+| 14 | N5 | $R_1$ + SWEET edges [@chen2023sweet] | a size-weighted method |
+| 15 | N6 | $R_1$ + BONOBO edges [@saha2024bonobo] | a Bayesian method |
 | 16 | N7 | $R_1$ + co-expression module eigengenes [CITE: WGCNA]{.cite} | population-level modules |
 | 17 | N8 | $R_1$ + products $z_i z_j$ of the pairs selected by differential correlation [@mckenzie2016dgca] | population-level differential correlation |
 
 **The gene set $G$:** the 50 genes with the largest variance after regressing out the residual IFN score, composition, and batch, chosen within each training fold (1,225 edges); the genes of the IFN score are excluded from $G$ so that the score and the edges do not share genes. A secondary analysis uses the IFN gene module as $G$, where Result 4 predicts the largest artifact.
 
-**Preprocessing, all inside each training fold:** gene selection; standardization; the IFN score; composition estimates if not measured [@newman2015cibersort]; batch terms; the LIONESS reference (test edges by Result 5). The IFN score is the mean of standardized expression of a pre-specified gene set (recommended: EPSTI1, IFI44L, LY6E, OAS3, RSAD2 [@mai2021ifn5]); the residual IFN score is its residual on composition.
+**Preprocessing, all inside each training fold:** gene selection; standardization; the IFN score; composition estimates if not measured [@newman2015cibersort]; batch terms; the LIONESS reference (test edges by Result 5). The IFN score is the mean of standardized expression of a pre-specified gene set (EPSTI1, IFI44L, LY6E, OAS3, RSAD2), adapted from the IFN5 score, which sums their log2 expression [@mai2021ifn5]; the residual IFN score is its residual on composition.
 
 **Cross-validation:** outer 5-fold, stratified by disease and batch, repeated 20 times; inner 5-fold for tuning [@varma2006bias]. Out-of-fold AUC per repeat; the contrasts $\Delta_1$ and $\Delta_2$ are averaged over repeats, with the corrected resampled t-test for their uncertainty [@nadeau2003inference].
 
@@ -190,7 +196,7 @@ The user accepted every recommended answer on 2026-11-03. The design above alrea
 - The partial-correlation network is the partial correlation given the IFN score and composition (model N2); full-conditional partial correlation among the genes of $G$ is used only when $p \le N/4$ (Result 2).
 - $R_1$, the reference of both primary contrasts, holds the squared residual IFN score and squared composition terms (Result 4).
 - The two primary contrasts $\Delta_1$ and $\Delta_2$ are tested in fixed sequence.
-- Data source: PRECISESADS through an access request, GSE45291 as fallback.
+- Data source: PRECISESADS through an access request. (The fallback GSE45291 was ruled out at the reference check, section 6; the contingency is open.)
 - The seventeen models are those of section 7.
 - The IFN score is the mean standardized expression of EPSTI1, IFI44L, LY6E, OAS3, and RSAD2; the residual score is adjusted for composition.
 - "Untreated" means no systemic glucocorticoid, antimalarial, or conventional or biologic DMARD at sampling; if fewer than 40 untreated patients per disease remain, the primary analysis uses all patients with treatment indicators and the untreated subset becomes the sensitivity analysis.
@@ -198,38 +204,15 @@ The user accepted every recommended answer on 2026-11-03. The design above alrea
 - The gene set $G$ is 50 genes chosen in each training fold, the IFN-score genes excluded.
 - Target journal: BMC Bioinformatics; fallback: Statistical Applications in Genetics and Molecular Biology.
 
-One item stays open and is carried to the reference check: the novelty verdict of section 5, which waits on the full texts of @kuijjer2026challenges and @yu2017iena.
+Two items stay open: the supplement check of the novelty verdict (section 5) and the data contingency (section 6).
 
 ## 10. Reference list
 
-Every source this proposal cites has an entry in `references/references.md`. None could be checked against its record in this session: the network policy blocked every publisher, PubMed, and Crossref, so each entry carries what web search results showed and `record: not opened`. The reference check (step 9 of the stage) runs once those hosts are allowed. Core citations have full text pending.
-
-| Key | Grade | Identifier | Full text | Needed for |
-|---|---|---|---|---|
-| kuijjer2019lioness | core | arXiv 1505.06440; PMID 30981959 | pending | sections 3, 4, 5 |
-| kuijjer2019lionessr | supporting | doi 10.1186/s12885-019-6235-7 | pending | sections 3, 5, 8 |
-| devlin1975robust | core | Biometrika 62, 531-545 | pending | section 4 |
-| croux2010influence | supporting | doi 10.1007/s10260-010-0142-z | pending | section 4 |
-| yu2017iena | core | doi 10.1093/nar/gkx787 | pending | sections 5, 7 |
-| liu2016ssn | supporting | doi 10.1093/nar/gkw772 | pending | sections 5, 7 |
-| npj2024evaluation | supporting | doi 10.1038/s41540-024-00340-w | pending | section 5 |
-| kuijjer2026challenges | core | doi 10.64898/2026.02.27.708608; PMID 41867852 | pending | section 5 |
-| jpr2020metabolomics | supporting | doi 10.1021/acs.jproteome.0c00696 | pending | section 5 |
-| bonobo2024 | supporting | Genome Research 34(9), 1397 | pending | sections 5, 7 |
-| sweet2023 | supporting | PMC10025435 | pending | sections 4, 5, 7 |
-| pseudovalue2023microbiome | supporting | arXiv 2303.13702 | pending | section 5 |
-| elsherbiny2018twoscore | supporting | doi 10.1038/s41598-018-24198-1 | pending | section 3 |
-| mai2021ifn5 | supporting | doi 10.1186/s13075-021-02414-0 | pending | section 7 |
-| barturen2021precisesads | supporting | Arthritis Rheumatol 73(6), 1073-1085 | pending | section 6 |
-| precisesads2021data | definitional | doi 10.17881/th9v-xt85 | not needed | section 6 |
-| tasaki2018multiomics | supporting | PMID 30013029 | pending | section 6 |
-| varma2006bias | definitional | doi 10.1186/1471-2105-7-91 | not needed | section 7 |
-| nadeau2003inference | definitional | not seen | not needed | section 7 |
-| mckenzie2016dgca | definitional | doi 10.1186/s12918-016-0349-1 | not needed | section 7 |
-| newman2015cibersort | definitional | PMC4739640 | not needed | section 7 |
+Every source this proposal cites has an entry in `references/references.md`, copied from its Crossref, PubMed, or PubMed Central record, opened 2026-11-03. Passages are recorded in `manuscript/citations.csv`. Full texts were read from PubMed Central or an open repository copy, except for @devlin1975robust and @croux2010influence (full text pending; a PDF in `references/pdfs/` would close them).
 
 ## 11. Revisions
 
 - 2026-11-03, at stop 1: the user does not want IFN-low and IFN-high strata. The comparison is SLE against RA in all untreated patients, with the IFN score as a continuous covariate in the reference model.
 - 2026-11-03, revision 2, at the user's request to refine the idea before the pilot (not yet final). Added: the exact closed forms of the Pearson and partial-correlation edges (Results 1 and 2) and their checks; the Mahalanobis inflation and the $p \le N/4$ limit; the group-mean formula and the $(1 - 2\pi)$ law (Result 3); the leakage-free test-sample form (Result 5); two primary estimands in fixed sequence; the full 17-model table with $R_1$ as the reference and the reference covariates unpenalized; the gene set, the preprocessing inside folds, the cross-validation, and the sensitivity analyses; dataset checks; group balance as a pilot factor. Every open question now carries a recommended answer.
 - 2026-11-03, final: the user accepted every recommended answer ("YES"); section 9 lists the decisions. Step 9, the reference check, was run as far as the session allows: no record could be opened (the network policy blocks every publisher, PubMed, GEO, and Crossref), so all 21 entries keep `record: not opened`, `usable` stays `no` in `citations.csv`, and the check is carried forward to stage 2, where the pilot cites none of them. The novelty verdict stays marked until the two closest full texts are read.
+- 2026-11-03, reference check (step 9), once the hosts were allowed: every record opened and every entry corrected from it; 19 full texts or abstracts read. Section 5 changed: @yu2017iena already gives the product-of-deviations form, and @kuijjer2026challenges already documents the subpopulation effect empirically, so the verdict became "partly known" with the new parts named; the metabolomics evaluation was misdescribed from a search snippet and is corrected. Section 6 changed: GSE45291 is aliased with processing batch and is ruled out; GSE17755 and GSE235508 are too small; PRECISESADS is the only candidate, and the contingency is a new open item. The IFN score is described as adapted from IFN5, which sums log2 expression. Six citation keys were renamed to match first author and year.

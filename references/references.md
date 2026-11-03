@@ -77,34 +77,38 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 
 ### kuijjer2019lioness
 
-> Kuijjer, M. L., Tung, M. G., Yuan, G., Quackenbush, J., & Glass, K. (2019). Estimating sample-specific regulatory networks. *iScience*, 14, 226-240.
+> Kuijjer, M. L., Tung, M. G., Yuan, G., Quackenbush, J., & Glass, K. (2019). Estimating sample-specific regulatory networks. *iScience*, 14, 226-240. https://doi.org/10.1016/j.isci.2019.03.021
 
 - type: article
-- author: Kuijjer, Marieke Lydia and Tung, Matthew George and Yuan, GuoCheng and Quackenbush, John and Glass, Kimberly
+- author: Kuijjer, M. L. and Tung, M. G. and Yuan, G. and Quackenbush, J. and Glass, K.
 - title: Estimating sample-specific regulatory networks
 - journal: iScience
 - year: 2019
 - volume: 14
 - pages: 226-240
-- note: arXiv:1505.06440; PMID 30981959
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (author list, volume, and pages from a bib file in the user's earlier repository, to be checked)
-- full_text: pending
+- doi: 10.1016/j.isci.2019.03.021
+- record: PubMed record PMID 30981959, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC6463816/ (read 2026-11-03)
 
 ### kuijjer2019lionessr
 
-> [no author] (2019). lionessR: single sample network inference in R. *BMC Cancer*. https://doi.org/10.1186/s12885-019-6235-7
+> Kuijjer, M. L., Hsieh, P.-H., Quackenbush, J., & Glass, K. (2019). lionessR: single sample network inference in R. *BMC Cancer*, 19(1), 1003. https://doi.org/10.1186/s12885-019-6235-7
 
 - type: article
-- title: lionessR: single sample network inference in R
+- author: Kuijjer, Marieke L. and Hsieh, Ping-Han and Quackenbush, John and Glass, Kimberly
+- title: {lionessR}: single sample network inference in {R}
 - journal: BMC Cancer
 - year: 2019
+- volume: 19
+- number: 1
+- pages: 1003
 - doi: 10.1186/s12885-019-6235-7
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
-- full_text: pending
+- record: Crossref record for the DOI, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC6815019/ (read 2026-11-03)
 
 ### devlin1975robust
 
-> Devlin, S. J., Gnanadesikan, R., & Kettenring, J. R. (1975). Robust estimation and outlier detection with correlation coefficients. *Biometrika*, 62, 531-545.
+> Devlin, S. J., Gnanadesikan, R., & Kettenring, J. R. (1975). Robust estimation and outlier detection with correlation coefficients. *Biometrika*, 62(3), 531-545. https://doi.org/10.1093/biomet/62.3.531
 
 - type: article
 - author: Devlin, Susan J. and Gnanadesikan, R. and Kettenring, J. R.
@@ -112,20 +116,26 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - journal: Biometrika
 - year: 1975
 - volume: 62
+- number: 3
 - pages: 531-545
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (citation as given in the reference list of Croux and Dehon, 2010)
+- doi: 10.1093/biomet/62.3.531
+- record: Crossref record for the DOI, opened 2026-11-03
 - full_text: pending
 
 ### croux2010influence
 
-> Croux, C., & Dehon, C. (2010). [no title]. *Statistical Methods and Applications*. https://doi.org/10.1007/s10260-010-0142-z
+> Croux, C., & Dehon, C. (2010). Influence functions of the Spearman and Kendall correlation measures. *Statistical Methods & Applications*, 19(4), 497-515. https://doi.org/10.1007/s10260-010-0142-z
 
 - type: article
 - author: Croux, Christophe and Dehon, Catherine
-- journal: Statistical Methods and Applications
+- title: Influence functions of the {Spearman} and {Kendall} correlation measures
+- journal: Statistical Methods & Applications
 - year: 2010
+- volume: 19
+- number: 4
+- pages: 497-515
 - doi: 10.1007/s10260-010-0142-z
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
+- record: Crossref record for the DOI, opened 2026-11-03
 - full_text: pending
 
 ### yu2017iena
@@ -141,14 +151,15 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - number: 20
 - pages: e170
 - doi: 10.1093/nar/gkx787
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
-- full_text: pending
+- record: Crossref record for the DOI, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC5714249/ (read 2026-11-03)
 
 ### liu2016ssn
 
-> [no author] (2016). Personalized characterization of diseases using sample-specific networks. *Nucleic Acids Research*, 44(22), e164. https://doi.org/10.1093/nar/gkw772
+> Liu, X., Wang, Y., Ji, H., Aihara, K., & Chen, L. (2016). Personalized characterization of diseases using sample-specific networks. *Nucleic Acids Research*, 44(22), e164. https://doi.org/10.1093/nar/gkw772
 
 - type: article
+- author: Liu, Xiaoping and Wang, Yuetong and Ji, Hongbin and Aihara, Kazuyuki and Chen, Luonan
 - title: Personalized characterization of diseases using sample-specific networks
 - journal: Nucleic Acids Research
 - year: 2016
@@ -156,141 +167,183 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - number: 22
 - pages: e164
 - doi: 10.1093/nar/gkw772
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (first author Liu; full author list not seen)
-- full_text: pending
+- record: Crossref record for the DOI, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC5159538/ (read 2026-11-03)
 
-### npj2024evaluation
+### deschildre2024evaluation
 
-> [no author] (2024). Evaluation of single-sample network inference methods for precision oncology. *npj Systems Biology and Applications*. https://doi.org/10.1038/s41540-024-00340-w
+> Deschildre, J., Vandemoortele, B., Loers, J. U., De Preter, K., & Vermeirssen, V. (2024). Evaluation of single-sample network inference methods for precision oncology. *npj Systems Biology and Applications*, 10(1), 18. https://doi.org/10.1038/s41540-024-00340-w
 
 - type: article
+- author: Deschildre, Joke and Vandemoortele, Boris and Loers, Jens Uwe and De Preter, Katleen and Vermeirssen, Vanessa
 - title: Evaluation of single-sample network inference methods for precision oncology
 - journal: npj Systems Biology and Applications
 - year: 2024
+- volume: 10
+- number: 1
+- pages: 18
 - doi: 10.1038/s41540-024-00340-w
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
-- full_text: pending
+- record: Crossref record for the DOI, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC10869342/ (read 2026-11-03)
 
 ### kuijjer2026challenges
 
-> [no author] (2026). Challenges and opportunities in single-sample network modeling. bioRxiv preprint; PMID 41867852. https://doi.org/10.64898/2026.02.27.708608
+> Kuijjer, M., De Marzio, M., & Glass, K. (2026). Challenges and opportunities in single-sample network modeling. bioRxiv preprint. https://doi.org/10.64898/2026.02.27.708608
 
 - type: misc
+- author: Kuijjer, Marieke and De Marzio, Margherita and Glass, Kimberly
 - title: Challenges and opportunities in single-sample network modeling
 - year: 2026
 - doi: 10.64898/2026.02.27.708608
-- note: bioRxiv preprint; PMID 41867852
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (search results name Kuijjer and colleagues; author list not seen)
-- full_text: pending
+- note: bioRxiv preprint
+- record: Crossref record for the DOI, opened 2026-11-03; PubMed PMID 41867852, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC13001488/ (read 2026-11-03); Supplement 1 not downloaded
 
-### jpr2020metabolomics
+### jahagirdar2021metabolomics
 
-> [no author] (2020). Evaluation of single sample network inference methods for metabolomics-based systems medicine. *Journal of Proteome Research*. https://doi.org/10.1021/acs.jproteome.0c00696
+> Jahagirdar, S., & Saccenti, E. (2021). Evaluation of single sample network inference methods for metabolomics-based systems medicine. *Journal of Proteome Research*, 20(1), 932-949. https://doi.org/10.1021/acs.jproteome.0c00696
 
 - type: article
+- author: Jahagirdar, Sanjeevan and Saccenti, Edoardo
 - title: Evaluation of single sample network inference methods for metabolomics-based systems medicine
 - journal: Journal of Proteome Research
-- year: 2020
+- year: 2021
+- volume: 20
+- number: 1
+- pages: 932-949
 - doi: 10.1021/acs.jproteome.0c00696
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (year inferred from the DOI; to be checked)
-- full_text: pending
+- record: Crossref record for the DOI, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC7786380/ (read 2026-11-03)
 
-### bonobo2024
+### saha2024bonobo
 
-> [no author] (2024). Bayesian inference of sample-specific coexpression networks. *Genome Research*, 34(9), 1397.
+> Saha, E., Fanfani, V., Mandros, P., Ben Guebila, M., Fischer, J., Shutta, K. H., DeMeo, D. L., Lopes-Ramos, C. M., & Quackenbush, J. (2024). Bayesian inference of sample-specific coexpression networks. *Genome Research*, 34(9), 1397-1410. https://doi.org/10.1101/gr.279117.124
 
 - type: article
+- author: Saha, Enakshi and Fanfani, Viola and Mandros, Panagiotis and Ben Guebila, Marouen and Fischer, Jonas and Shutta, Katherine H. and DeMeo, Dawn L. and Lopes-Ramos, Camila M. and Quackenbush, John
 - title: Bayesian inference of sample-specific coexpression networks
 - journal: Genome Research
 - year: 2024
 - volume: 34
 - number: 9
-- pages: 1397
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
-- full_text: pending
+- pages: 1397-1410
+- doi: 10.1101/gr.279117.124
+- record: Crossref record for the DOI, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC11529861/ (read 2026-11-03)
 
-### sweet2023
+### chen2023sweet
 
-> [no author] (n.d.). SWEET: a single-sample network inference method for deciphering individual features in disease. *[no journal]*.
+> Chen, H. H., Hsueh, C. W., Lee, C. H., Hao, T. Y., Tu, T. Y., Chang, L. Y., Lee, J. C., & Lin, C. Y. (2023). SWEET: a single-sample network inference method for deciphering individual features in disease. *Briefings in Bioinformatics*, 24(2). https://doi.org/10.1093/bib/bbad032
 
 - type: article
+- author: Chen, H. H. and Hsueh, C. W. and Lee, C. H. and Hao, T. Y. and Tu, T. Y. and Chang, L. Y. and Lee, J. C. and Lin, C. Y.
 - title: {SWEET}: a single-sample network inference method for deciphering individual features in disease
-- note: PMC10025435
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (journal and year not seen)
-- full_text: pending
-
-### pseudovalue2023microbiome
-
-> [no author] (2023). Differential co-abundance network analyses for microbiome data adjusted for clinical covariates using jackknife pseudo-values. arXiv:2303.13702. https://arxiv.org/abs/2303.13702
-
-- type: misc
-- title: Differential co-abundance network analyses for microbiome data adjusted for clinical covariates using jackknife pseudo-values
+- journal: Briefings in Bioinformatics
 - year: 2023
-- url: https://arxiv.org/abs/2303.13702
-- note: arXiv:2303.13702
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
-- full_text: pending
+- volume: 24
+- number: 2
+- doi: 10.1093/bib/bbad032
+- record: PubMed Central record PMC10025435 (PMID 36719112), opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC10025435/ (read 2026-11-03)
+
+### ahn2024pseudovalue
+
+> Ahn, S., & Datta, S. (2024). Differential network connectivity analysis for microbiome data adjusted for clinical covariates using jackknife pseudo-values. *BMC Bioinformatics*, 25(1), 117. https://doi.org/10.1186/s12859-024-05689-7
+
+- type: article
+- author: Ahn, Seungjun and Datta, Somnath
+- title: Differential network connectivity analysis for microbiome data adjusted for clinical covariates using jackknife pseudo-values
+- journal: BMC Bioinformatics
+- year: 2024
+- volume: 25
+- number: 1
+- pages: 117
+- doi: 10.1186/s12859-024-05689-7
+- note: preprint arXiv:2303.13702
+- record: Crossref record for the DOI, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC10946111/ (read 2026-11-03)
 
 ### elsherbiny2018twoscore
 
-> El-Sherbiny, Y. M., & others (2018). A novel two-score system for interferon status segregates autoimmune diseases and correlates with clinical features. *Scientific Reports*. https://doi.org/10.1038/s41598-018-24198-1
+> El-Sherbiny, Y. M., Psarras, A., Md Yusof, M. Y., Hensor, E. M. A., Tooze, R., Doody, G., Mohamed, A. A. A., McGonagle, D., Wittmann, M., Emery, P., & Vital, E. M. (2018). A novel two-score system for interferon status segregates autoimmune diseases and correlates with clinical features. *Scientific Reports*, 8(1), 5793. https://doi.org/10.1038/s41598-018-24198-1
 
 - type: article
-- author: El-Sherbiny, Yasser M. and others
+- author: El-Sherbiny, Y. M. and Psarras, A. and Md Yusof, M. Y. and Hensor, E. M. A. and Tooze, R. and Doody, G. and Mohamed, A. A. A. and McGonagle, D. and Wittmann, M. and Emery, P. and Vital, E. M.
 - title: A novel two-score system for interferon status segregates autoimmune diseases and correlates with clinical features
 - journal: Scientific Reports
 - year: 2018
+- volume: 8
+- number: 1
+- pages: 5793
 - doi: 10.1038/s41598-018-24198-1
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (full author list not seen)
-- full_text: pending
+- record: Crossref record for the DOI, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC5895784/ (read 2026-11-03)
+
+### mai2021ifn5
+
+> Mai, L., Asaduzzaman, A., Noamani, B., Fortin, P. R., Gladman, D. D., Touma, Z., Urowitz, M. B., & Wither, J. (2021). The baseline interferon signature predicts disease severity over the subsequent 5 years in systemic lupus erythematosus. *Arthritis Research & Therapy*, 23(1), 29. https://doi.org/10.1186/s13075-021-02414-0
+
+- type: article
+- author: Mai, Lloyd and Asaduzzaman, Arundip and Noamani, Babak and Fortin, Paul R. and Gladman, Dafna D. and Touma, Zahi and Urowitz, Murray B. and Wither, Joan
+- title: The baseline interferon signature predicts disease severity over the subsequent 5 years in systemic lupus erythematosus
+- journal: Arthritis Research & Therapy
+- year: 2021
+- volume: 23
+- number: 1
+- pages: 29
+- doi: 10.1186/s13075-021-02414-0
+- record: Crossref record for the DOI, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC7811214/ (read 2026-11-03)
 
 ### barturen2021precisesads
 
-> Barturen, G., & others (2021). Integrative analysis reveals a molecular stratification of systemic autoimmune diseases. *Arthritis & Rheumatology*, 73(6), 1073-1085.
+> Barturen, G., Babaei, S., Catal\`a-Moll, F., & others (2021). Integrative analysis reveals a molecular stratification of systemic autoimmune diseases. *Arthritis & Rheumatology*, 73(6), 1073-1085. https://doi.org/10.1002/art.41610
 
 - type: article
-- author: Barturen, Guillermo and others
+- author: Barturen, G. and Babaei, S. and Catal{\`a}-Moll, F. and others
 - title: Integrative analysis reveals a molecular stratification of systemic autoimmune diseases
 - journal: Arthritis & Rheumatology
 - year: 2021
 - volume: 73
 - number: 6
 - pages: 1073-1085
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (full author list not seen)
-- full_text: pending
+- doi: 10.1002/art.41610
+- record: PubMed record PMID 33497037, opened 2026-11-03 (132 authors)
+- full_text: https://publicatio.bibl.u-szeged.hu/21552/1/BarturenArthRheumatol2021.pdf (repository copy, read 2026-11-03)
 
-### precisesads2021data
+### precisesads2017data
 
-> PRECISESADS Consortium (2021). PRECISESADS: molecular reclassification to find clinically useful biomarkers for systemic autoimmune diseases. ELIXIR Luxembourg, controlled access. https://doi.org/10.17881/th9v-xt85
+> ELIXIR Luxembourg (2017). PRECISESADS: Cross Sectional Study & Inception Cohort data (V1.0). Data set, controlled access, ELU-2-E592B0-1. https://doi.org/10.17881/th9v-xt85
 
 - type: misc
-- author: {PRECISESADS Consortium}
-- title: {PRECISESADS}: molecular reclassification to find clinically useful biomarkers for systemic autoimmune diseases
-- year: 2021
+- author: {ELIXIR Luxembourg}
+- title: {PRECISESADS}: Cross Sectional Study & Inception Cohort data (V1.0)
+- year: 2017
 - doi: 10.17881/th9v-xt85
-- note: ELIXIR Luxembourg, controlled access
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (year of deposit not seen)
+- url: https://datacatalogue.elixir-luxembourg.org/e/dataset/ELU-2-E592B0-1
+- note: Data set, controlled access, ELU-2-E592B0-1
+- record: ELIXIR Luxembourg data catalogue landing page (the DOI resolves to it), opened 2026-11-03
 - full_text: not needed (definitional)
 
 ### tasaki2018multiomics
 
-> Tasaki, S., & others (2018). Multi-omics monitoring of drug response in rheumatoid arthritis in pursuit of molecular remission. *Nature Communications*, 9(1), 2755.
+> Tasaki, S., Suzuki, K., Kassai, Y., Takeshita, M., Murota, A., Kondo, Y., Ando, T., Nakayama, Y., Okuzono, Y., Takiguchi, M., Kurisu, R., Miyazaki, T., Yoshimoto, K., Yasuoka, H., Yamaoka, K., Morita, R., Yoshimura, A., Toyoshiba, H., & Takeuchi, T. (2018). Multi-omics monitoring of drug response in rheumatoid arthritis in pursuit of molecular remission. *Nature Communications*, 9(1), 2755. https://doi.org/10.1038/s41467-018-05044-4
 
 - type: article
-- author: Tasaki, Shinya and others
+- author: Tasaki, S. and Suzuki, K. and Kassai, Y. and Takeshita, M. and Murota, A. and Kondo, Y. and Ando, T. and Nakayama, Y. and Okuzono, Y. and Takiguchi, M. and Kurisu, R. and Miyazaki, T. and Yoshimoto, K. and Yasuoka, H. and Yamaoka, K. and Morita, R. and Yoshimura, A. and Toyoshiba, H. and Takeuchi, T.
 - title: Multi-omics monitoring of drug response in rheumatoid arthritis in pursuit of molecular remission
 - journal: Nature Communications
 - year: 2018
 - volume: 9
 - number: 1
 - pages: 2755
-- note: PMID 30013029
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (full author list and DOI not seen)
-- full_text: pending
+- doi: 10.1038/s41467-018-05044-4
+- record: PubMed record PMID 30013029, opened 2026-11-03
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC6048065/ (read 2026-11-03)
 
 ### varma2006bias
 
-> Varma, S., & Simon, R. (2006). Bias in error estimation when using cross-validation for model selection. *BMC Bioinformatics*, 7, 91. https://doi.org/10.1186/1471-2105-7-91
+> Varma, S., & Simon, R. (2006). Bias in error estimation when using cross-validation for model selection. *BMC Bioinformatics*, 7(1), 91. https://doi.org/10.1186/1471-2105-7-91
 
 - type: article
 - author: Varma, Sudhir and Simon, Richard
@@ -298,37 +351,31 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - journal: BMC Bioinformatics
 - year: 2006
 - volume: 7
+- number: 1
 - pages: 91
 - doi: 10.1186/1471-2105-7-91
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
+- record: Crossref record for the DOI, opened 2026-11-03
 - full_text: not needed (definitional)
-
-### mai2021ifn5
-
-> Mai, L., & others (2021). [no title]. *Arthritis Research & Therapy*. https://doi.org/10.1186/s13075-021-02414-0
-
-- type: article
-- author: Mai, L. and others
-- journal: Arthritis Research & Therapy
-- year: 2021
-- doi: 10.1186/s13075-021-02414-0
-- note: five-gene IFN score: EPSTI1, IFI44L, LY6E, OAS3, RSAD2
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (title and full author list not seen)
-- full_text: pending
 
 ### nadeau2003inference
 
-> Nadeau, C., & Bengio, Y. (2003). [no title]. *[no journal]*.
+> Nadeau, C., & Bengio, Y. (2003). Inference for the generalization error. *Machine Learning*, 52(3), 239-281. https://doi.org/10.1023/A:1024068626366
 
 - type: article
 - author: Nadeau, Claude and Bengio, Yoshua
+- title: Inference for the generalization error
+- journal: Machine Learning
 - year: 2003
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (title, journal, and identifier not seen; known from search results describing the corrected resampled t-test)
+- volume: 52
+- number: 3
+- pages: 239-281
+- doi: 10.1023/A:1024068626366
+- record: Crossref record for the DOI, opened 2026-11-03
 - full_text: not needed (definitional)
 
 ### mckenzie2016dgca
 
-> McKenzie, A. T., Katsyv, I., Song, W.-M., Wang, M., & Zhang, B. (2016). DGCA: a comprehensive R package for differential gene correlation analysis. *BMC Systems Biology*, 10, 106. https://doi.org/10.1186/s12918-016-0349-1
+> McKenzie, A. T., Katsyv, I., Song, W.-M., Wang, M., & Zhang, B. (2016). DGCA: a comprehensive R package for differential gene correlation analysis. *BMC Systems Biology*, 10(1), 106. https://doi.org/10.1186/s12918-016-0349-1
 
 - type: article
 - author: McKenzie, Andrew T. and Katsyv, Igor and Song, Won-Min and Wang, Minghui and Zhang, Bin
@@ -336,19 +383,24 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - journal: BMC Systems Biology
 - year: 2016
 - volume: 10
+- number: 1
 - pages: 106
 - doi: 10.1186/s12918-016-0349-1
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
+- record: Crossref record for the DOI, opened 2026-11-03
 - full_text: not needed (definitional)
 
 ### newman2015cibersort
 
-> Newman, A. M., & others (2015). [no title]. *Nature Methods*.
+> Newman, A. M., Liu, C. L., Green, M. R., Gentles, A. J., Feng, W., Xu, Y., Hoang, C. D., Diehn, M., & Alizadeh, A. A. (2015). Robust enumeration of cell subsets from tissue expression profiles. *Nature Methods*, 12(5), 453-457. https://doi.org/10.1038/nmeth.3337
 
 - type: article
-- author: Newman, Aaron M. and others
+- author: Newman, A. M. and Liu, C. L. and Green, M. R. and Gentles, A. J. and Feng, W. and Xu, Y. and Hoang, C. D. and Diehn, M. and Alizadeh, A. A.
+- title: Robust enumeration of cell subsets from tissue expression profiles
 - journal: Nature Methods
 - year: 2015
-- note: PMC4739640
-- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (title, full author list, and DOI not seen)
+- volume: 12
+- number: 5
+- pages: 453-457
+- doi: 10.1038/nmeth.3337
+- record: PubMed record PMID 25822800, opened 2026-11-03
 - full_text: not needed (definitional)

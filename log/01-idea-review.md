@@ -164,6 +164,24 @@ Process feedback: the stage file has no step for a refinement round requested at
 - D16. The user answered "YES" to accepting every recommendation. Section 9 of the proposal became a list of decisions; one marker stays (the novelty verdict).
 - D17. Step 9 run without network: no record of the 21 entries could be opened (PMC fetch failed again this turn). Every entry keeps `record: not opened`; `usable` stays `no`; build-bib.py lists 27 faults, all missing fields that the records would supply. Per `rules.md`, section 2, the list is returned to the user and the stage goes on. The check is to be rerun, and the faults cleared, once the hosts are allowed; the pilot cites none of these sources, so it does not block stage 2.
 
+## Step 9 rerun: the reference check with network access (2026-11-03)
+
+The user allowed the hosts. From the shell (the fetch tool stayed blocked): api.crossref.org, eutils.ncbi.nlm.nih.gov (PubMed, PMC, GEO), pmc.ncbi.nlm.nih.gov, www.ncbi.nlm.nih.gov/geo, arxiv.org, and the ELIXIR Luxembourg catalogue answered; www.biorxiv.org answered 429 (rate limit); bioinfo.genyo.es did not answer.
+
+- D18. Records: every entry was looked up by DOI in Crossref or by PMID in PubMed and rewritten from the record (authors, title, journal, volume, issue, pages, DOI); missing DOIs found for Devlin 1975, Nadeau and Bengio 2003, Newman 2015, Saha 2024, Chen 2023, Tasaki 2018, Barturen 2021, and the published version of the pseudo-value preprint. Six keys renamed to first author and year. Full texts read from PMC for 13 sources and from a repository PDF for Barturen 2021; Devlin 1975 and Croux 2010 have no open full text (one fault left in `reference-fixes.md`).
+- D19. Novelty, from the full texts: Yu 2017 (iENA) equation 5 reduces per-sample changes in correlation to the product of standardized deviations for large reference sets, the leading term of Result 1; Kuijjer, De Marzio, and Glass 2026 recast the linear methods in common variables and observed, on GTEx esophagus data, higher LIONESS edge weights in the smaller subpopulation for an edge with differential expression only, which is Result 3's direction. Their Supplement 1 (the recast equations) could not be downloaded (PMC 404, bioRxiv 429); the verdict became "partly known" with a marker for the supplement. Correction: the metabolomics evaluation (Jahagirdar and Saccenti 2021) found ssPCC edges better or equal in 13 of 22 data sets and LIONESS edges better in 5 of 22; the earlier description, taken from a search snippet, was wrong.
+- D20. Datasets, from the GEO records and every sample record: GSE45291 has SLE 292, RA DMARD-IR 378, RA TNF-IR 115, controls 20, and every one of 18 processing dates (sample title prefixes) holds one group only, with separate gcrma normalization per set: disease is aliased with batch, and all RA were treated; ruled out. GSE17755: SLE 22. GSE235508: 25 SLE and 38 RA pregnancies. GSE149050: no RA. GEO search (db=gds, lupus and rheumatoid and blood, human series): 36 series, none other usable. PRECISESADS: ELIXIR-LU ELU-2-E592B0-1, 955 patients with 7 diseases and 267 controls, 18 centres, treatment groups recorded, flow cytometry; controlled access for non-commercial SAD research. Recommended action: request access now. New open item: the contingency if access fails.
+- Mai 2021: the IFN5 score sums log2 NanoString expression; the proposal's score is described as adapted from it.
+
+| # | Date | Source | Query or record | What it gave |
+|---|---|---|---|---|
+| 26 | 2026-11-03 | Crossref API | 15 DOIs; bibliographic queries for Devlin 1975, Nadeau and Bengio 2003, Barturen 2021, BONOBO | records, missing DOIs |
+| 27 | 2026-11-03 | PubMed esummary | PMIDs 30981959, 30013029, 41867852, 33497037, 25822800; PMC 10025435, 4739640 | records, PMC ids |
+| 28 | 2026-11-03 | PMC efetch | 14 full texts | passages in `citations.csv` |
+| 29 | 2026-11-03 | GEO | GSE45291, GSE17755, GSE93272, GSE93777, GSE235508, GSE149050, GSE326777, GSE45536 series and sample records | section 6 |
+| 30 | 2026-11-03 | GEO esearch (db=gds) | (lupus OR SLE) AND rheumatoid AND human AND gse AND (blood OR PBMC) | 36 series |
+| 31 | 2026-11-03 | ELIXIR Luxembourg catalogue | ELU-2-E592B0-1 | access conditions |
+
 ## Revision pass (markdown form, `03-manuscript.md`, step 4.7)
 
 Pass 1 (paragraphs): each section's first sentence was checked to state its answer; the summary was reordered to give the verdict on the formula before the data problem. Pass 2 (sentences): a claim of LIONESS being the most cited method had no source and became a `[CITE]` marker; the variance remark was labeled as the agent's step; long sentences in section 4 were split. No section changed by more than three sentences after the first pass, so no second pass was due.
