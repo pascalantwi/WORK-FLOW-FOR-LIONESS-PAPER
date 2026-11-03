@@ -1,0 +1,7 @@
+dataset,accession,sample_type,sle,ra,controls,other,usable,reason,source_opened
+PRECISESADS,ELU-2-E592B0-1 (doi 10.17881/th9v-xt85),whole blood RNA-seq,,,267,955 patients across 7 diseases,candidate,controlled access; counts by diagnosis in Supplementary Table 1 (not read),Barturen et al. 2021 and ELIXIR Luxembourg landing page (2026-11-03)
+GSE45291,GEO GPL13158,whole blood array,292,493,20,,no,disease aliased with processing date; all RA treated,GEO series and 805 sample records (2026-11-03)
+GSE17755,GEO GPL1291,peripheral blood cells array,22,112,53,57 juvenile arthritis,no,22 SLE,GEO series record (2026-11-03)
+GSE235508,GEO GPL20301,whole blood RNA-seq (pregnancy),25,38,21,counts are pregnancies,no,too few patients; pregnancy population,GEO series and 335 sample records (2026-11-03)
+GSE93272,GEO GPL570,whole blood array,0,,,RA and healthy only,no,no SLE,GEO series record (2026-11-03)
+GSE149050,GEO GPL16791,sorted immune cells RNA-seq,203,0,85,counts are samples,no,no RA,GEO series and sample records (2026-11-03)
