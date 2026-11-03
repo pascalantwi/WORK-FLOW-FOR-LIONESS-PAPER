@@ -272,8 +272,18 @@ Models: $R_0$, $R_1$, E1, E5, F1 with $R_1$, edges with $R_0$, edges with $R_1$ 
 
 A value within three MCSE of a threshold is a close call for its clause. Combination: pass if every clause passes; fail if 1(a), 1(b), or 3(a) fails; close call otherwise (a failure of 2(a), 2(b), or 3(b), or any clause at its threshold). A failure of 3(b) means the fix depends on the reliability of the score, which the paper would then report as a limitation.
 
-The thresholds of 2(a) and 2(b) were set after the first pilot, which showed gains of 0.031 and, at 80 per class, 0.116 in the corresponding cells; the re-pilot uses new seeds, and the thresholds are the smallest gains the paper would describe as mattering to a user. [TO CONFIRM: the thresholds 0.02 for the artifact and 0.03 for the co-expression signal at 40 per class]{.tc}
+The thresholds of 2(a) and 2(b) were set after the first pilot, which showed gains of 0.031 and, at 80 per class, 0.116 in the corresponding cells; the re-pilot uses new seeds, and the thresholds are the smallest gains the paper would describe as mattering to a user. The user approved the thresholds 0.02 and 0.03 on 2026-11-03.
 
 ### 12.5 What is unchanged
 
 The question of section 2 with $\Delta_2$ as revised above, the data plan and its open contingency (section 6), the decisions of section 9, the target journal, and the reference list.
+
+### 12.6 The revised research question
+
+Approved by the user on 2026-11-03, with the revision.
+
+**Question (one sentence):** Is a LIONESS co-expression edge anything more than a closed-form quadratic function of each sample's own expression, and, when classifying SLE against RA from whole blood, do LIONESS edges add information beyond the IFN score, its square, cell composition, and their own first-order (influence-function) features?
+
+1. *Equivalence.* Do the exact LIONESS edges and their first-order features $r + z_i z_j - \tfrac r2 (z_i^2 + z_j^2)$ give the same out-of-sample AUC, so that a network result can be reproduced without building a network?
+2. *Artifact and fix.* When SLE and RA differ in IFN activity, how much do edges gain only by carrying the squared IFN level, and does a reference with the squared score remove that gain, with heavy-tailed noise and with a less reliable score?
+3. *Parametrization.* When co-expression truly differs, why does the edge form detect it under penalized fitting while the same information entered as separate products and squares does not, and what does that imply for how network results should be tested?

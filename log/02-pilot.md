@@ -49,3 +49,8 @@ Time: about two hours of agent time around 54 minutes of compute.
 
 - D-S1. The user answered the stage 2 stop with "do your recommendation, let me see": a revised proposal and a re-pilot. The revision is `proposal.md`, section 12 (revision 3): the claim becomes equivalence of edges and first-order edge features, the shared-factor artifact and its fix, and the effect of parametrization; a new model F1 (first-order edges); the second primary contrast becomes an equivalence test with margin 0.01; the re-pilot `pilot-b/` has 12 cells with heavy-tailed noise and a two-gene score as stress factors, and a pass rule whose matching clause is paired with a signal clause. Markdown revision pass: one pass over section 12; two sentences split in 12.2, no section changed by more than three sentences.
 - "Let me see" is read as the user wanting to see the revision first, so the revised proposal gets its own stop before the re-pilot, as `02-pilot.md` requires unless the user says to go straight on.
+
+# Re-pilot: pilot-b
+
+- D-S2. The user approved revision 3 and its thresholds ("APROVE"), and asked for the revised research question, which is `proposal.md`, section 12.6, and `project-spec.md`, section 1.
+- `pilot-b/preregistration.md` committed alone before any re-pilot code ("Stage 2, step 2 (pilot-b): pre-registration").

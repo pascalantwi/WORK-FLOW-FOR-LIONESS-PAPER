@@ -9,7 +9,7 @@
 
 ## 1. Question and why it matters
 
-**Question (one sentence):** Do LIONESS edges improve the cross-validated classification of untreated SLE against untreated RA over a reference model that holds the continuous IFN score, its square, clinical covariates, and cell composition, and do they add anything beyond the quadratic expression model their closed form implies?
+**Question (one sentence):** Is a LIONESS co-expression edge anything more than a closed-form quadratic function of each sample's own expression, and, when classifying SLE against RA from whole blood, do LIONESS edges add information beyond the IFN score, its square, cell composition, and their own first-order (influence-function) features? (Revised 2026-11-03 after the first pilot, `proposal.md`, section 12.6; the question before it asked only about the IFN score and the matched quadratic model.)
 
 **Why it matters:** A LIONESS edge is a known quadratic function of the sample's own expression (proposal, section 4), so a network gain is a quadratic-expression gain unless it survives the matched comparison. In IFN-driven diseases, edges between IFN genes carry the square of the IFN factor, so a reference without that square credits IFN signal to the network. A user who reports network rewiring needs to know which comparisons the claim must survive.
 
