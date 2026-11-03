@@ -302,3 +302,53 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - doi: 10.1186/1471-2105-7-91
 - record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
 - full_text: not needed (definitional)
+
+### mai2021ifn5
+
+> Mai, L., & others (2021). [no title]. *Arthritis Research & Therapy*. https://doi.org/10.1186/s13075-021-02414-0
+
+- type: article
+- author: Mai, L. and others
+- journal: Arthritis Research & Therapy
+- year: 2021
+- doi: 10.1186/s13075-021-02414-0
+- note: five-gene IFN score: EPSTI1, IFI44L, LY6E, OAS3, RSAD2
+- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (title and full author list not seen)
+- full_text: pending
+
+### nadeau2003inference
+
+> Nadeau, C., & Bengio, Y. (2003). [no title]. *[no journal]*.
+
+- type: article
+- author: Nadeau, Claude and Bengio, Yoshua
+- year: 2003
+- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (title, journal, and identifier not seen; known from search results describing the corrected resampled t-test)
+- full_text: not needed (definitional)
+
+### mckenzie2016dgca
+
+> McKenzie, A. T., Katsyv, I., Song, W.-M., Wang, M., & Zhang, B. (2016). DGCA: a comprehensive R package for differential gene correlation analysis. *BMC Systems Biology*, 10, 106. https://doi.org/10.1186/s12918-016-0349-1
+
+- type: article
+- author: McKenzie, Andrew T. and Katsyv, Igor and Song, Won-Min and Wang, Minghui and Zhang, Bin
+- title: {DGCA}: a comprehensive {R} package for differential gene correlation analysis
+- journal: BMC Systems Biology
+- year: 2016
+- volume: 10
+- pages: 106
+- doi: 10.1186/s12918-016-0349-1
+- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref
+- full_text: not needed (definitional)
+
+### newman2015cibersort
+
+> Newman, A. M., & others (2015). [no title]. *Nature Methods*.
+
+- type: article
+- author: Newman, Aaron M. and others
+- journal: Nature Methods
+- year: 2015
+- note: PMC4739640
+- record: not opened: web search result only, 2026-11-03; the session's network policy blocked the publisher, PubMed, and Crossref (title, full author list, and DOI not seen)
+- full_text: not needed (definitional)

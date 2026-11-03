@@ -25,3 +25,9 @@ Each row is a correction to make in `references.md`, never in `references.bib`. 
 | `pseudovalue2023microbiome` | author | missing |
 | `barturen2021precisesads` | doi | missing; add it from the publisher's page, or write 'doi: none' if it has none |
 | `tasaki2018multiomics` | doi | missing; add it from the publisher's page, or write 'doi: none' if it has none |
+| `mai2021ifn5` | title | missing |
+| `nadeau2003inference` | title | missing |
+| `nadeau2003inference` | journal | missing |
+| `nadeau2003inference` | doi | missing; add it from the publisher's page, or write 'doi: none' if it has none |
+| `newman2015cibersort` | title | missing |
+| `newman2015cibersort` | doi | missing; add it from the publisher's page, or write 'doi: none' if it has none |
