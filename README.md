@@ -6,7 +6,7 @@ Authors: [names]. Target journal: [journal]. Status: see `STATUS.md`.
 
 ## This copy of the workflow
 
-This repository runs the workflow of [tgrimes/research-workflow](https://github.com/tgrimes/research-workflow) (version 0.2.4) for the LIONESS paper, with one change: no Zotero library is used. The references live in a Markdown file, `manuscript/references.md`. The agent writes each entry from a record it opened, such as the DOI's Crossref record, PubMed, or the publisher's page. `manuscript/build-bib.py` generates `manuscript/references.bib` from that list for the render. You review `references.md` once, at the end, at the reference review of stage 3, step 6. Full texts help the agent during planning but are optional: put a PDF in `manuscript/sources/<key>.pdf` (not committed) whenever the agent lists a core citation as `pending`. `workflow/CHANGELOG.md`, under 0.2.4-md, lists every file that changed.
+This repository runs the workflow of [tgrimes/research-workflow](https://github.com/tgrimes/research-workflow) (version 0.2.4) for the LIONESS paper, with one change: no Zotero library is used. The references live in a Markdown file, `references/references.md`. The agent writes each entry from a record it opened, such as the DOI's Crossref record, PubMed, or the publisher's page. `manuscript/build-bib.py` generates `manuscript/references.bib` from that list for the render. You review `references.md` once, at the end, at the reference review of stage 3, step 6. Full texts help the agent during planning but are optional: put a PDF in `references/pdfs/<key>.pdf` (not committed) whenever the agent lists a core citation as `pending`. `workflow/CHANGELOG.md`, under 0.2.4-md, lists every file that changed.
 
 ## What this repository is
 
@@ -40,11 +40,11 @@ uv sync
 
 | Stage | Instructions | You start it by | It ends with |
 |---|---|---|---|
-| 1. Idea review | `workflow/01-idea-review.md` | "look at idea.md" | `proposal.md`: novelty, fit, theory, datasets, a pilot plan with pass criteria, and the reference list started in `manuscript/references.md` |
+| 1. Idea review | `workflow/01-idea-review.md` | "look at idea.md" | `proposal.md`: novelty, fit, theory, datasets, a pilot plan with pass criteria, and the reference list started in `references/references.md` |
 | 2. Pilot | `workflow/02-pilot.md` | "the proposal is final" | `project-spec.md`, the pre-registered pilot in `pilot/`, its report, and a pass or fail |
 | 3. Manuscript | `workflow/03-manuscript.md` | "the pilot passed", or "dropped" or "parked" for a memo | `manuscript/manuscript.html`, then revision rounds on your comments; after the background report, the production run and the final render; after a dropped or parked pilot, the memo of the study, written once |
 | 4. Background report | `workflow/04-background-report.md` | "the draft is settled" | `background/background.html`, with the literature in full and every proof walked through, for you to read before the production run; an issues list if it found errors |
-| 3, step 6. Production run | `workflow/03-manuscript.md` | "run production", after the report | the reference review (you read `manuscript/references.md` once), then the final render of the manuscript |
+| 3, step 6. Production run | `workflow/03-manuscript.md` | "run production", after the report | the reference review (you read `references/references.md` once), then the final render of the manuscript |
 | 5. Mock review | `workflow/05-mock-review.md` | "run the review" | `review/round-1/reviewer_1.md`, `_2`, `_3`; then responses and further rounds |
 | 6. Slides | `workflow/06-slides.md` | "make the slides" | `slides/` (not yet written) |
 | 7. Poster | `workflow/07-poster.md` | "make the poster" | `poster/` (not yet written) |
@@ -67,7 +67,8 @@ Every stage ends at a stop: one file for you to read, committed at the stop, and
 | `analysis/` | Numbered scripts that call the functions and write to `results/` |
 | `data/raw/`, `data/processed/` | Untouched inputs, and data derived by scripts |
 | `results/` | Everything `analysis/` produces; never edited by hand |
-| `manuscript/` | `manuscript.qmd` and `_supplement.qmd`, their helpers and checker, `references.md` (the reference list), `citations.csv`, `references.bib` (generated from `references.md`), `sources/` (PDFs you add; not committed) |
+| `references/` | `references.md` (the reference list you review at the end), `reference-fixes.md` (faults found in the list), and `pdfs/` (full texts you add; not committed) |
+| `manuscript/` | `manuscript.qmd` and `_supplement.qmd`, their helpers and checker, `citations.csv`, `references.bib` (generated from `references/references.md`) |
 | `background/`, `review/`, `slides/`, `poster/` | The later stages' deliverables |
 | `renv.lock`, `renv/`, `.Rprofile` | The R environment (renv) |
 | `pyproject.toml`, `uv.lock`, `.python-version`, `inst/python/` | The Python environment (uv) and the Python package |

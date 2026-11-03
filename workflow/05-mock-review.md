@@ -28,7 +28,7 @@ Put the final manuscript through the review it would get at the target journal, 
 **2. Three independent reviews.**
 
 1. Run the three reviewers as separate agents with fresh context and no sight of each other's output. Each receives only its instruction file, the packet, and `templates/review-report.md`.
-2. Reviewer 1 may search the literature within its file's budget and read the full texts the reference list names (open copies, or PDFs in `manuscript/sources/`). Reviewer 2 may write and run code of its own to probe a claim (a small simulation, a recomputation from a formula) within about fifteen minutes of compute, and never reruns the manuscript's own analyses, which are tested already. Reviewer 3 may search for competing methods and datasets within its budget.
+2. Reviewer 1 may search the literature within its file's budget and read the full texts the reference list names (open copies, or PDFs in `references/pdfs/`). Reviewer 2 may write and run code of its own to probe a claim (a small simulation, a recomputation from a formula) within about fifteen minutes of compute, and never reruns the manuscript's own analyses, which are tested already. Reviewer 3 may search for competing methods and datasets within its budget.
 3. Each returns `review/round-1/reviewer_N.md` in the template's form: summary, major comments, minor comments, recommendation with confidence, searches made. A reviewer's claim about the literature names the source it saw. The coordinator checks that each file follows the template and that no reviewer saw another's review.
 
 **3. The editor's summary.**

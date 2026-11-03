@@ -7,12 +7,12 @@ for anything cited in a deliverable from the proposal onward (workflow/rules.md,
   page, PubMed, arXiv, bioRxiv, CRAN or Bioconductor for software) and names that record, with the
   date, in the `record` field. Nothing is written from memory.
 - `references.bib` is generated from this file by
-  `python3 -I manuscript/build-bib.py manuscript/references.md manuscript/references.bib --citations manuscript/citations.csv`
+  `python3 -I manuscript/build-bib.py references/references.md manuscript/references.bib --citations manuscript/citations.csv`
   and is never edited by hand. Faults go to `reference-fixes.md`.
 - The quoted line under each heading is rewritten by build-bib.py on every run: edit the fields, not
   the quoted line.
 - The passage each citation rests on is recorded in `citations.csv`, not here.
-- `full_text` says where the full text was read: a URL (an open copy), `manuscript/sources/<key>.pdf`
+- `full_text` says where the full text was read: a URL (an open copy), `references/pdfs/<key>.pdf`
   (a PDF the user added; the folder is git-ignored), `abstract only` (allowed for a supporting
   citation), or `pending` (a core citation still waiting for its full text).
 - The user reviews this file once, at the end (workflow/03-manuscript.md, step 6, the reference review).
@@ -32,7 +32,7 @@ edition, institution, school, year, volume, number, pages, doi, url, note, recor
 - pages: 10-20
 - doi: 10.xxxx/xxxxx
 - record: Crossref record for the DOI, opened 2026-11-03
-- full_text: https://... (open copy), or manuscript/sources/key2024.pdf, or abstract only, or pending
+- full_text: https://... (open copy), or references/pdfs/key2024.pdf, or abstract only, or pending
 -->
 
 ## Seed entries

@@ -1,10 +1,10 @@
 """Build references.bib from the Markdown reference list, references.md.
 
 Usage:
-  python3 -I build-bib.py references.md references.bib
+  python3 -I manuscript/build-bib.py references/references.md manuscript/references.bib
           [--citations citations.csv] [--fixes reference-fixes.md] [--qmd manuscript.qmd] [--check]
 
-This project keeps no Zotero library. The reference list is `references.md`, written by the agent from
+This project keeps no Zotero library. The reference list is `references/references.md`, written by the agent from
 records it opened (the DOI's Crossref record or the publisher's page, PubMed, arXiv, bioRxiv, CRAN or
 Bioconductor for software) and reviewed by the user at the end (workflow/03-manuscript.md, step 6).
 references.bib is generated from it by this script and is never edited by hand.
@@ -16,7 +16,7 @@ publisher, address, series, edition, institution, school, year, volume, number, 
 Authors are written "Family, Given and Family, Given". Pages use a single hyphen (2074-2102); the bib
 gets the double hyphen. A URL is written to the bib only when the entry has no DOI. Fields kept in the
 list only: record (where the fields were copied from, and the date) and full_text (where the full text
-was read: a URL, `manuscript/sources/<key>.pdf`, `abstract only`, or `pending`).
+was read: a URL, `references/pdfs/<key>.pdf`, `abstract only`, or `pending`).
 
 Faults are written to the fixes file, to be corrected in references.md (never in the bib): a missing
 author, title, or year; an article without a journal or a DOI; a journal name in lower case; an author
@@ -49,7 +49,7 @@ def opt(flag, default=None):
 
 
 cit_path = opt("--citations")
-fixes_path = opt("--fixes", os.path.join(os.path.dirname(out_path) or ".", "reference-fixes.md"))
+fixes_path = opt("--fixes", os.path.join(os.path.dirname(md_path) or ".", "reference-fixes.md"))
 qmd_path = opt("--qmd")
 do_check = bool(opt("--check", False))
 

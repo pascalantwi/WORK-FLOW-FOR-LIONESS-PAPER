@@ -7,7 +7,7 @@
 | Status | draft / final [date] |
 
 <!-- Filled by stage 1 (workflow/01-idea-review.md). Written in the proposal's own words, not by copying
-idea.md. Every claim carries a source in manuscript/references.md or a [TO CONFIRM: ...]{.tc} marker. Delete the comments. -->
+idea.md. Every claim carries a source in references/references.md or a [TO CONFIRM: ...]{.tc} marker. Delete the comments. -->
 
 ## 1. Summary and verdict
 
@@ -77,7 +77,7 @@ Searches are logged in `log/01-idea-review.md`.
 
 ## 10. Reference list
 
-Every source this proposal cites has an entry in `manuscript/references.md`. Core citations whose full text is pending are listed here; the user may add their PDFs to `manuscript/sources/<key>.pdf` (optional until the reference review at the end).
+Every source this proposal cites has an entry in `references/references.md`. Core citations whose full text is pending are listed here; the user may add their PDFs to `references/pdfs/<key>.pdf` (optional until the reference review at the end).
 
 | Key | Grade | Identifier | Full text | Needed for |
 |---|---|---|---|---|

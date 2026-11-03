@@ -29,5 +29,5 @@ __pycache__/
 /pilot*/*_files/
 
 # PDFs the user adds as full texts for core citations (rules.md, section 2); publishers' PDFs are not shared
-/manuscript/sources/*
-!/manuscript/sources/.gitkeep
+/references/pdfs/*
+!/references/pdfs/.gitkeep

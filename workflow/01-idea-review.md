@@ -13,7 +13,7 @@ Turn `idea.md`, in whatever state it is in, into a proposal the user can judge: 
 
 ## Preconditions
 
-- No Zotero library is used (`rules.md`, section 2). The reference list `manuscript/references.md` holds the seed entries; this stage adds every source the proposal cites. If the user has put PDFs in `manuscript/sources/`, they are read as full texts.
+- No Zotero library is used (`rules.md`, section 2). The reference list `references/references.md` holds the seed entries; this stage adds every source the proposal cites. If the user has put PDFs in `references/pdfs/`, they are read as full texts.
 - The search tools, as the session sees them: the PubMed connector (its metadata tool returns about twenty records per call and spills to a file beyond about twelve, so batch twelve identifiers per call); the bioRxiv connector (no keyword search; cover bioRxiv and medRxiv by a web search restricted to their domains); Consensus (about three hits per query); web search and page fetches (Google Scholar, GitHub, GEO, the data portals). Searching is allowed in this stage within the budget of step 3; every search is logged.
 - `log/01-idea-review.md` is started at the first step and holds the inventory, the searches, the decisions, and the process feedback.
 
@@ -52,12 +52,12 @@ A "no" on question 3 or 4 is stated plainly; it is the most common reason an ide
 
 **3. Prior work and novelty.**
 
-1. Read `manuscript/references.md` and `manuscript/sources/` first: what they already hold is not looked up again. Then open the record of every title and DOI the idea cites (outside the budget, as an identifier lookup). Log these lookups with the queries.
+1. Read `references/references.md` and `references/pdfs/` first: what they already hold is not looked up again. Then open the record of every title and DOI the idea cites (outside the budget, as an identifier lookup). Log these lookups with the queries.
 2. Search for what has been done: the procedure's own papers and their critiques, the mechanism in other fields (measurement error, meta-analysis, psychometrics, mixed models are frequent homes), benchmarks that observed the artifact, and fixes that exist. For a constructive idea, the existing methods for the same estimand and their comparisons.
 3. Budget: about twenty literature queries across the sources, a PubMed or web query counting one and a Consensus query one third. A lookup made only to see the identifier of a source the idea already cites is outside the budget. Read the abstract of every hit whose title could be relevant, except that an applied paper whose abstract names no method is logged by count, not read. Read the full text of at most ten sources; a page summary with quotations, used when the connector returns an empty full text, is a partial reading and is marked so in the log. Stop when two consecutive queries on different sources add no relevant source. Log every query with its source, the date, which hits were read, and the time spent.
 4. Delegation to workers pays only when a source family needs more than about ten queries, or when a full text must be read in whole by a second reader; otherwise the coordinator searches. A worker, one per source family, returns its log rows and, for each relevant source, what it did and what it did not do, read from the abstract or the full text and never from a title. The coordinator reads the full text of every source the verdict rests on.
 5. Give one verdict with its reason: the mechanism is new; the artifact is known informally with no closed form and no fix; or the result is published, with the source. Say what the idea adds beyond the closest source. If the user's own prior work is named in `idea.md`, say how the idea relates to it.
-6. List every source the proposal will cite, with the full citation, the identifier as seen on the page, and the grade it will carry (`core` needs the full text, `supporting` needs the abstract; `rules.md`, section 2), as entries for `manuscript/references.md`, each marked with whether an open full text was found.
+6. List every source the proposal will cite, with the full citation, the identifier as seen on the page, and the grade it will carry (`core` needs the full text, `supporting` needs the abstract; `rules.md`, section 2), as entries for `references/references.md`, each marked with whether an open full text was found.
 
 **4. Theory check.** For each derivation, proof sketch, or claimed result in the idea: restate it, check each step, name the first step that does not hold or is not justified, and propose the numerical check (a simulation or a special case with a known answer) that would catch an error in it. For the suspected mechanism, give the first-order sketch from question 4 with its assumptions. A sketch the idea lacks may be added, labeled as the agent's. Do not present a sketch as a result.
 
@@ -83,25 +83,25 @@ A "no" on question 3 or 4 is stated plainly; it is the most common reason an ide
 2. Make one revision pass for clarity in the markdown form (`03-manuscript.md`, step 4.7) before the stop.
 3. Set `STATUS.md` to `1, proposal at stop 1` with the Open stop row naming the stop and `proposal.md`, write the stage record line, and commit ("Stage 1, step 8: proposal").
 
-**Stop 1.** Return `proposal.md` and the log. The user reviews it and answers the open questions. The user may also add PDFs to `manuscript/sources/` for the core citations whose full text the agent could not open; this is optional at this stop. The user is not asked to maintain the reference list. Wait.
+**Stop 1.** Return `proposal.md` and the log. The user reviews it and answers the open questions. The user may also add PDFs to `references/pdfs/` for the core citations whose full text the agent could not open; this is optional at this stop. The user is not asked to maintain the reference list. Wait.
 
 **9. The reference check.** When the user has answered stop 1 (the agent does this itself; no library update is waited for):
 
 1. Set `STATUS.md` to `1, reference check`.
-2. For each cited source, open its record by DOI (the Crossref record at `https://api.crossref.org/works/<doi>` or the DOI's landing page), then by title, and a book by author, and write or correct its entry in `manuscript/references.md` from that record, with the `record` field naming it and the date. A source is available when its record was opened, its entry is complete enough to cite, and either its full text was read (an open copy, or a PDF in `manuscript/sources/`) or the citation is supporting and the abstract states the claim (`rules.md`, section 2); a pre-1980 source or a book counts without a full text. A core citation without a full text stays usable with `full_text: pending`.
+2. For each cited source, open its record by DOI (the Crossref record at `https://api.crossref.org/works/<doi>` or the DOI's landing page), then by title, and a book by author, and write or correct its entry in `references/references.md` from that record, with the `record` field naming it and the date. A source is available when its record was opened, its entry is complete enough to cite, and either its full text was read (an open copy, or a PDF in `references/pdfs/`) or the citation is supporting and the abstract states the claim (`rules.md`, section 2); a pre-1980 source or a book counts without a full text. A core citation without a full text stays usable with `full_text: pending`.
 3. Start `manuscript/citations.csv` with one row per source, under the header the skeleton ships: `key, read_from, grade, section, why, origin, identifier, identifier_source, pdf, usable, deviations_from_record, support_passage, read_date, verified_by, verified_date`. `read_from` is the URL or file the passage was read from; grade is `core`, `supporting`, or `definitional`; section is the proposal's section; `pdf` is `yes` (full text read), `no` (a supporting citation read from its abstract), or `pending` (a core citation waiting for its full text); the passage is the one that supports the claim, quoted from the text read, with the date read; a scanned PDF without a text layer gets the passage `unreadable (no text layer)`, stays usable, and is listed for the user; `verified_by` and `verified_date` stay empty until the reference review.
-4. Run `python3 -I manuscript/build-bib.py manuscript/references.md manuscript/references.bib --citations manuscript/citations.csv` and correct every fault it lists in `references.md`, recording each correction in `deviations_from_record`.
+4. Run `python3 -I manuscript/build-bib.py references/references.md manuscript/references.bib --citations manuscript/citations.csv` and correct every fault it lists in `references.md`, recording each correction in `deviations_from_record`.
 5. Rebuild the proposal's citations from the checklist: align the author-date years with the entries and list the keys in section 10, with the core citations still `pending`. Add a dated entry to the proposal's Revisions section, set `STATUS.md` to `1, proposal final`, and commit ("Stage 1, step 9: proposal final"). No stop follows unless a record could not be opened; then return that list in one message and go on.
 
 ## Outputs
 
 - `proposal.md`, final after the reference check.
 - `log/01-idea-review.md`: the inventory, the paper test, every search, the datasets opened, the journal worksheet, the decisions (D-numbered), the time per step, and the process feedback.
-- `manuscript/citations.csv` started; `manuscript/references.md` holds an entry for every source the proposal cites, and `references.bib` is rebuilt from it.
+- `manuscript/citations.csv` started; `references/references.md` holds an entry for every source the proposal cites, and `references.bib` is rebuilt from it.
 
 ## Checks before the stop
 
-- Every source the proposal cites has an entry in `manuscript/references.md` with an identifier the agent saw, the record it was copied from, and its grade.
+- Every source the proposal cites has an entry in `references/references.md` with an identifier the agent saw, the record it was copied from, and its grade.
 - Every dataset marked `verified` was opened in this stage, with the date and what was seen.
 - Every search is logged with query, source, and date, and the budget of step 3 was kept or the overrun is explained in the log.
 - The proposal states the estimand as a functional, or says plainly that it cannot yet.
@@ -111,7 +111,7 @@ A "no" on question 3 or 4 is stated plainly; it is the most common reason an ide
 
 ## What to return at the stop
 
-One message: the verdict in a sentence; the path to `proposal.md` and the log; the novelty verdict with the closest source; the recommended dataset and its status; the pilot's pass criteria; the count of open questions in the proposal; the reference list's count, and the core citations whose full text is pending (the PDFs the user may add to `manuscript/sources/`, optional); what the agent was unsure of; and, on a separate line, any workflow matter waiting on the user (the `tools/init.R` author line), which is not counted among the open questions.
+One message: the verdict in a sentence; the path to `proposal.md` and the log; the novelty verdict with the closest source; the recommended dataset and its status; the pilot's pass criteria; the count of open questions in the proposal; the reference list's count, and the core citations whose full text is pending (the PDFs the user may add to `references/pdfs/`, optional); what the agent was unsure of; and, on a separate line, any workflow matter waiting on the user (the `tools/init.R` author line), which is not counted among the open questions.
 
 ## Delegating this stage
 

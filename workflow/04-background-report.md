@@ -6,7 +6,7 @@ Write the detailed companion to the settled manuscript, before the production ru
 
 ## Inputs
 
-- The settled manuscript: `manuscript/manuscript.qmd` with `_supplement.qmd`, and `manuscript/manuscript.html` as rendered at the last revision round (draft mode, quick-run numbers); `manuscript/citations.csv` with its passages; `manuscript/references.md` (and the `references.bib` generated from it); the PDFs in `manuscript/sources/`.
+- The settled manuscript: `manuscript/manuscript.qmd` with `_supplement.qmd`, and `manuscript/manuscript.html` as rendered at the last revision round (draft mode, quick-run numbers); `manuscript/citations.csv` with its passages; `references/references.md` (and the `references.bib` generated from it); the PDFs in `references/pdfs/`.
 - The package in `R/` and `results/`, for the numerical checks.
 - `templates/background-report.qmd` and `manuscript/manuscript-helpers.R` (the report reads `results/` through the same helpers).
 - `workflow/rules.md`, in full.
@@ -14,7 +14,7 @@ Write the detailed companion to the settled manuscript, before the production ru
 ## Preconditions
 
 - `STATUS.md` says `3, settled`: the draft has had the user's comments and its revision rounds. The report's numbers carry the quick label; stage 3, step 6 renders it again after the production run, when they carry the production label. (Before 0.2.4 the report followed the production run; the order was reversed so that the user reads it before a long run is spent.)
-- Every core citation has its full text reachable (an open copy, or a PDF in `manuscript/sources/`), or is marked `pending` in `references.md`, and a supporting citation may be abstract-only (`rules.md`, section 2). A block resting on a pending full text says so, and the citation is listed in the report's issues for the reference review.
+- Every core citation has its full text reachable (an open copy, or a PDF in `references/pdfs/`), or is marked `pending` in `references.md`, and a supporting citation may be abstract-only (`rules.md`, section 2). A block resting on a pending full text says so, and the citation is listed in the report's issues for the reference review.
 - The log is `log/04-background-report.md`.
 
 ## Procedure

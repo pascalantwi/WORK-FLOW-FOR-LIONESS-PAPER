@@ -2,12 +2,13 @@
 
 ## Purpose
 
-Take a passed pilot and produce the manuscript: a first draft in draft mode on quick-run numbers, revision rounds on the user's comments until the draft is settled, then, after the background report of stage 4 has been read, the production run and the final render. The background report comes before the production run so that the user understands the literature and every derivation before the long run is spent. The repository is the research compendium, so every number is read from `results/` at render time, every claim rests on an entry of the reference list `manuscript/references.md` with its passage recorded, and the draft carries its markers until the user closes them.
+Take a passed pilot and produce the manuscript: a first draft in draft mode on quick-run numbers, revision rounds on the user's comments until the draft is settled, then, after the background report of stage 4 has been read, the production run and the final render. The background report comes before the production run so that the user understands the literature and every derivation before the long run is spent. The repository is the research compendium, so every number is read from `results/` at render time, every claim rests on an entry of the reference list `references/references.md` with its passage recorded, and the draft carries its markers until the user closes them.
 
 ## Inputs
 
 - `project-spec.md`, `proposal.md`, and `pilot/` (the pre-registration, the results, `decisions.md`, the report).
-- `manuscript/`: the skeleton `manuscript.qmd` and `_supplement.qmd`, `manuscript-helpers.R`, `check-manuscript.py`, `build-bib.py`, `parts/`, `references.md` (the reference list, started at stage 1), `references.bib` (generated from it), `citations.csv` (started at stage 1).
+- `manuscript/`: the skeleton `manuscript.qmd` and `_supplement.qmd`, `manuscript-helpers.R`, `check-manuscript.py`, `build-bib.py`, `parts/`, `references.bib` (generated from the reference list), `citations.csv` (started at stage 1).
+- `references/`: the reference list `references/references.md` (started at stage 1), `reference-fixes.md`, and the PDFs in `pdfs/`.
 - `workflow/journals/`: the journal guide and `journals.csv`, which the helpers and the checker read.
 - `workflow/rules.md`, in full.
 
@@ -16,7 +17,7 @@ Take a passed pilot and produce the manuscript: a first draft in draft mode on q
 - `STATUS.md` says `2, piloted-pass`, and the spec's `[TO CONFIRM]` markers are resolved or will be carried into the draft as markers.
 - A target journal and a fallback are chosen with the journal guide's worksheet and recorded in the spec's section 6.
 - `renv::restore()` and `uv sync` have been run; R, Quarto, and uv are installed.
-- No Zotero library is used; the reference list is `manuscript/references.md`, and full texts are open copies or PDFs in `manuscript/sources/` (`rules.md`, section 2).
+- No Zotero library is used; the reference list is `references/references.md`, and full texts are open copies or PDFs in `references/pdfs/` (`rules.md`, section 2).
 - The stage's log is `log/03-manuscript.md`, the drafting log; the draft's banner reads its opening paragraph, and process feedback goes at its end.
 
 ## Procedure
@@ -41,12 +42,12 @@ Each step ends in a file someone can open. **Stop** marks a point where the step
 7. A method whose only implementation is Python is run through the uv environment as `CLAUDE.md` says (a package with `uv add 'name==version'`, scripts vendored into `inst/python/vendor/`, glue in `inst/python/<package>/` with pytest tests, an R wrapper in `R/`). When the environment cannot be built in the session, the method is drafted as planned with markers and its chunks left empty, and the decision is logged.
 8. `devtools::document()`, `devtools::test()`, and `devtools::check()` run clean. Commit ("Stage 3, step 1: pilot promoted").
 
-**2. References.** The reference list `manuscript/references.md` is the only source of entries. No stop: the user reviews the list once, at step 6.
+**2. References.** The reference list `references/references.md` is the only source of entries. No stop: the user reviews the list once, at step 6.
 
 1. *Inventory:* every source the draft will cite, from the proposal's section 10 and `citations.csv` as stage 1 left it, the pilot's opened sources (D0, or the report's citations), the spec's reading list, and the seed entries of `references.md`, each with the claim and section that need it. Write it in the log as a table (key, grade core or supporting, section, why, origin). If the step was run before, the log points at the existing inventory and checklist rather than copying them.
 2. *Availability:* for each candidate without an entry, open its record by DOI and then by title and write its entry in `references.md` (`rules.md`, section 2). Available means the record was opened, the entry is complete enough to cite, and either the full text was read or the citation is supporting and the abstract states the claim; a pre-1980 source or a book counts without a full text. A core citation without a full text is usable with `full_text: pending`.
-3. Record in the log three lists: (1) available, with the count; (2) core citations with full text pending, each with the full citation, the identifier, and the claim it is needed for (the PDFs the user may add to `manuscript/sources/` at any stop); (3) records that could not be opened. Mention lists 2 and 3 in the next stop message; they do not stop the stage.
-4. *Build:* `python3 -I manuscript/build-bib.py manuscript/references.md manuscript/references.bib --citations manuscript/citations.csv --check` writes the bib from the list (abstracts, file paths, and the list-only fields are never written), rewrites each entry's readable line, and writes any remaining faults to `manuscript/reference-fixes.md`. Correct every fault in `references.md` and run it again.
+3. Record in the log three lists: (1) available, with the count; (2) core citations with full text pending, each with the full citation, the identifier, and the claim it is needed for (the PDFs the user may add to `references/pdfs/` at any stop); (3) records that could not be opened. Mention lists 2 and 3 in the next stop message; they do not stop the stage.
+4. *Build:* `python3 -I manuscript/build-bib.py references/references.md manuscript/references.bib --citations manuscript/citations.csv --check` writes the bib from the list (abstracts, file paths, and the list-only fields are never written), rewrites each entry's readable line, and writes any remaining faults to `references/reference-fixes.md`. Correct every fault in `references.md` and run it again.
 5. The checklist `manuscript/citations.csv` has one row per candidate: `key, read_from, grade, section, why, origin, identifier, identifier_source, pdf, usable, deviations_from_record, support_passage, read_date, verified_by, verified_date`.
 
 **3. Draft, in six parts.** Record in the log what each section was carried from and what was written new.
@@ -65,7 +66,7 @@ Each step ends in a file someone can open. **Stop** marks a point where the step
    - When a result contradicts a claim in the spec, the Results state the fact, the Discussion interprets it with a guard, and a `[TO CONFIRM]` quotes the spec's sentence.
    - An exploratory probe that explains a result enters the paper only through a script that writes its numbers to `results/`; otherwise it stays in the log, and the interpretation it supports carries a marker.
    - The journal's CSL file is copied beside the qmd and named in the YAML from the start; the profile's placement of the AI-use statement and its required back-matter headings override the skeleton's.
-   - Every attributing citation is written with the full text open (the open copy or the PDF in `manuscript/sources/` that the entry's `full_text` field names), or with the abstract for a supporting citation, or for a core citation whose full text is pending (marked in the log), and its passage and date go in `citations.csv`; a citation that only names a method or a dataset is marked `definitional`. The passage reading may be delegated to other agents if each returns the quote, its location, and a verdict; the drafter spot-checks a sample against the full texts and says so in the log.
+   - Every attributing citation is written with the full text open (the open copy or the PDF in `references/pdfs/` that the entry's `full_text` field names), or with the abstract for a supporting citation, or for a core citation whose full text is pending (marked in the log), and its passage and date go in `citations.csv`; a citation that only names a method or a dataset is marked `definitional`. The passage reading may be delegated to other agents if each returns the quote, its location, and a verdict; the drafter spot-checks a sample against the full texts and says so in the log.
 5. *Introduction revised* against the Results and Discussion; then the Abstract in the journal's headings.
 6. *Second reference batch.* If drafting turned up sources not in the inventory, run the availability check and the build of step 2 on them as one batch. No stop.
 
@@ -117,7 +118,7 @@ Each step ends in a file someone can open. **Stop** marks a point where the step
 2. Estimate the runtime from the quick run's time and the replicate ratio, and say it in the message that starts the run, with the cores it will use.
 3. Run `analysis/01_simulation.R` at the production replicate count in the background, within the core cap, and the application script if its quick-run numbers came from a reduced version. Confirm `results/run_info.rds` says `run = "production"` and that `sessionInfo()` was saved.
 4. Compare quick against production: for every number in the Abstract and Results, the quick-run value, the production value, and its Monte Carlo standard error, as a table in the log under `## Production run`. List every sentence whose claim changes (a difference called nonzero that is now within noise, or the reverse) and revise it; a changed claim goes through the revision pass (step 4), and anything the user should judge gets a marker.
-5. *Reference review.* **Stop.** Run `build-bib.py` with `--qmd manuscript/manuscript.qmd --check` so that the bib holds only the cited keys, and return: the path to `manuscript/references.md`; the count of entries cited; the core citations still `pending`, with the PDFs that would close them; `reference-fixes.md` if it is not empty; and the entries whose record was not opened. Set `STATUS.md` to `3, reference review`. The user reads the list and replies with corrections, PDFs, or "references checked". Apply every correction in `references.md`, read each added PDF and update the passage, rebuild, and fill `verified_by` (`user`) and `verified_date` in `citations.csv` for every row the user checked. A core citation still pending after the review becomes a `[CITE]` marker, or is downgraded to supporting with the user's agreement.
+5. *Reference review.* **Stop.** Run `build-bib.py` with `--qmd manuscript/manuscript.qmd --check` so that the bib holds only the cited keys, and return: the path to `references/references.md`; the count of entries cited; the core citations still `pending`, with the PDFs that would close them; `reference-fixes.md` if it is not empty; and the entries whose record was not opened. Set `STATUS.md` to `3, reference review`. The user reads the list and replies with corrections, PDFs, or "references checked". Apply every correction in `references.md`, read each added PDF and update the passage, rebuild, and fill `verified_by` (`user`) and `verified_date` in `citations.csv` for every row the user checked. A core citation still pending after the review becomes a `[CITE]` marker, or is downgraded to supporting with the user's agreement.
 6. Set the authors: `Rscript tools/authors.R --author "Given Family" [--coauthor "Given Family"]... --email ADDRESS --affiliation "..."` writes DESCRIPTION, LICENSE, README.md, and the manuscript's YAML, which held placeholders until now; ask the user for the names if they are not in the log. Then resolve the markers: a final render refuses any marker, so every `[TO CONFIRM]`, `[CITE]`, and `[FILL]` must be closed. If any remain, **stop** with the list; the user closes them in a revision round.
 7. Render in final mode: `quarto render manuscript/manuscript.qmd -P draft:false`. The banner and gap table disappear, `prov()` refuses anything not labeled production, and the checker in `--final` errors on any marker. Run the checker with `--final`; fix every error.
 8. Set `STATUS.md` to `3, final`, write the stage record line, and commit with the final render ("Stage 3, step 6: production run and final render").
@@ -200,7 +201,8 @@ Errors: a rendered page older than the qmd; a `[FILL]` left; an unresolved cross
 ## Outputs
 
 - `analysis/01_simulation.R` and the other scripts; `protocol.md`; `results/`.
-- `manuscript/manuscript.qmd`, `_supplement.qmd`, `references.md`, `references.bib` (generated), `citations.csv`, the CSL file, `manuscript.html` (draft mode at the first stop, final mode after step 6), `reference-fixes.md` if faults remain.
+- `manuscript/manuscript.qmd`, `_supplement.qmd`, `references.bib` (generated), `citations.csv`, the CSL file, `manuscript.html` (draft mode at the first stop, final mode after step 6).
+- `references/references.md`, and `references/reference-fixes.md` if faults remain.
 - `log/03-manuscript.md`.
 
 ## Checks before the stop

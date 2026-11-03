@@ -48,7 +48,7 @@ Build the clean copy of the project that goes out with the paper: an R package w
 
 ## Checks before the stop
 
-- The target has none of: `idea.md`, `proposal.md`, `project-spec.md`, `STATUS.md`, `CLAUDE.md`, `workflow/`, `templates/`, `tools/`, `log/`, `pilot*/`, `background/`, `review/`, `slides/`, `poster/`, `manuscript/citations.csv`, `manuscript/check-manuscript.py`, `manuscript/build-bib.py`, `manuscript/reference-fixes.md`, `manuscript/sources/`.
+- The target has none of: `idea.md`, `proposal.md`, `project-spec.md`, `STATUS.md`, `CLAUDE.md`, `workflow/`, `templates/`, `tools/`, `log/`, `pilot*/`, `background/`, `review/`, `slides/`, `poster/`, `references/`, `manuscript/citations.csv`, `manuscript/check-manuscript.py`, `manuscript/build-bib.py`, `references/reference-fixes.md`, `references/pdfs/`.
 - Tests and check pass in the copy; the render in the copy matches the committed final render.
 - The copy's README reproduces every number from a fresh clone.
 
