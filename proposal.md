@@ -4,11 +4,11 @@
 |---|---|
 | From | `idea.md`, 2026-11-03 |
 | Written | 2026-11-03, workflow 0.2.4-md |
-| Status | draft, at stop 1 (revision 2 of 2026-11-03: refined before the pilot) |
+| Status | final 2026-11-03 (after revision 2 and the user's acceptance of every recommendation) |
 
 ## 1. Summary and verdict
 
-A LIONESS edge has an exact closed form. For Pearson correlation it is a function of the reference correlation and the sample's two standardized expression values only, and for partial correlation it adds the sample's Mahalanobis distance; we checked both against LIONESS to machine precision. To first order, each edge is the reference correlation plus the influence function of the correlation, a quadratic function of the sample's own expression, as the idea proposed; for partial correlation the deviations must be residuals on the conditioning set, and the edge is inflated by a factor that grows with the sample's distance from the rest. Three consequences shape the study. First, a classifier on edges is, to first order, a classifier on a quadratic form of expression, so its matched comparators are quadratic discriminant analysis and a linear model on pairwise products and squares. Second, edges between genes that share a factor carry the square of that factor, so a reference model with the IFN score but not its square leaves IFN signal to be counted as network signal. Third, a pure difference in mean expression between unbalanced groups shifts the group mean of an edge in proportion to one minus twice the smaller group's share, with no change in co-expression. No reachable source states these results for LIONESS; the verdict waits on two full texts this session could not open (section 5). No public dataset holding SLE and RA whole blood from one study was confirmed. Recommendation: pilot as specified in section 7 once the user accepts or replaces the recommended answers in section 9.
+A LIONESS edge has an exact closed form. For Pearson correlation it is a function of the reference correlation and the sample's two standardized expression values only, and for partial correlation it adds the sample's Mahalanobis distance; we checked both against LIONESS to machine precision. To first order, each edge is the reference correlation plus the influence function of the correlation, a quadratic function of the sample's own expression, as the idea proposed; for partial correlation the deviations must be residuals on the conditioning set, and the edge is inflated by a factor that grows with the sample's distance from the rest. Three consequences shape the study. First, a classifier on edges is, to first order, a classifier on a quadratic form of expression, so its matched comparators are quadratic discriminant analysis and a linear model on pairwise products and squares. Second, edges between genes that share a factor carry the square of that factor, so a reference model with the IFN score but not its square leaves IFN signal to be counted as network signal. Third, a pure difference in mean expression between unbalanced groups shifts the group mean of an edge in proportion to one minus twice the smaller group's share, with no change in co-expression. No reachable source states these results for LIONESS; the verdict waits on two full texts this session could not open (section 5). No public dataset holding SLE and RA whole blood from one study was confirmed. Recommendation: pilot as specified in section 7, with the decisions of section 9.
 
 ## 2. Question and why it matters
 
@@ -183,20 +183,22 @@ LIONESS has an R implementation [@kuijjer2019lionessr] and its edges are tested 
 
 **Target journal:** BMC Bioinformatics, **fallback:** Statistical Applications in Genetics and Molecular Biology, from the journal guide's worksheet (`log/01-idea-review.md`).
 
-## 9. Open questions for the user
+## 9. Decisions
 
-Each question carries the recommended answer, which the design above already uses. Accepting all of them is one reply.
+The user accepted every recommended answer on 2026-11-03. The design above already uses them.
 
-- [TO CONFIRM: the partial-correlation network is the partial correlation given the IFN score and composition (model N2), and full-conditional partial correlation among the genes of $G$ is used only when $p \le N/4$ (recommended, from Result 2)]{.tc}
-- [TO CONFIRM: $R_1$, the reference of both primary contrasts, holds the squared residual IFN score and squared composition terms (recommended, from Result 4)]{.tc}
-- [TO CONFIRM: the two primary contrasts $\Delta_1$ and $\Delta_2$ in fixed sequence (recommended)]{.tc}
-- [TO CONFIRM: the data source: PRECISESADS through an access request, GSE45291 as fallback (recommended)]{.tc}
-- [TO CONFIRM: the seventeen models of section 7, or the user's own list]{.tc}
-- [TO CONFIRM: the IFN score from EPSTI1, IFI44L, LY6E, OAS3, and RSAD2, with the residual score adjusted for composition (recommended), or another gene set]{.tc}
-- [TO CONFIRM: "untreated" means no systemic glucocorticoid, antimalarial, or conventional or biologic DMARD at sampling (recommended); if fewer than 40 untreated patients per disease remain, the primary analysis uses all patients with treatment indicators and the untreated subset becomes the sensitivity analysis]{.tc}
-- [TO CONFIRM: IFN-matched controls are replaced by the common-support sensitivity analysis (recommended: matching on a continuous score keeps only the overlap and changes the population the AUC describes)]{.tc}
-- [TO CONFIRM: the gene set $G$ of 50 genes chosen in each training fold, the IFN-score genes excluded (recommended)]{.tc}
-- [TO CONFIRM: the target journal: BMC Bioinformatics, fallback SAGMB (recommended)]{.tc}
+- The partial-correlation network is the partial correlation given the IFN score and composition (model N2); full-conditional partial correlation among the genes of $G$ is used only when $p \le N/4$ (Result 2).
+- $R_1$, the reference of both primary contrasts, holds the squared residual IFN score and squared composition terms (Result 4).
+- The two primary contrasts $\Delta_1$ and $\Delta_2$ are tested in fixed sequence.
+- Data source: PRECISESADS through an access request, GSE45291 as fallback.
+- The seventeen models are those of section 7.
+- The IFN score is the mean standardized expression of EPSTI1, IFI44L, LY6E, OAS3, and RSAD2; the residual score is adjusted for composition.
+- "Untreated" means no systemic glucocorticoid, antimalarial, or conventional or biologic DMARD at sampling; if fewer than 40 untreated patients per disease remain, the primary analysis uses all patients with treatment indicators and the untreated subset becomes the sensitivity analysis.
+- IFN-matched controls are replaced by the common-support sensitivity analysis.
+- The gene set $G$ is 50 genes chosen in each training fold, the IFN-score genes excluded.
+- Target journal: BMC Bioinformatics; fallback: Statistical Applications in Genetics and Molecular Biology.
+
+One item stays open and is carried to the reference check: the novelty verdict of section 5, which waits on the full texts of @kuijjer2026challenges and @yu2017iena.
 
 ## 10. Reference list
 
@@ -230,3 +232,4 @@ Every source this proposal cites has an entry in `references/references.md`. Non
 
 - 2026-11-03, at stop 1: the user does not want IFN-low and IFN-high strata. The comparison is SLE against RA in all untreated patients, with the IFN score as a continuous covariate in the reference model.
 - 2026-11-03, revision 2, at the user's request to refine the idea before the pilot (not yet final). Added: the exact closed forms of the Pearson and partial-correlation edges (Results 1 and 2) and their checks; the Mahalanobis inflation and the $p \le N/4$ limit; the group-mean formula and the $(1 - 2\pi)$ law (Result 3); the leakage-free test-sample form (Result 5); two primary estimands in fixed sequence; the full 17-model table with $R_1$ as the reference and the reference covariates unpenalized; the gene set, the preprocessing inside folds, the cross-validation, and the sensitivity analyses; dataset checks; group balance as a pilot factor. Every open question now carries a recommended answer.
+- 2026-11-03, final: the user accepted every recommended answer ("YES"); section 9 lists the decisions. Step 9, the reference check, was run as far as the session allows: no record could be opened (the network policy blocks every publisher, PubMed, GEO, and Crossref), so all 21 entries keep `record: not opened`, `usable` stays `no` in `citations.csv`, and the check is carried forward to stage 2, where the pilot cites none of them. The novelty verdict stays marked until the two closest full texts are read.

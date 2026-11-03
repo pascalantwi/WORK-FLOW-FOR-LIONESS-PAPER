@@ -159,6 +159,11 @@ Revision pass (markdown form): the proposal was rewritten in full. Pass 1 put ea
 
 Process feedback: the stage file has no step for a refinement round requested at stop 1 before the proposal is final; this run treated it as a revision round (dated entry in the proposal's Revisions, a log section, a commit).
 
+## Step 9: the reference check (2026-11-03)
+
+- D16. The user answered "YES" to accepting every recommendation. Section 9 of the proposal became a list of decisions; one marker stays (the novelty verdict).
+- D17. Step 9 run without network: no record of the 21 entries could be opened (PMC fetch failed again this turn). Every entry keeps `record: not opened`; `usable` stays `no`; build-bib.py lists 27 faults, all missing fields that the records would supply. Per `rules.md`, section 2, the list is returned to the user and the stage goes on. The check is to be rerun, and the faults cleared, once the hosts are allowed; the pilot cites none of these sources, so it does not block stage 2.
+
 ## Revision pass (markdown form, `03-manuscript.md`, step 4.7)
 
 Pass 1 (paragraphs): each section's first sentence was checked to state its answer; the summary was reordered to give the verdict on the formula before the data problem. Pass 2 (sentences): a claim of LIONESS being the most cited method had no source and became a `[CITE]` marker; the variance remark was labeled as the agent's step; long sentences in section 4 were split. No section changed by more than three sentences after the first pass, so no second pass was due.

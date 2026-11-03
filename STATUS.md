@@ -5,8 +5,8 @@
 | Workflow version | 0.2.4-md (2026-11-03): tgrimes/research-workflow 0.2.4 with a Markdown reference list and no Zotero |
 | Project | LIONESS beyond the IFN score in SLE and RA |
 | Package | [FILL: package name, set by tools/init.R] |
-| Stage | 1, proposal at stop 1 |
-| Open stop | stop 1: read `proposal.md` and answer its open questions (section 9) |
+| Stage | 1, proposal final |
+| Open stop | none: stage 2 (the pilot) starts when the user asks for it; the reference check waits for network access |
 | Last update | 2026-11-03 |
 
 The Stage row reads "stage number, state". The states a stage can be in:
@@ -28,3 +28,4 @@ One line per stage boundary, newest last: the date, the stage reached, the path 
 | Date | Stage | Deliverable | Open stop |
 |---|---|---|---|
 | 2026-11-03 | 1, proposal at stop 1 | `proposal.md` | stop 1 |
+| 2026-11-03 | 1, proposal final | `proposal.md` | none |
