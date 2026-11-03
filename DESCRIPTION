@@ -1,22 +1,20 @@
-Package: projecttemplate
-Title: Template for a Methods Research Project
+Package: lionessifn
+Title: LIONESS Beyond the IFN Score in SLE and RA
 Version: 0.0.0.9000
 Authors@R:
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: A research compendium. Functions live in R/, analysis scripts in
-    analysis/, generated results in results/, and the Quarto manuscript in
-    manuscript/. Replace this paragraph with one or two sentences about your
-    project.
+    person("Project", "Author", , "author@example.com", role = c("aut", "cre"))
+Description: A research compendium: the functions, tests, analysis scripts, results,
+    and manuscript of one project run with the research workflow, on the question [FILL: one sentence].
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Imports:
+    glmnet,
     stats
 Suggests:
     devtools,
     here,
     knitr,
-    reticulate,
     rmarkdown,
     roxygen2,
     testthat (>= 3.0.0)

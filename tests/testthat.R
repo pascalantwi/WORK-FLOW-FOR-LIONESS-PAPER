@@ -1,4 +1,4 @@
 library(testthat)
-library(projecttemplate)
+library(lionessifn)
 
-test_check("projecttemplate")
+test_check("lionessifn")

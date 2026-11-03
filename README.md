@@ -1,8 +1,8 @@
-# [Project title]
+# LIONESS Beyond the IFN Score in SLE and RA
 
-[One paragraph in plain language: the question this project asks and the procedure it concerns. Written by stage 1 from `idea.md`.]
+LIONESS turns a group of gene-expression samples into one network per sample, and those networks are compared between patient groups or used to classify patients. This project shows that each LIONESS edge is a closed-form quadratic function of the sample's own expression, and asks what that means in practice: do LIONESS edges help tell systemic lupus erythematosus from rheumatoid arthritis in blood, once the interferon score, its square, cell composition, and the matching quadratic expression model are accounted for?
 
-Authors: [names]. Target journal: [journal]. Status: see `STATUS.md`.
+Authors: set by `tools/authors.R` before the final render. Target journal: BMC Bioinformatics. Status: see `STATUS.md`.
 
 ## This copy of the workflow
 
