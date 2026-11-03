@@ -37,3 +37,5 @@ The first-order approximation above, stated without derivation.
 ## Notes
 
 Supervised by Dr Tyler Grimes. The reference list is kept in Markdown (`references/references.md`); no Zotero.
+
+Revision at stop 1 (2026-11-03): the user does not want IFN-low and IFN-high strata; SLE is compared with RA in all patients, with the IFN score as a continuous variable. The paragraph above is kept as first written.

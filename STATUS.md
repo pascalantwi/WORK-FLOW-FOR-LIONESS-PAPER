@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Workflow version | 0.2.4-md (2026-11-03): tgrimes/research-workflow 0.2.4 with a Markdown reference list and no Zotero |
-| Project | LIONESS in IFN-stratified SLE and RA |
+| Project | LIONESS beyond the IFN score in SLE and RA |
 | Package | [FILL: package name, set by tools/init.R] |
 | Stage | 1, proposal at stop 1 |
 | Open stop | stop 1: read `proposal.md` and answer its open questions (section 9) |

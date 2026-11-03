@@ -141,6 +141,7 @@ Target's limits and AI policy: structured abstract (Background, Results, Conclus
 - D4. The reference check (step 9) is deferred until the hosts are allowed; it is listed for the user, not run.
 - D5 to D7. Theory checks, section 4.
 - D8. Cross-study combination ruled out for the primary analysis.
+- D10. Stop 1, first answer (2026-11-03): the user does not want IFN-low and IFN-high strata. Applied to `proposal.md` (dated entry in its Revisions section) and noted at the end of `idea.md`, whose paragraph is kept as written. The pilot's IFN factor now varies the mean and the spread of $F$ together, since without strata the two diseases differ in both; the pass criterion names the moderate level instead of a spread ratio. Two open questions follow from the change: whether IFN-matched controls are kept, and how the score is defined. The stop stays open for the other questions.
 - D9. The proposal proposes a list of seventeen models as a `[TO CONFIRM]` for the user to replace, and adds the squared IFN term to the reference as a `[TO CONFIRM]`.
 
 ## Revision pass (markdown form, `03-manuscript.md`, step 4.7)
