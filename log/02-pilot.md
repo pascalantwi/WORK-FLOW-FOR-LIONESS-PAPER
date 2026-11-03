@@ -54,3 +54,5 @@ Time: about two hours of agent time around 54 minutes of compute.
 
 - D-S2. The user approved revision 3 and its thresholds ("APROVE"), and asked for the revised research question, which is `proposal.md`, section 12.6, and `project-spec.md`, section 1.
 - `pilot-b/preregistration.md` committed alone before any re-pilot code ("Stage 2, step 2 (pilot-b): pre-registration").
+- Code for the re-pilot (commit "Stage 2, step 3 (pilot-b)"): t5 noise, first-order edge features, the F1R1 model, the score size, `PilotBDesign()`. The first pilot's replicates 1 of cells 3 and 13 reproduce exactly after the change. A test found that the pre-registered seeds collided with the first pilot's; corrected by an amendment before any run. 46 tests pass, with one glmnet convergence warning in a test that fits 990 features on 50 samples (glmnet returns the solutions for larger penalties; the run's cells are larger); `devtools::check()` clean.
+- Timing: 146 seconds for 10 replicates per cell; 200 replicates per cell, entered as an amendment before the run.
