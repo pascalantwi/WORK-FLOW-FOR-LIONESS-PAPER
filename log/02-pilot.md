@@ -44,3 +44,8 @@ Workflow 0.2.4-md. Started 2026-11-03, on the user's "START THE PILOT".
 5. The pre-registered question 1 threshold (0.05) was set before any sense of scale; the timing run gave no effect sizes. A ten-replicate look at the effect, labelled and not used for the verdict, would have informed the threshold, but it would also have weakened the pre-registration; the trade-off belongs in the stage file.
 
 Time: about two hours of agent time around 54 minutes of compute.
+
+## Stop answered (2026-11-03)
+
+- D-S1. The user answered the stage 2 stop with "do your recommendation, let me see": a revised proposal and a re-pilot. The revision is `proposal.md`, section 12 (revision 3): the claim becomes equivalence of edges and first-order edge features, the shared-factor artifact and its fix, and the effect of parametrization; a new model F1 (first-order edges); the second primary contrast becomes an equivalence test with margin 0.01; the re-pilot `pilot-b/` has 12 cells with heavy-tailed noise and a two-gene score as stress factors, and a pass rule whose matching clause is paired with a signal clause. Markdown revision pass: one pass over section 12; two sentences split in 12.2, no section changed by more than three sentences.
+- "Let me see" is read as the user wanting to see the revision first, so the revised proposal gets its own stop before the re-pilot, as `02-pilot.md` requires unless the user says to go straight on.

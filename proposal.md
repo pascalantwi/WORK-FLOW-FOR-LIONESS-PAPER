@@ -216,3 +216,64 @@ Every source this proposal cites has an entry in `references/references.md`, cop
 - 2026-11-03, revision 2, at the user's request to refine the idea before the pilot (not yet final). Added: the exact closed forms of the Pearson and partial-correlation edges (Results 1 and 2) and their checks; the Mahalanobis inflation and the $p \le N/4$ limit; the group-mean formula and the $(1 - 2\pi)$ law (Result 3); the leakage-free test-sample form (Result 5); two primary estimands in fixed sequence; the full 17-model table with $R_1$ as the reference and the reference covariates unpenalized; the gene set, the preprocessing inside folds, the cross-validation, and the sensitivity analyses; dataset checks; group balance as a pilot factor. Every open question now carries a recommended answer.
 - 2026-11-03, final: the user accepted every recommended answer ("YES"); section 9 lists the decisions. Step 9, the reference check, was run as far as the session allows: no record could be opened (the network policy blocks every publisher, PubMed, GEO, and Crossref), so all 21 entries keep `record: not opened`, `usable` stays `no` in `citations.csv`, and the check is carried forward to stage 2, where the pilot cites none of them. The novelty verdict stays marked until the two closest full texts are read.
 - 2026-11-03, reference check (step 9), once the hosts were allowed: every record opened and every entry corrected from it; 19 full texts or abstracts read. Section 5 changed: @yu2017iena already gives the product-of-deviations form, and @kuijjer2026challenges already documents the subpopulation effect empirically, so the verdict became "partly known" with the new parts named; the metabolomics evaluation was misdescribed from a search snippet and is corrected. Section 6 changed: GSE45291 is aliased with processing batch and is ruled out; GSE17755 and GSE235508 are too small; PRECISESADS is the only candidate, and the contingency is a new open item. The IFN score is described as adapted from IFN5, which sums log2 expression. Six citation keys were renamed to match first author and year.
+
+## 12. Revision 3 (2026-11-03): after the pilot
+
+This section governs where it differs from sections 1 to 11, which stand as the record. It follows the stage 2 stop: the pilot failed by its rule (`pilot/pilot-report.html`, `pilot/results/verdict.rds`), and the user chose a revised proposal and a re-pilot in `pilot-b/`.
+
+### 12.1 What the pilot showed
+
+- The IFN artifact exists but is small: edges added to a reference without the squared IFN score raised the AUC by 0.0067 (MCSE 0.0022) with a moderate IFN difference and 0.031 (MCSE 0.0033) with a large one, and by -0.0017 at 40 per class. Adding the squared score removed it in every IFN-only cell.
+- Edges carry a real co-expression signal: with a module correlation change of 0.4, edges gained 0.116 in AUC over $R_1$.
+- The pre-registered matched quadratic model (products and squares as separate penalized features) reached only 0.029 of that gain. An exploratory probe after the verdict (`pilot/posthoc/probe_cell13.R`) found that the first-order edge features, $r + z_i z_j - \tfrac r2 (z_i^2 + z_j^2)$ computed from the training moments, gained as much as the exact edges. The two quadratic models hold the same information; the elastic-net penalty treats the two parametrizations differently.
+
+### 12.2 The revised claim
+
+The paper's central claim changes from "edges inflate classification through the IFN factor" to three statements, in order of weight:
+
+1. **Equivalence.** A LIONESS Pearson edge is its first-order form plus a remainder of order $1/N$ (Result 1), and as classifier features the exact edges and the first-order edges perform the same. A network result can therefore be reproduced, and checked, without building any network.
+2. **The shared-factor artifact and its fix.** When classes differ in a factor that many genes share, edges carry its square; a reference with the factor's square removes the artifact. Its size depends on how much the classes differ in the factor.
+3. **Parametrization.** Under penalized fitting, the first-order edge form detects co-expression differences that the same quadratic information, entered as separate products and squares, does not. This is the positive content of LIONESS: a good feature construction, not a network.
+
+The paper type stays a critique; the "correction" of question 6 of the paper test is now the first-order edge features themselves, and the diagnostic is the comparison of edges with them.
+
+### 12.3 Changes to the study design (section 7)
+
+- **New model F1** (first-order edges): an elastic net on the first-order edge features of the gene set $G$, with $R_1$ unpenalized; test samples use the training fold's correlation and standardization only. It joins the 17 models as an 18th.
+- **The second primary contrast** becomes an equivalence test: $\Delta_2 = \mathrm{AUC}(R_1 + \text{edges}) - \mathrm{AUC}(R_1 + \text{F1})$, with equivalence declared when the 90% confidence interval lies within $\pm 0.01$ (two one-sided tests). E5 stays as a secondary model that shows the parametrization effect.
+- **Pre-registration lesson.** A clause that one model "matches" another is paired with a clause that the model has something to match, so that it cannot pass on two nulls.
+
+### 12.4 The re-pilot (`pilot-b/`)
+
+Twelve cells, a subset of the first pilot's design plus two stress factors the critique table asked for: heavy-tailed noise ($t$ with 5 degrees of freedom, scaled to unit variance) and a less reliable IFN score (two genes instead of five). New seeds (cell seed $20261103 + 2000c$).
+
+| Cell | Mechanism | Level | Stress | $\pi$ | $n$ |
+|---|---|---|---|---|---|
+| 1 | null | | | 0.5 | 80 |
+| 2 | IFN only | large | | 0.5 | 80 |
+| 3 | IFN only | moderate | | 0.5 | 80 |
+| 4 | IFN only | large | two-gene score | 0.5 | 80 |
+| 5 | IFN only | large | $t_5$ noise | 0.5 | 80 |
+| 6 | mean shift | 0.5 | | 0.3 | 80 |
+| 7 | network | 0.4 | | 0.5 | 80 |
+| 8 | network | 0.4 | | 0.5 | 40 |
+| 9 | network | 0.2 | | 0.5 | 150 |
+| 10 | network | 0.4 | $t_5$ noise | 0.5 | 80 |
+| 11 | network | 0.4 | | 0.3 | 80 |
+| 12 | network | 0.2 | | 0.5 | 80 |
+
+Models: $R_0$, $R_1$, E1, E5, F1 with $R_1$, edges with $R_0$, edges with $R_1$ (E4 is dropped: it ranked below $R_1$ in every IFN-only cell of the first pilot, and its tuning grid was the costliest step). Replicates from a timing run, within one hour on three cores.
+
+**The three questions and the pass rule, decided before any run:**
+
+1. Does the equivalence hold? (a) In cell 7, edges with $R_1$ gain at least 0.05 in AUC over $R_1$, by more than three MCSE (there is a signal to match). (b) In every cell, $\lvert \mathrm{AUC}(\text{edges} + R_1) - \mathrm{AUC}(\text{F1} + R_1) \rvert \le \max(0.01, 3\,\text{MCSE})$.
+2. Is it large enough to matter at realistic sizes? (a) In cell 2, edges with $R_0$ gain at least 0.02 over $R_0$ (the artifact at a large IFN difference). (b) In cell 8 (40 per class), edges with $R_1$ gain at least 0.03 over $R_1$ (the co-expression signal at a small size).
+3. Is there a fix or a diagnostic? (a) In cells 2, 3, and 5, $\lvert \mathrm{AUC}(\text{edges} + R_1) - \mathrm{AUC}(R_1) \rvert \le \max(0.01, 3\,\text{MCSE})$: the squared score removes the artifact, with normal and heavy-tailed noise. (b) The same in cell 4, with the two-gene score.
+
+A value within three MCSE of a threshold is a close call for its clause. Combination: pass if every clause passes; fail if 1(a), 1(b), or 3(a) fails; close call otherwise (a failure of 2(a), 2(b), or 3(b), or any clause at its threshold). A failure of 3(b) means the fix depends on the reliability of the score, which the paper would then report as a limitation.
+
+The thresholds of 2(a) and 2(b) were set after the first pilot, which showed gains of 0.031 and, at 80 per class, 0.116 in the corresponding cells; the re-pilot uses new seeds, and the thresholds are the smallest gains the paper would describe as mattering to a user. [TO CONFIRM: the thresholds 0.02 for the artifact and 0.03 for the co-expression signal at 40 per class]{.tc}
+
+### 12.5 What is unchanged
+
+The question of section 2 with $\Delta_2$ as revised above, the data plan and its open contingency (section 6), the decisions of section 9, the target journal, and the reference list.
