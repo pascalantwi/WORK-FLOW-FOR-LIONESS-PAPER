@@ -1,0 +1,306 @@
+---
+title: "[FILL: title that names the procedure and the condition]"
+author:
+  - name: "[FILL: first author]"
+    corresponding: true
+    email: "[FILL: email]"
+    affiliations:
+      - name: "[FILL: affiliation]"
+  - name: "[FILL: second author]"
+    affiliations:
+      - name: "[FILL: affiliation]"
+date: today
+bibliography: references.bib
+link-citations: true
+# csl: copy the file named in the journal's profile (workflow/journals/) beside this
+# file and name it here for the submission render; the draft renders in Quarto's default author-date style.
+# A memo (03-manuscript.md, memo mode) copies workflow/journals/csl/apa.csl beside this file and sets csl: apa.csl.
+params:
+  draft: true
+  memo: false
+  journal: "[FILL: journal slug from workflow/journals/journals.csv]"
+crossref:
+  custom:
+    - kind: float
+      key: sfig
+      reference-prefix: "Figure S"
+      caption-prefix: "Figure S"
+      space-before-numbering: false
+    - kind: float
+      key: stbl
+      reference-prefix: "Table S"
+      caption-prefix: "Table S"
+      space-before-numbering: false
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    number-sections: true
+    fig-cap-location: bottom
+    code-fold: true
+    embed-resources: true
+    include-in-header:
+      - text: |
+          <style>
+            .prov-pilot, .prov-quick { background: #fff3cd; border-bottom: 2px solid #e0a800; padding: 0 0.15em; }
+            .prov-pilot::after { content: " [pilot]"; font-size: 0.7em; color: #8a6d00; }
+            .prov-quick::after { content: " [quick]"; font-size: 0.7em; color: #8a6d00; }
+            .tc { background: #fff3cd; border-left: 4px solid #e0a800; padding: 0 0.35em; }
+            .cite { background: #fde2e1; border-left: 4px solid #c0392b; padding: 0 0.35em; }
+            .apparatus { background: #f4f6f8; border: 1px solid #ccd; padding: 0.6em 1em; margin: 1em 0; font-size: 0.95em; }
+          </style>
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+<!--
+HOW TO USE THIS FILE (the manual is workflow/03-manuscript.md)
+- Replace every [FILL: ...] and delete the HTML comments that instruct you. Chunks marked eval: false
+  are patterns to copy; remove that line once a chunk is real.
+- Every number in the text comes through prov(), from results/. Never type a result.
+- Markers are spans: [TO CONFIRM: the decision]{.tc} for anything a person must decide,
+  [CITE: the claim]{.cite} for a claim without a usable source.
+- Write in this order: purpose draft of the Introduction; the design proposal (stop); the quick run;
+  Methods, Design, Results, Discussion; Introduction revised; Abstract.
+- No workflow words in the paper (pilot, card, worker, quick run, spec, harness, known-answer check, the report).
+- The proofs go in _supplement.qmd, included after the references as the supplementary note.
+- Render: quarto render manuscript.qmd            (draft mode, with the banner and gap table)
+          quarto render manuscript.qmd -P draft:false   (final mode, when production numbers exist)
+          quarto render manuscript.qmd -P draft:false -P memo:true   (memo mode: a pilot's numbers, no marks)
+- Supplementary figures and tables take the labels sfig-... and stbl-... (Figure S1, Table S1); see _supplement.qmd.
+- Check:  python3 -I check-manuscript.py manuscript.qmd manuscript.html --citations citations.csv --bib references.bib --journals ../workflow/journals/journals.csv --journal <slug>
+          (add --final for the final render, or --memo and no --journal for a memo)
+-->
+
+```{r}
+#| label: setup
+#| include: false
+
+source("manuscript-helpers.R")
+prov_set_mode(params$draft, memo = params$memo)
+# results/run_info.rds, written by the analysis scripts; a memo reads the last pilot's run file instead
+ri <- if (params$memo) read_run_info(pilot_path("run_info.rds")) else read_run_info()
+if (!params$draft || params$memo) check_no_markers("manuscript.qmd")
+
+# [FILL] Load every results file here and compute every quoted number from these objects.
+# reps <- read_results("simulation_replicates.rds")
+# design <- read_results("design.rds")
+```
+
+```{r}
+#| label: draft-banner
+#| results: asis
+#| eval: !expr params$draft && !params$memo
+
+cat(draft_banner(qmd = "manuscript.qmd"))
+```
+
+```{r}
+#| label: memo-note
+#| results: asis
+#| eval: !expr params$memo
+
+cat(memo_note())
+```
+
+# Abstract {.unnumbered}
+
+<!-- The headings and word limit of the target journal's profile (journals/profiles/<slug>.md).
+BMC Bioinformatics: Background, Results, Conclusions, 350 words. PLOS ONE: unstructured, 300 words.
+Every claim carries a numeric result with its uncertainty, through prov(): an estimate with its
+confidence interval or Monte Carlo SE, a rate with its band, a count against its permutation count.
+Quick-run numbers in the first draft. Write it last. -->
+
+**Background.** [FILL]
+
+**Results.** [FILL]
+
+**Conclusions.** [FILL]
+
+# Introduction
+
+<!-- Paragraph 1: open with why (the scientific question the procedure serves and what a user hopes to
+learn from it), then the procedure people use, where and how it is used, and what its output is taken
+to estimate, ending with one concrete published example: the data, what was computed, and how its
+authors read the estimate. Paragraph 2: the realistic condition; what the procedure estimates under it, in words and
+then as a formula; what has been observed or derived before, saying for each source what it did and
+did not do, and ending with what has not been derived. Paragraph 3: what this paper does, in the
+order of the sections. Almost every sentence is a fact with a reference; the rest build the tension
+and resolve it. Plain language before the formal statement. The claims are the aims, as questions. -->
+
+[FILL: paragraph 1]
+
+[FILL: paragraph 2]
+
+[FILL: paragraph 3]
+
+# Methods
+
+## The estimand and the procedure
+
+<!-- The estimand as a feature of a population, in plain words first, then as a functional of the
+relevant distribution. Then each procedure as a recipe applied to data: the equations with one clause per
+line, each symbol defined in the sentence that introduces it or in the equation's label; no table of
+notation. Carried from the report's
+"In symbols" section; the mathematics is the mathematics, the sentences are new. -->
+
+[FILL]
+
+$$
+\begin{aligned}
+[FILL: equations, one clause per line]
+\end{aligned}
+$$
+
+
+## What the procedure estimates
+
+<!-- The target under the realistic condition and the bias as a formula: when it is zero, what makes it
+large. Where no formula exists for a method or setting, say so plainly. Proofs go to
+_supplement.qmd; state the results here and point at the supplement. -->
+
+[FILL]
+
+## The fix or the diagnostic
+
+<!-- What to change so the gap vanishes, or what to check so a user knows whether it matters. -->
+
+[FILL]
+
+## Data
+
+<!-- The cohort or dataset: source paper and accession, who was sampled, sizes, the measurement scale,
+the processing applied. Carried from the report's "The study" subsection. -->
+
+[FILL]
+
+## Software and reproducibility
+
+{{< include parts/reproducibility.md >}}
+
+[FILL: software and package versions, from the session information saved in results/, and the repository URL.]
+
+# Simulation study
+
+## Design
+
+{{< include parts/ademp-sentence.md >}}
+
+<!-- Aims (the paper's claims, as questions); data-generating mechanisms with the factors varied, their
+levels, and the reason for each, the factors fixed and why, and the cells where the answer is known;
+estimands; methods precise enough to reimplement; performance measures by target; replicates and the
+Monte Carlo SE they give. This is the production design, approved at the design stop; the run behind the
+numbers is named in the banner, not here. -->
+
+[FILL]
+
+```{r}
+#| label: tbl-design
+#| tbl-cap: "Factors of the simulation design, their levels, and the reason for each."
+#| eval: false
+
+design_table(data.frame(Factor = c("[FILL]"), Levels = c("[FILL]"), Reason = c("[FILL]")))
+```
+
+## Results
+
+<!-- One subsection per aim. Each has its figure or table chunk reading results/ (never hard-coding
+factor levels) and prose that states facts in past tense, cites nothing, and states a difference only
+when it exceeds about three Monte Carlo SEs; otherwise [TO CONFIRM: ...]{.tc}. Every figure and
+table is referenced in the text. Register each output with gap_register() in its chunk. -->
+
+### [FILL: aim 1, as a short heading]
+
+[FILL: the finding, with every number through prov() and a reference to the figure, written as an at-sign followed by fig-aim1.]
+
+```{r}
+#| label: fig-aim1
+#| fig-cap: "[FILL: what is plotted, what the bars or band mean, the reference line.]"
+#| fig-width: 7
+#| fig-height: 4.2
+#| eval: false
+
+gap_register("fig-aim1", what = "[FILL]", cells = NA, n_rep = ri$n_rep, production = "[FILL: cells and replicates of the production design]")
+# Draw from the results objects only.
+```
+
+### [FILL: aim 2]
+
+[FILL]
+
+# Application
+
+## Data and comparison
+
+<!-- The dataset's role in one sentence, the comparison (groups, sizes, scale), and where the real data
+sit on the simulation's gradient (the measured shift, the control fraction, the correlation), each
+number through prov() from a results file written by the application script. -->
+
+[FILL]
+
+## [FILL: what the application shows, as a short heading]
+
+<!-- The one thing the analysis shows, as a claim about a user's conclusion. If the analysis has not been
+run, the claim stands with [TO CONFIRM: ...]{.tc} and the chunk stays eval: false. -->
+
+[FILL]
+
+```{r}
+#| label: fig-application
+#| fig-cap: "[FILL]"
+#| fig-width: 7
+#| fig-height: 4.2
+#| eval: false
+
+gap_register("fig-application", what = "[FILL]", cells = NA, n_rep = NA, production = "[FILL]")
+```
+
+# Discussion
+
+<!-- What was found and what a user should do differently; the novelty table; limitations from the
+critique table's rows that did not become design factors; future work from the spec's out-of-scope
+list, item by item. No new results. -->
+
+[FILL: the findings restated and the implication for users.]
+
+```{r}
+#| label: tbl-novelty
+#| tbl-cap: "What was known and what this paper adds."
+#| eval: false
+
+novelty_table(data.frame(Element = c("[FILL]"), `Prior literature` = c("[FILL]"), `This paper` = c("[FILL]"), check.names = FALSE))
+```
+
+[FILL: limitations.]
+
+[FILL: future work, one item per out-of-scope entry.]
+
+# Statement on AI use {.unnumbered}
+
+{{< include parts/ai-use-statement.md >}}
+
+# Data and code availability {.unnumbered}
+
+[FILL: the data source with accession or URL; the code repository URL. The code is organized as a research compendium (@marwick2018).]
+
+# References {.unnumbered}
+
+::: {#refs}
+:::
+
+# Supplementary note S1 {.unnumbered}
+
+{{< include _supplement.qmd >}}
+
+```{r}
+#| label: gap-table
+#| results: asis
+#| eval: !expr params$draft && !params$memo
+
+cat(gap_table())
+cat("\n")
+cat(marker_table("manuscript.qmd"))
+```

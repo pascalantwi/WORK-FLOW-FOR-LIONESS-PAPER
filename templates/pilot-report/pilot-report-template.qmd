@@ -1,0 +1,309 @@
+---
+title: "Pilot report: [FILL: short topic]"
+subtitle: "A review document: the pilot, its results, the draft spec, and the decisions log"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    fig-cap-location: bottom
+    code-fold: true
+    embed-resources: true
+    include-in-header:
+      - text: |
+          <style>
+            .tc { background: #fff3cd; border-left: 4px solid #e0a800; padding: 0 0.35em; }
+            .caption-small { font-size: 0.9em; color: #555; }
+          </style>
+execute:
+  echo: false
+  warning: false
+---
+
+<!--
+HOW TO USE THIS FILE (full rules in README.md, same folder as this template)
+1. Copy it into the pilot folder as pilot-report.qmd. The relative paths below
+   (../templates/pilot-report/...) assume the pilot folder sits at the project root, beside templates/.
+2. Replace every [FILL: ...] and delete the HTML comments that instruct you. Chunks marked
+   eval: false are examples to copy and edit; remove that line once a chunk is real.
+3. Every number in the text, tables, and figures must be computed from the saved result
+   files in the setup chunk. Never type a result by hand.
+4. Render with quarto render, then run: python3 -I ../templates/pilot-report/check-report.py <qmd> <html>
+-->
+
+```{r}
+#| label: setup
+#| include: false
+
+source("../templates/pilot-report/report-helpers.R")
+
+# Load every saved result file here and compute every quoted number from these objects.
+# [FILL] e.g. res <- readRDS("results/cell_summaries.rds")  # pilot/results/, written by pilot.R
+```
+
+# Summary
+
+**Scope.** This document reports the pilot[^pilot] for the proposal `proposal.md` ("[FILL: proposal title]"): what the idea is, how the pilot was run, what it found, the full draft project spec, and the decisions made along the way. It was built from `project-spec.md`, `decisions.md`, and the saved results in this folder, and every number in the text and figures is computed from those files when the document renders.
+
+**Status.** In `STATUS.md` the pilot is marked `[FILL: piloted-pass, piloted-fail, or piloted-close-call]`[^pf] [FILL: one or two sentences on why. For a close call, state both readings: the one that passes and the one that fails. If the spec is for a re-scoped proposal, say so and add the conditional draft[^cond] footnote reference; otherwise delete the [^cond] definition use.]
+
+<!-- Three rows, one per pilot question. Evidence cells carry numbers computed with inline R. -->
+
+| Pilot question | Answer | Key evidence |
+|---------|-------------|---------------------------------------------|
+| 1. Does the effect exist? | [FILL: yes, partly, or no, in a few words] | [FILL: numbers from the results] |
+| 2. Large enough at realistic n? | [FILL] | [FILL] |
+| 3. Obvious fix or diagnostic? | [FILL] | [FILL] |
+
+**What needs your decision** (details in [Action items and limitations](#action-items-and-limitations)): [FILL: the status call, the open `[TO CONFIRM]` items in the spec (highlighted in yellow), and any citations written from memory].
+
+# The idea
+
+## In plain language
+
+<!-- Non-technical, no formulas, one concrete example with small numbers. Say what is being computed,
+where the problem comes from, and when it matters. 120 to 200 words. Concrete wording: say what is
+known and unknown in terms of what has and has not been derived or shown (not "not proved"); name the
+quantity being judged in plain words with its standard name in parentheses (not "false alarms
+survive"); footnote every named method, distance, score, or package at first use. See README.md. -->
+
+[FILL]
+
+## Potential impact
+
+<!-- 250 to 450 words, prose, no formulas. Four things, in this order: (1) how the project fits with
+the existing literature (what is already known, what the closest prior work does, what is new here;
+cite only sources opened for this report); (2) the problem it addresses (the procedure, who uses it,
+what goes wrong); (3) why it matters (what a user would do differently on Monday); (4) what impact it
+could have (which published results change, which workflows change, which fields). Then point
+explicitly at the pilot results that show impact, by cross-reference and with the number computed at
+render time: a gain in power, a restored level, a bias removed, a diagnostic that separates the cases.
+If no pilot output shows impact directly, name the analysis in the spec that will show it (the
+application on real data, the power comparison in the ADEMP skeleton), concretely. See README.md. -->
+
+[FILL]
+
+## Application: the study behind the data
+
+<!-- About 500 words in total. Three subsections, in this order. No separate "why the data suit
+this project" section, and no table for the last subsection. -->
+
+### The study
+
+<!-- Full citation with DOI. Who was sampled and how, sample sizes, the findings that matter for
+this project, and where the open copy of the data lives (IDs, access limits). Define
+non-statistical jargon with footnotes. Then the cohort or dataset table, with a caption. -->
+
+[FILL]
+
+```{r}
+#| label: tbl-cohort
+#| tbl-cap: "[FILL: what the table shows and which file it is computed from]"
+#| eval: false
+
+# Compute the cohort or dataset summary from the data files (counts, group sizes, the quantity the
+# problem depends on). Use knitr::kable(); set tbl-cap.
+```
+
+### Why [FILL: the estimand]
+
+<!-- Why the quantity matters. Revisit the plain-language sentence, name the
+estimand explicitly, and say what proposed analysis follows. -->
+
+[FILL]
+
+### Did the original study compute it?
+
+<!-- One paragraph, no table: yes, partly, or no; where in the paper (figure or section); what it
+did not do; and why the question here is new. -->
+
+[FILL]
+
+## In symbols
+
+<!-- First sentence maps each word to the notation it defines, for example "the pseudobulk value
+($\bar y_d$) is the donor's true expression ($\mu + a_d$) plus the sampling noise ($e_d$)". Then the
+display equations (one clause per line, separated by \\), then a symbol table, then the
+target quantity versus the computable quantity, then the key result in words. -->
+
+[FILL: sentence mapping words to notation]
+
+$$
+[FILL: equations]
+$$
+
+| Symbol | Meaning |
+|----|------------------------------|
+| [FILL] | [FILL] |
+
+[FILL: what is targeted, what can be computed, and the key formula with its meaning in words.]
+
+```{r}
+#| label: fig-idea
+#| fig-cap: "[FILL: The idea. A toy illustration with made-up numbers, stated as an illustration and not pilot output.]"
+#| fig-width: 10
+#| fig-height: 4.6
+#| eval: false
+
+# A figure that shows the problem on made-up data. At least one such figure is required.
+```
+
+```{r}
+#| label: fig-data
+#| fig-cap: "[FILL: what the real data look like for the quantity the problem depends on]"
+#| fig-width: 8
+#| fig-height: 4
+#| eval: false
+
+# A figure from the real dataset that shows the spread of the quantity the problem depends on.
+```
+
+## Critiquing the model
+
+{{< include ../templates/pilot-report/parts/critique-intro.md >}}
+
+<!-- Six to nine rows. Column 1 names the model feature with its symbols. Column 2 says why it
+may not be realistic and ties it back to the formulas. Column 3 says what should be done to
+check it, as actions. Never mention what the pilot did; the reader finds that out in Methods
+and Results. Always include a row for the unknown parameter values and rows for structural
+simplifications. Footnote any technique a reader may not know on first use. -->
+
+| Feature of the model | Why it may not be realistic | What should be done to check it |
+|-----------|----------------------------------------------|---------------------------------|
+| [FILL: feature, with symbols] | [FILL] | [FILL: actions] |
+
+# Methods
+
+## Design
+
+[FILL: one paragraph on the parts of the pilot and what each simulates, with the data-derived inputs.]
+
+```{r}
+#| label: fig-design
+#| fig-cap: "The design at a glance. Each row is one part of the pilot, read from left to right: what is simulated, which factors are varied, what is estimated or tested, what is measured, and how the result is shown. [FILL: say what the input is, then name each output box with a cross-reference, for example the bias plot (@fig-bias).]"
+#| fig-width: 11
+#| fig-height: 5
+#| eval: false
+
+design_diagram(
+  input = "[FILL: shared input, for example cells per donor resampled from the real cohort]",
+  lanes = list(
+    list(label = "Part A", fill = "#e8f0fa", sim = "[FILL]", vary = "[FILL]", est = "[FILL]", meas = "[FILL]", out = "[FILL]"),
+    list(label = "Part B", fill = "#fdeceb", sim = "[FILL]", vary = "[FILL]", est = "[FILL]", meas = "[FILL]", out = "[FILL]")),
+  harness = list(text = "Known-answer checks: cases where the correct answer is known from theory\n[FILL: list the checks]", out = "Known-answer table"))
+```
+
+Each figure and table in the Results traces back to one row of this diagram, and the row says what its points or entries represent.
+
+<!-- Table widths: set the dashes in the separator row in proportion to the text in each column. -->
+
+| Part | What is simulated | Main factors | Replicates |
+|----|-------------------------|-------------------------|----------|
+| [FILL] | [FILL] | [FILL] | [FILL] |
+
+[FILL: define the scenarios, if any, in one paragraph.]
+
+## Known-answer checks
+
+{{< include ../templates/pilot-report/parts/known-answer-intro.md >}}
+
+```{r}
+#| label: tbl-known-answer
+#| tbl-cap: "Known-answer checks, from [FILL: result file names]."
+#| eval: false
+
+# One harness_row() per check. Judge every row with harness_reading_mcse() or harness_reading_pct().
+harness_table(list(
+  harness_row("[FILL: check]", "[FILL: setting]", "[FILL: known answer]",
+              sprintf("%.3f (MCSE %.4f)", 0, 0),
+              harness_reading_mcse(0, 0, 1))
+))
+```
+
+# Results
+
+## How to read the outputs
+
+{{< include ../templates/pilot-report/parts/how-to-read-outputs.md >}}
+
+## [FILL: heading for the main figures]
+
+<!-- Before every figure: a guide paragraph that says (1) which part and setting it shows and what
+the correct answer would be, (2) what one point is, (3) what the reference line, bars, or band
+mean, and (4) a "Look for" sentence with two or three prompts. Prompts only, no conclusions;
+conclusions belong in the numbered findings. Name the part in the caption. -->
+
+**Figure guide ([FILL: part, setting, and what the true answer is]).** [FILL]
+
+```{r}
+#| label: fig-main
+#| fig-cap: "Pilot result ([FILL: part]): [FILL: what is plotted, what the bars or band mean]."
+#| fig-width: 10
+#| fig-height: 4.8
+#| eval: false
+
+# Computed from the saved result files only.
+```
+
+## Numbered findings
+
+Each finding is a claim followed by the output behind it. Read the claim, open the output, and check that you can see the claim there before accepting it. A claim that cannot be seen in the output is a question to raise with the user.
+
+1. **[FILL: claim.]** [FILL: evidence with numbers computed by inline R and a cross-reference to the output.]
+
+## [FILL: tables]
+
+<!-- Before every table: a guide paragraph on what one row is, what the reference value is, how to
+compare entries, and a question or two. A final table recomputes every number quoted in the
+spec's section 3 from the result files, with its own guide. -->
+
+**Table guide ([FILL: part]).** [FILL]
+
+```{r}
+#| label: tbl-main
+#| tbl-cap: "[FILL]"
+#| eval: false
+
+knitr::kable(data.frame(), row.names = FALSE)
+```
+
+# The draft spec {#draft-spec}
+
+This is `project-spec.md`, read from the file when the document renders. Anything the agent[^agent] left for the user to decide is highlighted in yellow and starts with "To confirm".
+
+```{r}
+#| label: spec
+#| results: asis
+
+cat(read_md_part("../project-spec.md", highlight_to_confirm = TRUE), "\n")
+```
+
+# Decisions log {#decisions-log}
+
+This is the agent's `decisions.md`, read from the file when the document renders.
+
+```{r}
+#| label: decisions
+#| results: asis
+
+cat(read_md_part("decisions.md"), "\n")
+```
+
+# Action items and limitations {#action-items-and-limitations}
+
+## Action items
+
+1. **Decide the status.** [FILL]
+2. **Resolve the yellow `[TO CONFIRM]` items** in the spec: [FILL: list them].
+3. **Verify the citations written from memory:** [FILL: list them, and say which were confirmed].
+4. [FILL: pilot-specific items, such as a literature search, a calibration step, or an anomaly to look into.]
+
+## Limitations
+
+- [FILL: what the pilot shows only as a mechanism, which parameters are assumptions, and what was not run.]
+
+{{< include ../templates/pilot-report/parts/standard-footnotes.md >}}
+
+<!-- Footnotes specific to this pilot (biology, data source, methods a reader may not know) go
+here. Define a term once, at its first use, in one or two plain sentences. -->

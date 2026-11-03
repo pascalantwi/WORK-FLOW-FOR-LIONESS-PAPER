@@ -1,0 +1,29 @@
+# The Python side of the compendium, managed by uv as the R side is by renv.
+# `uv sync` creates .venv/ with the interpreter pinned in .python-version and
+# every package at the version recorded in uv.lock; `uv add <package>` adds a
+# dependency here and updates uv.lock. Commit both files; never edit uv.lock.
+
+[project]
+name = "projecttemplate"
+version = "0.0.0"
+description = "Python functions of the projecttemplate research compendium"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5.4",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# The package lives in inst/python/ so that it ships inside the R package and
+# load_all() and system.file() both find it; uv installs it into .venv/ in
+# editable mode, so `import projecttemplate` works in tests, scripts, and R.
+[tool.hatch.build.targets.wheel]
+packages = ["inst/python/projecttemplate"]
+
+[tool.pytest.ini_options]
+testpaths = ["inst/python/tests"]

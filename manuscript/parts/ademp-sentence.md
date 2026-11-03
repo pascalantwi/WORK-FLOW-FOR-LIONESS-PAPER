@@ -1,0 +1,1 @@
+The simulation study is reported in the ADEMP structure [@morris2019]: aims, data-generating mechanisms, estimands, methods, and performance measures, with a Monte Carlo standard error for every reported rate and average.

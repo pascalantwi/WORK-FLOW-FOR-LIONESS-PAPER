@@ -1,0 +1,45 @@
+<!--
+The supplementary note: the derivations the paper relies on, included by manuscript.qmd after the
+references (stage 3, step 3.4). One subsection per result, S1.1, S1.2, and so on. Each derivation is
+one step per line with the step's justification after the display, and ends with where the paper
+uses the result and which test in tests/testthat/ checks it. Markers, prov(), and lvl() work here as
+in the paper, and the checker scans this file too.
+
+Supplementary figures and tables are numbered Figure S1, Table S1, ... by the cross-reference kinds
+in manuscript.qmd's YAML. Write each as a fenced div whose id starts with sfig- or stbl-, with the
+chunk inside (no fig- or tbl- label) and the caption as the div's last paragraph, and refer to it
+as @sfig-name or @stbl-name. A chunk label of the form sfig-name does not work. Delete these comments.
+-->
+
+[FILL: one plain-language paragraph: what this note derives and why the paper needs it.]
+
+[FILL: the notation in one sentence, in the paper's symbols.]
+
+### S1.1 [FILL: the first result] {.unnumbered}
+
+[FILL: the statement, in the paper's notation.]
+
+$$
+\begin{aligned}
+a &= b \\
+  &= c
+\end{aligned}
+$$
+
+[FILL: the justification of each line, numbered as the lines; where the paper uses the result; the test that checks it.]
+
+### S1.2 [FILL: a supplementary figure or table, if any] {.unnumbered}
+
+[FILL: the sentence that refers to it, as @sfig-example.]
+
+::: {#sfig-example}
+
+```{r}
+#| eval: false
+
+# Draw from the results objects only; the figure function lives in R/.
+```
+
+[FILL: the caption, computed numbers through prov() like any caption.]
+
+:::

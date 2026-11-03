@@ -1,0 +1,24 @@
+Package: projecttemplate
+Title: Template for a Methods Research Project
+Version: 0.0.0.9000
+Authors@R:
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+Description: A research compendium. Functions live in R/, analysis scripts in
+    analysis/, generated results in results/, and the Quarto manuscript in
+    manuscript/. Replace this paragraph with one or two sentences about your
+    project.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports:
+    stats
+Suggests:
+    devtools,
+    here,
+    knitr,
+    reticulate,
+    rmarkdown,
+    roxygen2,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0

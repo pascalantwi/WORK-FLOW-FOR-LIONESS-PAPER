@@ -1,0 +1,101 @@
+---
+title: "Background report: [FILL: the manuscript's short title]"
+subtitle: "The literature and the theory behind the manuscript, in full"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    embed-resources: true
+    code-fold: true
+    fig-cap-location: bottom
+execute:
+  echo: false
+  warning: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+source(file.path("..", "manuscript", "manuscript-helpers.R"))
+prov_set_mode(TRUE)
+ri <- read_run_info()
+devtools::load_all(project_root(), quiet = TRUE)
+# Every number in this report is computed here from results/ or from the package's functions.
+```
+
+# Summary {.unnumbered}
+
+<!-- Scope: what this report is (the companion to manuscript.qmd at the commit named here), who it is
+for (a reader with graduate training in statistics and no familiarity with the topic), and how to read it (Part A by Introduction
+paragraph, Part B by result, Part C the issues). Footnotes may define terms. -->
+
+[FILL]
+
+# Part A. The literature of the Introduction
+
+<!-- One subsection per paragraph of the Introduction, in order; within it one block per source, in
+the order cited. Each block: the full citation; what the paper did; what it did not do, as it bears on
+the manuscript; the passage, quoted briefly with its location, read from the full text in this stage; how the
+manuscript uses it. Close each paragraph's subsection with what the paragraph's claim rests on. -->
+
+## Paragraph 1: [FILL: its question]
+
+### [FILL: first author, year, short title]
+
+**What it did.** [FILL]
+
+**What it did not do.** [FILL]
+
+**The passage.** "[FILL]" ([FILL: section, page]).
+
+**How the manuscript uses it.** [FILL]
+
+### What the paragraph rests on
+
+[FILL]
+
+# Part B. The theory
+
+<!-- One subsection per result the manuscript uses: Methods formulas, supplement propositions and
+lemmas, closed forms the simulation checks. Each: statement; what to know first; the walkthrough as
+numbered steps (one line of mathematics, one line of justification); assumptions and where each is used;
+a numerical check that runs here; where the manuscript uses it. -->
+
+## Result 1: [FILL: name]
+
+**Statement.** [FILL, in the manuscript's notation.]
+
+**What to know first.**
+
+- [FILL: a definition or theorem, and where to read about it]
+
+**Walkthrough.**
+
+1. [FILL: one line of mathematics.] *Because* [FILL: the definition, identity, or step it uses, and why it applies].
+
+**Assumptions.** [FILL: each, where it is used, what fails without it.]
+
+**Numerical check.**
+
+```{r}
+#| label: check-result-1
+# [FILL: a special case with a known answer, a large-sample agreement, or an identity on simulated data,
+# computed from the package's functions; print the comparison]
+```
+
+[FILL: the outcome in a sentence, with the numbers through prov().]
+
+**Where the manuscript uses it.** [FILL]
+
+# Part C. Issues found
+
+<!-- The same table as background/issues.md: location, issue, severity (blocking, substantive,
+editorial), proposed fix, where this report shows it. "None" is an acceptable table. -->
+
+[FILL]
+
+# Glossary {.unnumbered}
+
+[FILL: terms a reader may not know, one line each; or footnotes in the text instead.]
