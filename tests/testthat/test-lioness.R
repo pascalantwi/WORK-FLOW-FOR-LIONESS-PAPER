@@ -44,3 +44,11 @@ test_that("the mean-shift prediction is zero for balanced classes", {
   x[y == 1, ] <- x[y == 1, ] + 0.7
   expect_equal(MeanShiftEdgeDifference(x, y), rep(0, 3))
 })
+
+test_that("first-order test edges approach the exact add-one edges", {
+  set.seed(10)
+  ref <- matrix(rnorm(3000 * 3), 3000, 3)
+  new <- matrix(rnorm(4 * 3), 4, 3)
+  expect_lt(max(abs(LionessTestEdgesFirstOrder(new, ref) -
+                      LionessTestEdges(new, ref))), 0.05)
+})

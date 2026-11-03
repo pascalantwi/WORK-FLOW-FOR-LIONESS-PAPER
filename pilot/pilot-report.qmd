@@ -20,6 +20,10 @@ execute:
   echo: false
   warning: false
 bibliography: ../manuscript/references.bib
+citeproc: false
+filters:
+  - quarto
+  - no-en-dash.lua
 ---
 
 ```{r}
@@ -44,6 +48,12 @@ q3a <- cl[cl$question == 3 & cl$clause == "(a)", ]
 status <- v$status
 n_rep <- run$n_rep
 minutes <- round(run$elapsed_seconds / 60)
+ph <- readRDS("results/posthoc_cell13.rds")
+P <- function(q) ph$gains[ph$gains$quantity == q, ]
+pg <- function(q) sprintf("%s (MCSE %s)", fmt(P(q)$mean, 3), fmt(P(q)$mcse, 4))
+r1_gap <- function(cell) G(cell, "R1") - G(cell, "R0")
+ifn_cells <- design$cell[design$mechanism == "ifn"]
+shift_cells <- design$cell[design$mechanism == "shift"]
 cell_lab <- function(cl) {
   d <- design[design$cell == cl, ]
   if (d$mechanism == "null") return(sprintf("cell %d (null, share %.1f, %d per smaller class)", cl, d$share, d$n1))
@@ -57,13 +67,13 @@ cell_lab <- function(cl) {
 
 **Scope.** This document reports the pilot[^pilot] for the proposal `proposal.md` ("When do LIONESS single-sample networks add information beyond the IFN score in SLE and RA?"): what the idea is, how the pilot was run, what it found, the full draft project spec, and the decisions made along the way. It was built from `project-spec.md`, `decisions.md`, the saved results in `pilot/results/`, and two small files of dataset facts in `pilot/` (`candidate_datasets.csv` and `gse45291_processing_dates.csv`, from GEO records opened on 2026-11-03), and every number in the text and figures is computed from those files when the document renders.
 
-**Status.** In `STATUS.md` the pilot is marked `` `r status` ``[^pf]. STATUS_SENTENCE
+**Status.** In `STATUS.md` the pilot is marked `` `r status` ``[^pf]. By the pre-registered rule the pilot failed: question 1 failed on size (the effect exists but is a fraction of the 0.05 required), question 2 failed, and clause 3(b) failed because the pre-registered matched quadratic model reached a quarter of the edges' gain in the network cell. An exploratory probe run after the verdict (not part of the rule) found that the first-order edge features match the exact edges there, so the 3(b) shortfall lies in how the comparator was built, not in the closed form.
 
 | Pilot question | Answer | Key evidence |
 |---------|-------------|---------------------------------------------|
-| 1. Does the effect exist? | ANSWER1 | Edges added to a reference without the squared IFN score raised the AUC by `r gm(3, "gain_N1R0_vs_R0")` in `r cell_lab(3)`. |
-| 2. Large enough at realistic n? | ANSWER2 | The same gain was `r gm(5, "gain_N1R0_vs_R0")` with 40 per class. |
-| 3. Obvious fix or diagnostic? | ANSWER3 | Against the matched quadratic model, edges differed by `r fmt_range(q3a$value)` in AUC across the seven IFN-only and mean-shift cells; in the strongest network cell the clause-(b) difference was `r gm(13, "b_clause")`. |
+| 1. Does the effect exist? | Yes, but small; no by the rule | Edges added to a reference without the squared IFN score raised the AUC by `r gm(3, "gain_N1R0_vs_R0")` in `r cell_lab(3)`. |
+| 2. Large enough at realistic n? | No | The same gain was `r gm(5, "gain_N1R0_vs_R0")` with 40 per class. |
+| 3. Obvious fix or diagnostic? | The squared score removes it; the pre-registered comparator falls short | Against the matched quadratic model, edges differed by `r fmt_range(q3a$value)` in AUC across the seven IFN-only and mean-shift cells; in the strongest network cell the clause-(b) difference was `r gm(13, "b_clause")`. |
 
 **What needs your decision** (details in [Action items and limitations](#action-items-and-limitations)): the status call; the open `[TO CONFIRM]` items in the spec (highlighted in yellow): the PRECISESADS access request and the milestone dates; and the two open items carried from the proposal (the data contingency, and the check of a supplement for the novelty claim).
 
@@ -71,11 +81,19 @@ cell_lab <- function(cl) {
 
 ## In plain language
 
-PLAIN_LANGUAGE
+LIONESS[^lioness] gives every patient a value for every pair of genes, called an edge, meant to say how tightly the two genes move together in that patient. The closed form says what the value is made of. Take two genes that both rise with interferon activity, and a patient whose two genes sit 2 standard deviations above the average while the genes are correlated 0.5 across all patients. The edge is about $0.5 + 2 \times 2 - 0.25 \times (4 + 4) = 2.5$: mostly the product of the patient's own two deviations. Nothing in it is specific to that patient's gene coupling beyond those two numbers and the shared correlation.
+
+The worry was that a patient with strong interferon activity gets large edges among all interferon genes, so edges would separate SLE from RA because of interferon alone, and a model with the interferon score would be credited with a network effect. The pilot measured how much edges add to the area under the ROC curve (AUC, the chance that a random SLE patient scores above a random RA patient) when the classes differ only in interferon activity. What is known: the closed form is exact, the extra AUC is small, and adding the squared interferon score to the reference model removes it. What is not known: how large these differences are in real blood, since no patient data were analyzed.
 
 ## Potential impact
 
-IMPACT
+LIONESS builds one network per sample from an aggregate network and has an R implementation [@kuijjer2019lioness; @kuijjer2019lionessr]. Earlier work showed that per-sample changes in correlation reduce to a product of standardized deviations for large reference sets [@yu2017iena], and documented that subpopulation size and differential expression shift LIONESS edges [@kuijjer2026challenges]. What is new here is the exact closed form of the LIONESS edge for Pearson and partial correlation, the formula behind the subpopulation effect, and a test of what edges add to a classifier.
+
+The problem is how edge differences are read. Users compare edges between patient groups or feed them to classifiers, and read the result as rewired gene coupling. In diseases such as SLE, where one interferon program moves hundreds of genes, the closed form predicts that edges carry the square of the interferon level.
+
+The pilot found that this artifact is real but modest. When the classes differed only in interferon activity, edges added `r fmt(G(3, "gain_N1R0_vs_R0"), 4)` to the AUC of a reference without the squared score in the moderate setting and `r fmt(G(4, "gain_N1R0_vs_R0"), 3)` in the large one (@fig-gains), and adding the squared score to the reference removed it in every such cell (@tbl-auc). When the classes truly differed in co-expression, edges added `r fmt(G(13, "gain_N1R1_vs_R1"), 3)` beyond the reference with the squared score, a real network signal. An exploratory probe after the verdict found that first-order edge features, which are computed from expression without building any network, gained `r fmt(P("A(F1R1) - A(R1)")$mean, 3)` in the same setting, as much as the exact edges.
+
+A user would do two things differently: put the squared interferon score, and any other shared factor's square, in every reference model, and compare a network result with the first-order edge features, which can be computed for any study in seconds. If the equivalence holds in real data, published LIONESS results can be read as statements about quadratic expression features, and the cost of computing networks can be skipped. The application to PRECISESADS, once access is granted, is the analysis that will show whether the interferon artifact and the network signal are large in real blood.
 
 ## Application: the study behind the data
 
@@ -143,7 +161,7 @@ cls <- rep(0:1, each = n / 2)
 f <- rnorm(n, sd = ifelse(cls == 1, 1.5, 0.5))
 x <- cbind(0.8 * f + rnorm(n), 0.8 * f + rnorm(n))
 e1 <- LionessEdges(x)[, 1]
-xr <- x - outer(f, coef(lm(x ~ f - 1)))
+xr <- x - f %*% coef(lm(x ~ f - 1))
 e2 <- LionessEdges(xr)[, 1]
 par(mfrow = c(1, 2), mar = c(4.2, 4.2, 2, 1))
 plot(f^2, e1, col = c("#2166AC", "#B2182B")[cls + 1], pch = 19, cex = 0.6,
@@ -260,7 +278,13 @@ knitr::include_graphics("results/auc_gains.png")
 
 Each finding is a claim followed by the output behind it. Read the claim, open the output, and check that you can see the claim there before accepting it. A claim that cannot be seen in the output is a question to raise with the user.
 
-FINDINGS
+1. **The interferon artifact exists but is small.** When the classes differed only in interferon activity, edges added to a reference without the squared score raised the AUC by `r gm(3, "gain_N1R0_vs_R0")` in the moderate cell and `r gm(4, "gain_N1R0_vs_R0")` in the large one, against a pre-registered threshold of 0.05 (@tbl-verdict, @fig-gains). The squared score alone adds more: $R_1$ exceeded $R_0$ by `r fmt(r1_gap(3), 3)` and `r fmt(r1_gap(4), 3)` in the same cells (@tbl-auc).
+2. **At 40 per class the artifact vanishes.** The gain was `r gm(5, "gain_N1R0_vs_R0")` (@tbl-verdict).
+3. **The squared score in the reference removes it.** Edges with $R_1$ against $R_1$ ranged over `r fmt_range(sapply(ifn_cells, G, q = "gain_N1R1_vs_R1"), 4)` across the IFN-only cells (@fig-gains, blue points).
+4. **Where nothing but interferon or means differ, edges and the matched quadratic model agree.** Their AUC difference ranged over `r fmt_range(q3a$value, 4)` across the seven cells (@tbl-verdict). In the mean-shift cells both stayed at the reference, while the gene model E1 gained `r fmt_range(sapply(shift_cells, G, q = "gain_E1_vs_R1"), 3)`: a mean shift is linear information that neither quadratic representation carries.
+5. **With a true co-expression change, edges carry a real signal that the pre-registered comparator misses.** In `r cell_lab(13)`, edges gained `r gm(13, "gain_N1R1_vs_R1")` over $R_1$, the matched quadratic model `r gm(13, "gain_E5_vs_R1")`, and regularized discriminant analysis `r gm(13, "gain_E4_vs_R1")` (@tbl-auc).
+6. **Exploratory, not pre-registered: the first-order edge features match the exact edges.** In `r ph$n_rep` new replicates of the same cell, first-order edges gained `r pg("A(F1R1) - A(R1)")` over $R_1$ and exact edges `r pg("A(N1R1) - A(R1)")`, while the products and squares as separate features gained `r pg("A(E5) - A(R1)")` (`results/posthoc_cell13.rds`). The information is the same; the elastic-net penalty treats the two parametrizations differently.
+7. **The closed forms are exact, and the mean-shift formula holds.** Every code-identity check agreed to better than $10^{-13}$, and the class difference in mean edge under a mean shift matched equation (3) within `r fmt(max(abs(ka$computed[grepl("Mean shift", ka$check)] / ka$mcse[grepl("Mean shift", ka$check)])), 1)` MCSE in all three cells (@tbl-known-answer).
 
 ## Tables
 
@@ -336,11 +360,17 @@ cat(read_md_part("decisions.md"), "\n")
 
 ## Action items
 
-ACTIONS
+1. **Decide the status.** The rule gives `piloted-fail`. The options are a revised proposal and a re-pilot (`pilot-b/`) with the first-order edge features as the matched comparator and a question 1 sized to the effects seen, a re-scope around the equivalence result, or dropping or parking the idea.
+2. **Resolve the yellow `[TO CONFIRM]` items** in the spec: the PRECISESADS access request and the milestone dates.
+3. **Verify the citations.** Every citation was checked against its Crossref or PubMed record and read in full text at stage 1, except @devlin1975robust and @croux2010influence, whose full texts are pending.
+4. **Read the exploratory probe as evidence for the revision, not as a result.** It is one cell and `r ph$n_rep` replicates outside the pre-registration.
 
 ## Limitations
 
-LIMITATIONS
+- Everything here is simulation under Gaussian noise, one interferon factor with equal loadings, and one composition factor; no patient data were analyzed.
+- Six of the 17 models were run; SSN, iENA, SWEET, BONOBO, the module eigengenes, the differential-correlation pairs, and the partial-correlation edges were not.
+- The IFN score was the mean of five genes measured with noise; how much of the squared factor the reference removes depends on that reliability, which was not varied.
+- The equivalence of first-order and exact edges as classifier features was seen in one cell, after the verdict.
 
 {{< include ../templates/pilot-report/parts/standard-footnotes.md >}}
 
@@ -359,3 +389,5 @@ LIMITATIONS
 [^enet]: The elastic net is logistic regression with a penalty that shrinks coefficients and sets many to zero, so it can use more features than samples; glmnet is the R package that fits it.
 
 [^rda]: Regularized discriminant analysis classifies with a separate covariance matrix per class, shrunk toward a pooled one and toward a diagonal, which gives a quadratic decision rule (quadratic discriminant analysis) when the shrinkage is small.
+
+[^lioness]: LIONESS (Linear Interpolation to Obtain Network Estimates for Single Samples) builds a network from all samples and again without one sample, and scales the difference to give that sample's network.

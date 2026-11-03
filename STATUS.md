@@ -5,8 +5,8 @@
 | Workflow version | 0.2.4-md (2026-11-03): tgrimes/research-workflow 0.2.4 with a Markdown reference list and no Zotero |
 | Project | LIONESS beyond the IFN score in SLE and RA |
 | Package | lionessifn |
-| Stage | 2, pilot running |
-| Open stop | none: stage 2 in progress |
+| Stage | 2, piloted-fail (2026-11-03) |
+| Open stop | stage 2 stop: read `pilot/pilot-report.html` and decide (revised proposal and re-pilot, re-scope, or drop or park) |
 | Last update | 2026-11-03 |
 
 The Stage row reads "stage number, state". The states a stage can be in:
@@ -29,3 +29,4 @@ One line per stage boundary, newest last: the date, the stage reached, the path 
 |---|---|---|---|
 | 2026-11-03 | 1, proposal at stop 1 | `proposal.md` | stop 1 |
 | 2026-11-03 | 1, proposal final | `proposal.md` | none |
+| 2026-11-03 | 2, piloted-fail | `pilot/pilot-report.html` | stage 2 stop |

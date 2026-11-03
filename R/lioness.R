@@ -162,3 +162,23 @@ MeanShiftEdgeDifference <- function(x, y) {
   dj <- d[pairs[, 2]]
   (1 - 2 * share) * (di * dj - r / 2 * (di^2 + dj^2))
 }
+
+#' First-order LIONESS edges of new samples against a reference set
+#'
+#' `r + z_i z_j - (r / 2)(z_i^2 + z_j^2)` with `r` and the standardization
+#' taken from the reference only.
+#'
+#' @inheritParams LionessTestEdgesDirect
+#' @return As [LionessTestEdgesDirect()].
+#' @export
+LionessTestEdgesFirstOrder <- function(x_new, x_ref) {
+  x_ref <- as.matrix(x_ref)
+  pairs <- PairIndex(ncol(x_ref))
+  s <- StandardizeN(x_ref)
+  z <- StandardizeN(as.matrix(x_new), s$center, s$scale)$z
+  r <- stats::cor(x_ref)[pairs]
+  r_mat <- matrix(r, nrow = nrow(z), ncol = length(r), byrow = TRUE)
+  zi <- z[, pairs[, 1], drop = FALSE]
+  zj <- z[, pairs[, 2], drop = FALSE]
+  r_mat + zi * zj - r_mat / 2 * (zi^2 + zj^2)
+}

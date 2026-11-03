@@ -5,7 +5,7 @@
 | Proposal | `proposal.md`, final 2026-11-03 |
 | Authors | as in `DESCRIPTION`, set by `tools/authors.R` before the final render |
 | Written | 2026-11-03 |
-| Status | final 2026-11-03 (section 3 completed after the verdict) |
+| Status | final 2026-11-03; section 3 completed after the verdict, 2026-11-03 |
 
 ## 1. Question and why it matters
 
@@ -31,15 +31,15 @@ Filled twice: the plan now, the answers after the verdict (stage 2, step 5).
 
 Pass if 1, 2, and 3 pass; close call if 1 and 3 pass and the gain of question 2 lies between 0.01 and 0.03; fail if 1 or 3(a) fails.
 
-**Verdict file:** `pilot/results/verdict.rds`, after the run.
+**Verdict file:** `pilot/results/verdict.rds` (status `piloted-fail`), from `Rscript pilot/verdict.R`; 180 replicates per cell, 16 cells, 54 minutes on three cores.
 
-**Plot:** `pilot/results/auc_gains.png`, after the run.
+**Plot:** `pilot/results/auc_gains.png`.
 
-**The three pilot answers:** [filled after the verdict]
+**The three pilot answers:**
 
-1. Does the effect exist? [ ]
-2. Is it large enough to matter at realistic sample sizes? [ ]
-3. Is there an obvious fix or diagnostic? [ ]
+1. Does the effect exist? Yes, but small, and no by the rule: edges added to a reference without the squared IFN score raised the AUC by 0.0067 (MCSE 0.0022) in the moderate IFN cell, against a threshold of 0.05; 0.031 in the large cell.
+2. Is it large enough to matter at realistic sample sizes? No: -0.0017 (MCSE 0.0019) at 40 per class.
+3. Is there an obvious fix or diagnostic? The squared score in the reference removes the gain (edges with $R_1$ against $R_1$: within 0.003 of zero in every IFN-only cell), and clause 3(a) passed in all seven cells; but the pre-registered matched quadratic model reached only a quarter of the edges' gain in the network cell (clause 3(b) value -0.075, MCSE 0.003). An exploratory probe after the verdict found that first-order edges as features match the exact edges (`pilot/decisions.md`, D9).
 
 ## 4. ADEMP skeleton
 

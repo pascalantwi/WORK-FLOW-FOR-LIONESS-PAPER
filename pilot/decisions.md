@@ -6,7 +6,9 @@ The literature behind the pilot is the proposal's section 5, read in full text a
 
 ## D1. Status call
 
-STATUS_CALL
+**What.** `piloted-fail`, by the pre-registered rule (`pilot/results/verdict.rds`): question 1 failed (gain 0.0067, MCSE 0.0022, against 0.05), question 2 failed (gain -0.0017 at 40 per class), question 3(a) passed in all seven cells, and question 3(b) failed (clause value -0.075, MCSE 0.003). No clause was within three MCSE of its threshold, so there is no close-call reading.
+**What the failure means.** Question 1 failed on size, not on existence: the gain of edges over a reference without the squared score was more than three MCSE above zero in the moderate cell and 0.031 in the large cell (`pilot/results/cell_summaries.rds`), but well below the 0.05 the rule required, and edges recovered only part of what the squared score alone adds ($R_1$ against $R_0$). Question 3(b) failed because the pre-registered matched quadratic model (products and squares as separate penalized features) reached only a quarter of the edges' gain in the network cell; the exploratory probe of D9 shows the shortfall is in that comparator, not in the first-order theory.
+**What the user should check.** Whether to revise the proposal and re-pilot with the comparator of D9 and a question 1 that matches the effect sizes seen, or to re-scope the paper around the equivalence result (edges add nothing beyond their first-order form, and nothing beyond $R_1$ when the classes differ only in IFN).
 
 ## D2. R version
 
@@ -52,6 +54,13 @@ STATUS_CALL
 **What.** No `pilot/describe_data.R`: no data set was downloaded.
 **Why.** PRECISESADS is under controlled access and not yet requested; the GEO candidates were ruled out at stage 1 from their records. The report's application section uses two small files of facts from the records opened (`candidate_datasets.csv`, `gse45291_processing_dates.csv`), whose processing dates are read from the date prefix of the GEO sample titles, an interpretation of the titles.
 **Check.** The access request.
+
+## D9. Exploratory probe of clause 3(b), after the verdict
+
+**What.** Not pre-registered, run after the verdict to explain the failure of clause 3(b): 60 new replicates of cell 13 (seeds offset by 100000), comparing the edges with $R_1$, the pre-registered matched quadratic model, and the first-order edges $r + z_i z_j - \tfrac r2 (z_i^2 + z_j^2)$ as features with $R_1$ (`pilot/posthoc/probe_cell13.R`, `pilot/results/posthoc_cell13.rds`).
+**Finding.** The first-order edges gained as much as the exact edges over $R_1$ (their difference was -0.005, MCSE 0.002), while the pre-registered quadratic model gained a quarter as much. The first-order edges are a linear combination of the same products and squares, so the information is the same; the elastic-net penalty treats the two parametrizations differently, because the edge form puts each pair's co-expression into one feature while the product-and-square form spreads it over a product and two squares shared with other pairs.
+**Why it matters.** The matched comparator of the proposal should be the first-order edge features, not products and squares as separate features. With it, edges added nothing beyond their first-order form in the one cell probed.
+**Check.** This is one cell and 60 replicates, outside the pre-registration; it is evidence for the revision, not a pilot result.
 
 ## What was not done
 
