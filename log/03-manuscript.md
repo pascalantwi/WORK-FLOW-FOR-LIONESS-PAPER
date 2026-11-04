@@ -43,3 +43,42 @@ The user asked that the equations be typed and aligned properly. Every inline an
 - The rendered proposal (pandoc with KaTeX) and both pilot reports were inspected by eye.
 
 These are the conventions for `manuscript.qmd`, where numbered displays take Quarto labels (`{#eq-name}`) so that the text refers to them as @eq-name.
+
+## Step 3.1: purpose draft of the Introduction
+
+Written in `manuscript/manuscript.qmd`, three paragraphs, from the proposal's sections 5 and 12, every sentence with a source opened at stage 1 or a marker; the lionessR osteosarcoma example was checked against the full text (53 biopsies; edges compared with limma between short and long metastasis-free survival, "to understand co-regulation differences between the groups"). One claim was narrowed while writing: the interferon program's degree differs "between the diseases", which El-Sherbiny et al. state; "and within" was dropped, since the passage read does not say it.
+
+Claims, as questions (the aims of `proposal.md`, section 12.6):
+
+1. Do the exact edges and their first-order features give the same out-of-sample classification?
+2. When classes differ in a shared factor, how much do edges gain from its square, and does a reference holding the square remove the gain?
+3. Why does the edge form detect a co-expression difference that the same products and squares, entered separately, do not?
+
+## Step 3.2: design proposal (stop)
+
+Timing (`log/03-design-timing.rds`, one replicate per model in a network cell, single core, labelled a timing run): all seven models together took 3.8 seconds at 80 per class and 11.2 seconds at 300 per class; the costliest single models at 300 per class were E5 (3.6 s), F1 (2.8 s), and the edges (2.8 s).
+
+| Study and family | Factor | Levels | Held at | Reason | Question |
+|---|---|---|---|---|---|
+| S1: the mean-shift law | Share of the smaller class $\pi$ | 0.5, 0.3, 0.15 | | Equation (4) predicts zero at 0.5, growing with imbalance | Theory check |
+| S1 | Mean shift $\Delta$ (pooled SD) | 0.25, 0.5, 1 | | From a small shift to a large one | Theory check |
+| S2-A: artifact and fix | IFN difference (shift, SD ratio) | none (0, 1); small (0.25, 1.25); moderate (0.5, 1.5); large (1, 2.25); very large (1.5, 3) | $n$ 80, $\pi$ 0.5, five score genes, normal noise | From no difference to beyond the pilots' largest; PRECISESADS is placed on it by estimating the SLE-RA difference of the score | 2 |
+| S2-A | Score genes | 2, 5, 10 | large IFN difference | The fix depends on how well the score measures the factor | 2 |
+| S2-A | Noise | normal, $t_5$ | large IFN difference | Outlying samples enlarge the remainder of the first-order form | 2 |
+| S2-A | Size of the smaller class $n$ | 40, 80, 150, 300 | large IFN difference | From a small untreated cohort to a large one | 2 |
+| S2-B: equivalence, parametrization, power | Module correlation change $\Delta\rho$ | 0, 0.1, 0.2, 0.3, 0.4 | $n$ 80, $\pi$ 0.5, normal noise, $\alpha$ 0.5 | From no co-expression difference (the null of the superiority test) to a large one; the pilots gave gains of 0.002 at 0.1, 0.011 at 0.2, and 0.118 at 0.4, so 0.3 is added to fill the power curve | 1, 3 |
+| S2-B | $n$ | 40, 80, 150, 300 | $\Delta\rho$ 0.2 | Power and equivalence by size | 1, 3 |
+| S2-B | $\pi$ | 0.5, 0.3, 0.15 | $\Delta\rho$ 0.2, smaller class 80 | Imbalance, the condition of equation (4) | 1 |
+| S2-B | Noise | normal, $t_5$, $t_3$ | $\Delta\rho$ 0.4 | Equivalence under heavy tails, where the remainder is largest | 1 |
+| S2-B | Elastic-net mixing $\alpha$ | 0 (ridge), 0.5, 1 (lasso) | $\Delta\rho$ 0.4 | The parametrization effect is a property of the penalty, so it may change with it | 3 |
+| Fixed | Genes 50 (20 on the IFN factor, a 10-gene module, 20 on composition); composition one factor observed without error; gene set fixed at the 45 non-score genes | | | As in the pilots, so that the results stay comparable to them; composition error and gene screening are named limitations | |
+
+Twenty-five cells in S2 (one-at-a-time around the base cells, not a full factorial) and nine in S1.
+
+**Methods (S2).** $R_0$, $R_1$, E1, E5, F1 with $R_1$, edges with $R_0$ and with $R_1$, as in the re-pilot; added, because their edges have closed forms of the same kind: SSN (per-sample change in correlation, its scale removed by the per-feature standardization of the elastic net) and iENA's single-sample PCC (the product $z_{qi} z_{qj}$ alone, without the reference-correlation term). [TO CONFIRM: SWEET and BONOBO only in the application, since neither has a closed form here and BONOBO's fit is the costliest]{.tc}
+
+**Performance measures.** Out-of-fold AUC and the paired differences against $R_1$ (and against $R_0$ in S2-A), with Monte Carlo standard errors; the difference of edges and F1 (equivalence); F1 against E5 (parametrization). In S1, the bias of the class difference in mean edge against equation (4). Power, planned as `rules.md` section 3 requires: in the five $\Delta\rho$ cells of S2-B and in the large and very large IFN cells with $R_1$, each replicate runs the application's procedure (five repeats of 5-fold cross-validation, the corrected resampled t-test of $\Delta_1$ at the 5% level, and the two one-sided tests of $\Delta_2$ with margin 0.01), giving the rejection rate of $\Delta_1$ (level in the cells with no co-expression difference, power across $\Delta\rho$) and the rate at which equivalence of $\Delta_2$ is declared. The $\Delta\rho$ levels are checked with a few low-replicate cells in the quick run, and moved if the power does not run from low to about 80%.
+
+**Replicates and runtime.** 500 replicates per S2 cell, which gives a Monte Carlo standard error near 0.002 for a difference with replicate standard deviation 0.04; 300 replicates in the seven test cells, a standard error of 0.013 for a rejection rate near 0.05; 1,000 per S1 cell. Projected from the timing, with SSN and iENA added: about 7.5 hours for S2, 2 hours for the test cells, and seconds for S1, on three cores; a quick run at 40 and 30 replicates takes under an hour.
+
+**Application plan.** PRECISESADS, untreated SLE against untreated RA, whole blood, flow-cytometry composition, recruitment centre and sequencing batch as covariates; the 18 models of `proposal.md` (sections 7 and 12.3) in repeated nested cross-validation; the primary contrasts $\Delta_1$ (superiority, corrected resampled t-test) and $\Delta_2$ (equivalence, two one-sided tests, margin 0.01), in fixed sequence; and the placement of the data on the two gradients (the SLE-RA difference of the IFN score in shift and SD ratio, and the largest co-expression differences of the IFN and composition modules). The test the application uses is the simulation's. Until access is granted the application chunk is guarded and carries a marker.

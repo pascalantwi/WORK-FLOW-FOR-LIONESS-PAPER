@@ -1,5 +1,5 @@
 ---
-title: "[FILL: title that names the procedure and the condition]"
+title: "LIONESS edges are quadratic functions of expression: closed forms, an interferon artifact, and equivalence with first-order features"
 author:
   - name: "[FILL: first author]"
     corresponding: true
@@ -18,7 +18,7 @@ link-citations: true
 params:
   draft: true
   memo: false
-  journal: "[FILL: journal slug from workflow/journals/journals.csv]"
+  journal: "bmc-bioinformatics"
 crossref:
   custom:
     - kind: float
@@ -131,11 +131,11 @@ did not do, and ending with what has not been derived. Paragraph 3: what this pa
 order of the sections. Almost every sentence is a fact with a reference; the rest build the tension
 and resolve it. Plain language before the formal statement. The claims are the aims, as questions. -->
 
-[FILL: paragraph 1]
+A correlation between two genes needs many samples, so the coordination of two genes in one patient cannot be read off that patient's expression profile. Single-sample network methods were built to estimate it. LIONESS builds the network of all samples and the network without one sample, and interpolates between the two to give that sample's network [@kuijjer2019lioness]. Its R implementation, lionessR, uses Pearson correlation by default [@kuijjer2019lionessr]. The edges are then compared between patient groups or used as features to classify patients [@kuijjer2019lionessr; @jahagirdar2021metabolomics]. In the paper that introduced lionessR, networks were computed for 53 osteosarcoma biopsies, and edges whose weights differed between patients with short and long metastasis-free survival were found with limma, to understand co-regulation differences between the groups [@kuijjer2019lionessr]. Such a difference is read as a difference in how tightly two genes move together in the two groups.
 
-[FILL: paragraph 2]
+In whole blood from patients with systemic lupus erythematosus (SLE) and rheumatoid arthritis (RA), one interferon program raises the expression of many genes together, to a degree that differs between the diseases [@elsherbiny2018twoscore]. What a LIONESS edge estimates under this condition follows from its form. Removing one sample is a rank-one change in the first and second moments, so the edge has a closed form in the sample's standardized expression $z_{qi}$ and $z_{qj}$, and to first order it is the reference correlation plus the influence function of the correlation [@devlin1975robust], $r + z_{qi} z_{qj} - \tfrac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right)$. For per-sample changes in correlation against a large reference set, the product $z_{qi} z_{qj}$ alone was derived [@yu2017iena]. A near-linear relation between LIONESS and SSN edges [@deschildre2024evaluation], and higher LIONESS edge weights in the smaller of two subpopulations when two genes differ only in mean [@kuijjer2026challenges], were observed without a formula. The exact form, the square of a shared factor that it places in every edge between genes the factor moves, and what both mean for classification have not been derived.
 
-[FILL: paragraph 3]
+This paper derives the exact LIONESS edge for Pearson and partial correlation and its first-order form, and asks three questions. Do the exact edges and their first-order features give the same out-of-sample classification? When two classes differ in a shared factor such as interferon activity, how much do edges gain from its square, and does a reference model holding the square remove that gain? And why does the edge form detect a difference in co-expression that the same products and squares, entered as separate features, do not? A simulation study answers the three questions under controlled conditions, and an application to SLE and RA in whole blood [@barturen2021precisesads] places real data on each of its gradients. [TO CONFIRM: the application depends on access to the PRECISESADS data]{.tc}
 
 # Methods
 
