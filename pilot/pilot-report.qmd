@@ -126,15 +126,15 @@ The sample's standardized expression of gene $i$ ($z_{qi}$, its deviation from t
 
 $$
 \begin{aligned}
-e_q &= N r - (N-1)\, \frac{r - a\, z_{qi} z_{qj}}{\sqrt{(1 - a z_{qi}^2)(1 - a z_{qj}^2)}} \\
-&= r + z_{qi} z_{qj} - \frac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right) + O_p(1/N).
+e_q &= N r - (N-1)\, \frac{r - a\, z_{qi} z_{qj}}{\sqrt{\left(1 - a\, z_{qi}^2\right)\left(1 - a\, z_{qj}^2\right)}} \\[8pt]
+&= r + z_{qi} z_{qj} - \frac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right) + O_p\!\left(N^{-1}\right).
 \end{aligned}
 $$
 
 If two genes load on a shared factor ($F$, the IFN activity) with loadings $a_i$ and $a_j$, then $z_{qi} z_{qj} \approx a_i a_j F_q^2$, and the edge carries $F_q^2$. Under a pure mean shift between classes, the class difference in mean edge is
 
 $$
-E_1[e] - E_0[e] \approx (1 - 2\pi)\left[\Delta_i \Delta_j - \frac{r}{2}\left(\Delta_i^2 + \Delta_j^2\right)\right].
+\mathrm{E}_1[e] - \mathrm{E}_0[e] \approx (1 - 2\pi)\left[\Delta_i \Delta_j - \frac{r}{2}\left(\Delta_i^2 + \Delta_j^2\right)\right].
 $$
 
 | Symbol | Meaning |

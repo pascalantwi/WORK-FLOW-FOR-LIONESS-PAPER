@@ -125,9 +125,9 @@ The sample's standardized expression of gene $i$ ($z_{qi}$, its deviation from t
 
 $$
 \begin{aligned}
-e_q &= N r - (N-1)\, \frac{r - a\, z_{qi} z_{qj}}{\sqrt{(1 - a z_{qi}^2)(1 - a z_{qj}^2)}} \\
-f_q &= r + z_{qi} z_{qj} - \frac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right) \\
-e_q &= f_q + O_p(1/N).
+e_q &= N r - (N-1)\, \frac{r - a\, z_{qi} z_{qj}}{\sqrt{\left(1 - a\, z_{qi}^2\right)\left(1 - a\, z_{qj}^2\right)}}, \\[8pt]
+f_q &= r + z_{qi} z_{qj} - \frac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right), \\[6pt]
+e_q &= f_q + O_p\!\left(N^{-1}\right).
 \end{aligned}
 $$
 

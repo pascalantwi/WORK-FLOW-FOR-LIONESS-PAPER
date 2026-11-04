@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-11-03">
+<meta name="dcterms.date" content="2026-11-04">
 
 <title>Pilot report: LIONESS edges against the IFN score and its square</title>
 <style>
@@ -2415,7 +2415,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 3, 2026</p>
+      <p class="date">November 4, 2026</p>
     </div>
   </div>
   
@@ -2590,13 +2590,13 @@ Table 1: Candidate datasets with SLE and RA from one study, from <code>candidat
 <p>The sample’s standardized expression of gene <span class="math inline">\(i\)</span> (<span class="math inline">\(z_{qi}\)</span>, its deviation from the reference mean in units of the reference standard deviation, divisor <span class="math inline">\(N\)</span>) and the reference correlation of genes <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> (<span class="math inline">\(r\)</span>) determine the LIONESS edge of sample <span class="math inline">\(q\)</span> (<span class="math inline">\(e_q\)</span>), with <span class="math inline">\(a = 1/(N-1)\)</span>:</p>
 <p><span class="math display">\[
 \begin{aligned}
-e_q &amp;= N r - (N-1)\, \frac{r - a\, z_{qi} z_{qj}}{\sqrt{(1 - a z_{qi}^2)(1 - a z_{qj}^2)}} \\
-&amp;= r + z_{qi} z_{qj} - \frac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right) + O_p(1/N).
+e_q &amp;= N r - (N-1)\, \frac{r - a\, z_{qi} z_{qj}}{\sqrt{\left(1 - a\, z_{qi}^2\right)\left(1 - a\, z_{qj}^2\right)}} \\[8pt]
+&amp;= r + z_{qi} z_{qj} - \frac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right) + O_p\!\left(N^{-1}\right).
 \end{aligned}
 \]</span></p>
 <p>If two genes load on a shared factor (<span class="math inline">\(F\)</span>, the IFN activity) with loadings <span class="math inline">\(a_i\)</span> and <span class="math inline">\(a_j\)</span>, then <span class="math inline">\(z_{qi} z_{qj} \approx a_i a_j F_q^2\)</span>, and the edge carries <span class="math inline">\(F_q^2\)</span>. Under a pure mean shift between classes, the class difference in mean edge is</p>
 <p><span class="math display">\[
-E_1[e] - E_0[e] \approx (1 - 2\pi)\left[\Delta_i \Delta_j - \frac{r}{2}\left(\Delta_i^2 + \Delta_j^2\right)\right].
+\mathrm{E}_1[e] - \mathrm{E}_0[e] \approx (1 - 2\pi)\left[\Delta_i \Delta_j - \frac{r}{2}\left(\Delta_i^2 + \Delta_j^2\right)\right].
 \]</span></p>
 <table class="caption-top table">
 <colgroup>
@@ -3473,12 +3473,12 @@ Table 5: Numbers quoted in the spec’s section 3, recomputed from <code>result
 </table>
 <section id="question-and-why-it-matters" class="level2">
 <h2 class="anchored" data-anchor-id="question-and-why-it-matters">1. Question and why it matters</h2>
-<p><strong>Question (one sentence):</strong> Do LIONESS edges improve the cross-validated classification of untreated SLE against untreated RA over a reference model that holds the continuous IFN score, its square, clinical covariates, and cell composition, and do they add anything beyond the quadratic expression model their closed form implies?</p>
+<p><strong>Question (one sentence):</strong> Is a LIONESS co-expression edge anything more than a closed-form quadratic function of each sample’s own expression, and, when classifying SLE against RA from whole blood, do LIONESS edges add information beyond the IFN score, its square, cell composition, and their own first-order (influence-function) features? (Revised 2026-11-03 after the first pilot, <code>proposal.md</code>, section 12.6; the question before it asked only about the IFN score and the matched quadratic model.)</p>
 <p><strong>Why it matters:</strong> A LIONESS edge is a known quadratic function of the sample’s own expression (proposal, section 4), so a network gain is a quadratic-expression gain unless it survives the matched comparison. In IFN-driven diseases, edges between IFN genes carry the square of the IFN factor, so a reference without that square credits IFN signal to the network. A user who reports network rewiring needs to know which comparisons the claim must survive.</p>
 </section>
 <section id="mechanism-we-suspect" class="level2">
 <h2 class="anchored" data-anchor-id="mechanism-we-suspect">2. Mechanism we suspect</h2>
-<p>The exact LIONESS Pearson edge is <span class="math inline">\(e_q = N r - (N-1)(r - a z_{qi} z_{qj})/\sqrt{(1 - a z_{qi}^2)(1 - a z_{qj}^2)}\)</span> with <span class="math inline">\(a = 1/(N-1)\)</span> (proposal, equation 1), which to first order is <span class="math inline">\(r + z_{qi} z_{qj} - \tfrac{r}{2}(z_{qi}^2 + z_{qj}^2)\)</span>: the reference correlation plus the influence function of the correlation at the sample. Users read the edge as the correlation in the sample’s own subpopulation. Three gaps follow. Genes sharing a factor <span class="math inline">\(F\)</span> give edges near <span class="math inline">\(a_i a_j F^2\)</span>, so edges add information over a reference with <span class="math inline">\(F\)</span> but not <span class="math inline">\(F^2\)</span> (zero when the classes have the same distribution of <span class="math inline">\(F\)</span>, large when they differ in its spread). A mean shift between unbalanced classes moves the group mean of an edge by <span class="math inline">\((1 - 2\pi)[\Delta_i \Delta_j - \tfrac r2(\Delta_i^2 + \Delta_j^2)]\)</span> with no change in co-expression (zero at <span class="math inline">\(\pi = 0.5\)</span>). And any classification gain from edges should be matched by a linear model on the products <span class="math inline">\(z_i z_j\)</span> and squares <span class="math inline">\(z_i^2\)</span>. If the mechanism is wrong, edges would add information beyond the matched quadratic model in cells with no co-expression difference.</p>
+<p>The exact LIONESS Pearson edge is <span class="math inline">\(e_q = N r - (N-1)(r - a z_{qi} z_{qj})/\sqrt{(1 - a z_{qi}^2)(1 - a z_{qj}^2)}\)</span> with <span class="math inline">\(a = 1/(N-1)\)</span> (proposal, equation 1), which to first order is <span class="math inline">\(r + z_{qi} z_{qj} - \tfrac{r}{2}(z_{qi}^2 + z_{qj}^2)\)</span>: the reference correlation plus the influence function of the correlation at the sample. Users read the edge as the correlation in the sample’s own subpopulation. Three gaps follow. Genes sharing a factor <span class="math inline">\(F\)</span> give edges near <span class="math inline">\(a_i a_j F^2\)</span>, so edges add information over a reference with <span class="math inline">\(F\)</span> but not <span class="math inline">\(F^2\)</span> (zero when the classes have the same distribution of <span class="math inline">\(F\)</span>, large when they differ in its spread). A mean shift between unbalanced classes moves the group mean of an edge by <span class="math inline">\((1 - 2\pi)[\Delta_i \Delta_j - \tfrac{r}{2}(\Delta_i^2 + \Delta_j^2)]\)</span> with no change in co-expression (zero at <span class="math inline">\(\pi = 0.5\)</span>). And any classification gain from edges should be matched by a linear model on the products <span class="math inline">\(z_i z_j\)</span> and squares <span class="math inline">\(z_i^2\)</span>. If the mechanism is wrong, edges would add information beyond the matched quadratic model in cells with no co-expression difference.</p>
 </section>
 <section id="pilot" class="level2">
 <h2 class="anchored" data-anchor-id="pilot">3. Pilot</h2>
@@ -3500,6 +3500,12 @@ Table 5: Numbers quoted in the spec’s section 3, recomputed from <code>result
 <li>Does the effect exist? Yes, but small, and no by the rule: edges added to a reference without the squared IFN score raised the AUC by 0.0067 (MCSE 0.0022) in the moderate IFN cell, against a threshold of 0.05; 0.031 in the large cell.</li>
 <li>Is it large enough to matter at realistic sample sizes? No: -0.0017 (MCSE 0.0019) at 40 per class.</li>
 <li>Is there an obvious fix or diagnostic? The squared score in the reference removes the gain (edges with <span class="math inline">\(R_1\)</span> against <span class="math inline">\(R_1\)</span>: within 0.003 of zero in every IFN-only cell), and clause 3(a) passed in all seven cells; but the pre-registered matched quadratic model reached only a quarter of the edges’ gain in the network cell (clause 3(b) value -0.075, MCSE 0.003). An exploratory probe after the verdict found that first-order edges as features match the exact edges (<code>pilot/decisions.md</code>, D9).</li>
+</ol>
+<p><strong>The re-pilot (<code>pilot-b/</code>, revision 3, after the first pilot failed):</strong> verdict file <code>pilot-b/results/verdict.rds</code>, status <code>piloted-close-call</code>; 200 replicates per cell, 12 cells, 47 minutes on three cores.</p>
+<ol type="1">
+<li>Does the equivalence hold? Yes: edges with <span class="math inline">\(R_1\)</span> gained 0.118 (MCSE 0.005) over <span class="math inline">\(R_1\)</span> in the strong network cell, and edges and first-order edges differed by -0.0054 to 0.0017 in AUC across all 12 cells.</li>
+<li>Is it large enough to matter at realistic sizes? The co-expression signal yes: 0.048 (MCSE 0.005) at 40 per class. The IFN artifact at a large IFN difference is a close call: 0.0201 (MCSE 0.0027) against 0.02.</li>
+<li>Is there an obvious fix or diagnostic? Yes: with the squared score in the reference, edges added -0.0025 to -0.0019 in the IFN-only cells, and -0.0022 with a two-gene score.</li>
 </ol>
 </section>
 <section id="ademp-skeleton" class="level2">
@@ -3650,7 +3656,7 @@ Table 5: Numbers quoted in the spec’s section 3, recomputed from <code>result
 </section>
 <section id="d9.-exploratory-probe-of-clause-3b-after-the-verdict" class="level2">
 <h2 class="anchored" data-anchor-id="d9.-exploratory-probe-of-clause-3b-after-the-verdict">D9. Exploratory probe of clause 3(b), after the verdict</h2>
-<p><strong>What.</strong> Not pre-registered, run after the verdict to explain the failure of clause 3(b): 60 new replicates of cell 13 (seeds offset by 100000), comparing the edges with <span class="math inline">\(R_1\)</span>, the pre-registered matched quadratic model, and the first-order edges <span class="math inline">\(r + z_i z_j - \tfrac r2 (z_i^2 + z_j^2)\)</span> as features with <span class="math inline">\(R_1\)</span> (<code>pilot/posthoc/probe_cell13.R</code>, <code>pilot/results/posthoc_cell13.rds</code>). <strong>Finding.</strong> The first-order edges gained as much as the exact edges over <span class="math inline">\(R_1\)</span> (their difference was -0.005, MCSE 0.002), while the pre-registered quadratic model gained a quarter as much. The first-order edges are a linear combination of the same products and squares, so the information is the same; the elastic-net penalty treats the two parametrizations differently, because the edge form puts each pair’s co-expression into one feature while the product-and-square form spreads it over a product and two squares shared with other pairs. <strong>Why it matters.</strong> The matched comparator of the proposal should be the first-order edge features, not products and squares as separate features. With it, edges added nothing beyond their first-order form in the one cell probed. <strong>Check.</strong> This is one cell and 60 replicates, outside the pre-registration; it is evidence for the revision, not a pilot result.</p>
+<p><strong>What.</strong> Not pre-registered, run after the verdict to explain the failure of clause 3(b): 60 new replicates of cell 13 (seeds offset by 100000), comparing the edges with <span class="math inline">\(R_1\)</span>, the pre-registered matched quadratic model, and the first-order edges <span class="math inline">\(r + z_i z_j - \tfrac{r}{2}(z_i^2 + z_j^2)\)</span> as features with <span class="math inline">\(R_1\)</span> (<code>pilot/posthoc/probe_cell13.R</code>, <code>pilot/results/posthoc_cell13.rds</code>). <strong>Finding.</strong> The first-order edges gained as much as the exact edges over <span class="math inline">\(R_1\)</span> (their difference was -0.005, MCSE 0.002), while the pre-registered quadratic model gained a quarter as much. The first-order edges are a linear combination of the same products and squares, so the information is the same; the elastic-net penalty treats the two parametrizations differently, because the edge form puts each pair’s co-expression into one feature while the product-and-square form spreads it over a product and two squares shared with other pairs. <strong>Why it matters.</strong> The matched comparator of the proposal should be the first-order edge features, not products and squares as separate features. With it, edges added nothing beyond their first-order form in the one cell probed. <strong>Check.</strong> This is one cell and 60 replicates, outside the pre-registration; it is evidence for the revision, not a pilot result.</p>
 </section>
 <section id="what-was-not-done" class="level2">
 <h2 class="anchored" data-anchor-id="what-was-not-done">What was not done</h2>

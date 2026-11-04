@@ -404,3 +404,50 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - doi: 10.1038/nmeth.3337
 - record: PubMed record PMID 25822800, opened 2026-11-03
 - full_text: not needed (definitional)
+
+### friedman2010glmnet
+
+> Friedman, J., Hastie, T., & Tibshirani, R. (2010). Regularization paths for generalized linear models via coordinate descent. *Journal of Statistical Software*, 33(1). https://doi.org/10.18637/jss.v033.i01
+
+- type: article
+- author: Friedman, Jerome and Hastie, Trevor and Tibshirani, Robert
+- title: Regularization paths for generalized linear models via coordinate descent
+- journal: Journal of Statistical Software
+- year: 2010
+- volume: 33
+- number: 1
+- doi: 10.18637/jss.v033.i01
+- record: Crossref record for the DOI, opened 2026-11-04
+- full_text: not needed (definitional)
+
+### schuirmann1987tost
+
+> Schuirmann, D. J. (1987). A comparison of the two one-sided tests procedure and the power approach for assessing the equivalence of average bioavailability. *Journal of Pharmacokinetics and Biopharmaceutics*, 15(6), 657-680. https://doi.org/10.1007/BF01068419
+
+- type: article
+- author: Schuirmann, Donald J.
+- title: A comparison of the two one-sided tests procedure and the power approach for assessing the equivalence of average bioavailability
+- journal: Journal of Pharmacokinetics and Biopharmaceutics
+- year: 1987
+- volume: 15
+- number: 6
+- pages: 657-680
+- doi: 10.1007/BF01068419
+- record: Crossref record for the DOI, opened 2026-11-04
+- full_text: not needed (definitional)
+
+### langfelder2008wgcna
+
+> Langfelder, P., & Horvath, S. (2008). WGCNA: an R package for weighted correlation network analysis. *BMC Bioinformatics*, 9(1), 559. https://doi.org/10.1186/1471-2105-9-559
+
+- type: article
+- author: Langfelder, Peter and Horvath, Steve
+- title: {WGCNA}: an {R} package for weighted correlation network analysis
+- journal: BMC Bioinformatics
+- year: 2008
+- volume: 9
+- number: 1
+- pages: 559
+- doi: 10.1186/1471-2105-9-559
+- record: Crossref record for the DOI, opened 2026-11-04 (article number from the DOI suffix)
+- full_text: not needed (definitional)

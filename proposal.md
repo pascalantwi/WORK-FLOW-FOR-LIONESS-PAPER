@@ -30,7 +30,7 @@ $R_1$ is defined in section 7. The second contrast is tested only if the first i
 | 1. A procedure in wide use | LIONESS with Pearson correlation as its network function (the lionessR default), edges then compared between groups or used as classifier features [@kuijjer2019lioness; @kuijjer2019lionessr]. | none |
 | 2. A setting it was not built for | Whole blood in SLE and RA: one latent factor (type I IFN activity) and cell composition move many genes together; the IFN score differs between the diseases in level and spread; disease groups are unbalanced; treatment and batch shift expression [@elsherbiny2018twoscore]. | A confirmed dataset (section 6). |
 | 3. The estimand, as a functional | What users believe an edge estimates: $\rho_{ij}(P_q) = \operatorname{corr}_{P_q}(X_i, X_j)$, the correlation in the subpopulation $P_q$ the sample comes from; for groups, $\rho_{ij}(P_1) - \rho_{ij}(P_0)$. | How users read edges is argued from how papers report them, not measured. |
-| 4. The target and the bias term | Exact: equations (1) and (2). First order: $\rho_{ij}(P) + \mathrm{IF}_P(x_q)$ with $P$ the pooled reference. Group mean: equation (3); the mean-shift part is proportional to $(1 - 2\pi)$. | The remainder bound in closed form for heavy tails. |
+| 4. The target and the bias term | Exact: equations (1) and (2). First order: $\rho_{ij}(P) + \mathrm{IF}_P(x_q)$ with $P$ the pooled reference. Group mean: equation (3); the mean-shift part, equation (4), is proportional to $(1 - 2\pi)$. | The remainder bound in closed form for heavy tails. |
 | 5. A simulation that confirms it | Section 7, with null, IFN-only, mean-shift, and true-network cells, at two group balances. | Run in stage 2. |
 | 6. A correction or a diagnostic | Diagnostic: the matched quadratic comparator and the squared IFN term in the reference. Correction for group comparisons of edges: condition on the shared factors (partial correlation given the IFN score and composition) and compare within-group correlations directly. | The pilot tests both. |
 | 7. The application | Untreated SLE against untreated RA from one study, all patients together, the IFN score continuous. | A confirmed single-study dataset with both diseases. |
@@ -42,14 +42,17 @@ $R_1$ is defined in section 7. The second contrast is tested only if the first i
 **Result 1 (exact Pearson edge).** Removing one sample is a rank-one downdate of the first and second moments, which gives
 
 $$
-r_{(-q)} = \frac{r - a\, z_{qi} z_{qj}}{\sqrt{(1 - a z_{qi}^2)(1 - a z_{qj}^2)}}, \qquad
-e_q = N r - (N-1)\, r_{(-q)}. \tag{1}
+\begin{aligned}
+r_{(-q)} &= \frac{r - a\, z_{qi} z_{qj}}{\sqrt{\left(1 - a\, z_{qi}^2\right)\left(1 - a\, z_{qj}^2\right)}}, \\[4pt]
+e_q &= N r - (N-1)\, r_{(-q)}.
+\end{aligned}
+\tag{1}
 $$
 
 The derivation is the agent's and is labeled a sketch until written out in full in stage 3. Numerical check (`log/01-idea-review.md`, D11): equation (1) matched LIONESS to within $7 \times 10^{-13}$ at $N$ = 10, 50, and 500, with a sixfold outlier in the data. Expanding (1) in $a$ gives the idea's first-order form,
 
 $$
-e_q = r + z_{qi} z_{qj} - \frac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right) + O_p(1/N),
+e_q = r + z_{qi} z_{qj} - \frac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right) + O_p\!\left(N^{-1}\right),
 $$
 
 the reference correlation plus the influence function of the correlation [@devlin1975robust; @croux2010influence]. The first-order form correlated 0.997 or more with the exact edge under normal data and 0.979 or more under $t_3$ data (D5). The product term alone correlated only 0.66 to 0.88 when $r$ was 0.5 or 0.9, so the reference-correlation term is needed. Equation (1) also shows where the first order fails: when $z_{qi}^2$ approaches $N - 1$, a single outlying sample, the denominator vanishes.
@@ -57,8 +60,11 @@ the reference correlation plus the influence function of the correlation [@devli
 **Result 2 (exact partial-correlation edge).** Let $\Omega$ be the inverse of the covariance of the $p$ genes in the network (divisor $N$), $d_q$ the centered sample, $u_q = \Omega d_q$, $\varepsilon_{qi} = u_{qi}/\sqrt{\omega_{ii}}$, $m_q = d_q^\top \Omega d_q$ the squared Mahalanobis distance of the sample, and $c_q = 1/(N - 1 - m_q)$. The Sherman-Morrison formula for the downdated inverse gives
 
 $$
-r_{(-q)} = \frac{r - c_q\, \varepsilon_{qi} \varepsilon_{qj}}{\sqrt{(1 + c_q \varepsilon_{qi}^2)(1 + c_q \varepsilon_{qj}^2)}}, \qquad
-e_q \approx r + \frac{N-1}{N-1-m_q}\left[\varepsilon_{qi} \varepsilon_{qj} + \frac{r}{2}\left(\varepsilon_{qi}^2 + \varepsilon_{qj}^2\right)\right]. \tag{2}
+\begin{aligned}
+r_{(-q)} &= \frac{r - c_q\, \varepsilon_{qi} \varepsilon_{qj}}{\sqrt{\left(1 + c_q\, \varepsilon_{qi}^2\right)\left(1 + c_q\, \varepsilon_{qj}^2\right)}}, \\[4pt]
+e_q &\approx r + \frac{N-1}{N-1-m_q}\left[\varepsilon_{qi} \varepsilon_{qj} + \frac{r}{2}\left(\varepsilon_{qi}^2 + \varepsilon_{qj}^2\right)\right].
+\end{aligned}
+\tag{2}
 $$
 
 The second term has a plus sign because $\varepsilon_{qi}$ and $\varepsilon_{qj}$ are residuals on all other genes, partner included, and correlate at $-r$; written with residuals on the conditioning set alone, the form matches the Pearson one. Numerical check (D12): the exact form matched LIONESS to within $1.3 \times 10^{-12}$ for $p$ from 4 to 45 at $N$ = 50 and 100. The inflation factor $(N-1)/(N-1-m_q)$ is sample-specific: on average $m_q$ is close to $p$, so edges of samples far from the rest are inflated most, and every edge becomes unstable as $p$ approaches $N$ (at $p$ = 45 and $N$ = 50, errors of the first-order form reached 35). This corrects the idea's wording, which used raw standardized deviations (D6), and sets a working limit: partial-correlation LIONESS is used only when $p \le N/4$, a little stricter than the checked case $p$ = 30, $N$ = 100 (mean $m_q/(N-1)$ of 0.30), where the scaled form in (2) correlated 0.9997 with the exact edge.
@@ -66,20 +72,35 @@ The second term has a plus sign because $\varepsilon_{qi}$ and $\varepsilon_{qj}
 **Result 3 (group means of edges).** Let group $g$ have share $\pi_g$, mean $\mu_g$, and within-group covariance $C_g$, all in units of the pooled standard deviations, with $\delta_g = \mu_g - \mu$ the group's deviation from the pooled mean. Averaging the first-order form over group $g$ gives
 
 $$
-E_g[e] \approx r + C_{g,ij} + \delta_{gi}\delta_{gj} - \frac{r}{2}\left(C_{g,ii} + \delta_{gi}^2 + C_{g,jj} + \delta_{gj}^2\right). \tag{3}
+\begin{aligned}
+\mathrm{E}_g[e] &\approx r + C_{g,ij} + \delta_{gi}\,\delta_{gj} \\
+&\quad - \frac{r}{2}\left(C_{g,ii} + \delta_{gi}^2 + C_{g,jj} + \delta_{gj}^2\right).
+\end{aligned}
+\tag{3}
 $$
 
 For two groups with mean difference $\Delta$ (pooled units), $\delta_1 = (1-\pi)\Delta$ and $\delta_0 = -\pi\Delta$, so a pure mean shift with equal within-group covariances moves the difference in mean edges by
 
 $$
-E_1[e] - E_0[e] \approx (1 - 2\pi)\left[\Delta_i \Delta_j - \frac{r}{2}\left(\Delta_i^2 + \Delta_j^2\right)\right],
+\mathrm{E}_1[e] - \mathrm{E}_0[e] \approx (1 - 2\pi)\left[\Delta_i \Delta_j - \frac{r}{2}\left(\Delta_i^2 + \Delta_j^2\right)\right],
+\tag{4}
 $$
 
 zero for balanced groups and growing with imbalance. Numerical check (D13, 400 replicates of $N$ = 200, two genes with no co-expression in either group): at $\pi$ = 0.5, 0.3, and 0.15 the observed differences were 0.001, 0.188, and 0.354 against 0.000, 0.186, and 0.362 from the formula, each within 0.8 Monte Carlo standard errors. This is a mechanism for the "subpopulation size bias" that SWEET was built to remove [@chen2023sweet]; the formula says where it comes from.
 
 **Result 4 (shared factor).** When genes load on a factor $F$, $z_{qi} z_{qj} \approx a_i a_j F_q^2$, so their edge carries $F^2$. Sketch (D7): with classes differing only in the spread of $F$, the mean edge was 0.23 in one class and 0.80 in the other and correlated 0.74 with $F^2$; after conditioning on $F$, 0.007. A reference model holding the IFN score but not its square therefore credits the squared IFN signal to the network.
 
-**Result 5 (test samples without leakage).** For a test sample scored against a training reference of size $N$, adding the sample is the update that (1) reverses: $e_q = (N+1)\, r_{(+q)} - N r$ with $r_{(+q)} = (r + b z_i z_j)/\sqrt{(1 + b z_i^2)(1 + b z_j^2)}$, $b = 1/(N+1)$, and $z$ standardized by the training moments. Numerical check (D14): equal to the direct computation to ten decimals. Edges for test samples thus need only the training moments, which makes leakage-free cross-validation cheap.
+**Result 5 (test samples without leakage).** For a test sample scored against a training reference of size $N$, adding the sample is the update that (1) reverses. With $z$ standardized by the training moments and $b = 1/(N+1)$,
+
+$$
+\begin{aligned}
+r_{(+q)} &= \frac{r + b\, z_{qi} z_{qj}}{\sqrt{\left(1 + b\, z_{qi}^2\right)\left(1 + b\, z_{qj}^2\right)}}, \\[4pt]
+e_q &= (N+1)\, r_{(+q)} - N r.
+\end{aligned}
+\tag{5}
+$$
+
+Numerical check (D14): equal to the direct computation to ten decimals. Edges for test samples thus need only the training moments, which makes leakage-free cross-validation cheap.
 
 **What the idea claims, and where it stands now.**
 
@@ -150,7 +171,7 @@ Opened 2026-11-03: the GEO series records and every sample record of the GEO ser
 | 13 | N4 | $R_1$ + iENA sPCC edges [@yu2017iena] | an explicit-deviation method |
 | 14 | N5 | $R_1$ + SWEET edges [@chen2023sweet] | a size-weighted method |
 | 15 | N6 | $R_1$ + BONOBO edges [@saha2024bonobo] | a Bayesian method |
-| 16 | N7 | $R_1$ + co-expression module eigengenes [CITE: WGCNA]{.cite} | population-level modules |
+| 16 | N7 | $R_1$ + co-expression module eigengenes [@langfelder2008wgcna] | population-level modules |
 | 17 | N8 | $R_1$ + products $z_i z_j$ of the pairs selected by differential correlation [@mckenzie2016dgca] | population-level differential correlation |
 
 **The gene set $G$:** the 50 genes with the largest variance after regressing out the residual IFN score, composition, and batch, chosen within each training fold (1,225 edges); the genes of the IFN score are excluded from $G$ so that the score and the edges do not share genes. A secondary analysis uses the IFN gene module as $G$, where Result 4 predicts the largest artifact.
@@ -225,7 +246,7 @@ This section governs where it differs from sections 1 to 11, which stand as the 
 
 - The IFN artifact exists but is small: edges added to a reference without the squared IFN score raised the AUC by 0.0067 (MCSE 0.0022) with a moderate IFN difference and 0.031 (MCSE 0.0033) with a large one, and by -0.0017 at 40 per class. Adding the squared score removed it in every IFN-only cell.
 - Edges carry a real co-expression signal: with a module correlation change of 0.4, edges gained 0.116 in AUC over $R_1$.
-- The pre-registered matched quadratic model (products and squares as separate penalized features) reached only 0.029 of that gain. An exploratory probe after the verdict (`pilot/posthoc/probe_cell13.R`) found that the first-order edge features, $r + z_i z_j - \tfrac r2 (z_i^2 + z_j^2)$ computed from the training moments, gained as much as the exact edges. The two quadratic models hold the same information; the elastic-net penalty treats the two parametrizations differently.
+- The pre-registered matched quadratic model (products and squares as separate penalized features) reached only 0.029 of that gain. An exploratory probe after the verdict (`pilot/posthoc/probe_cell13.R`) found that the first-order edge features, $r + z_i z_j - \tfrac{r}{2}(z_i^2 + z_j^2)$ computed from the training moments, gained as much as the exact edges. The two quadratic models hold the same information; the elastic-net penalty treats the two parametrizations differently.
 
 ### 12.2 The revised claim
 
@@ -284,6 +305,6 @@ Approved by the user on 2026-11-03, with the revision.
 
 **Question (one sentence):** Is a LIONESS co-expression edge anything more than a closed-form quadratic function of each sample's own expression, and, when classifying SLE against RA from whole blood, do LIONESS edges add information beyond the IFN score, its square, cell composition, and their own first-order (influence-function) features?
 
-1. *Equivalence.* Do the exact LIONESS edges and their first-order features $r + z_i z_j - \tfrac r2 (z_i^2 + z_j^2)$ give the same out-of-sample AUC, so that a network result can be reproduced without building a network?
+1. *Equivalence.* Do the exact LIONESS edges and their first-order features $r + z_i z_j - \tfrac{r}{2}(z_i^2 + z_j^2)$ give the same out-of-sample AUC, so that a network result can be reproduced without building a network?
 2. *Artifact and fix.* When SLE and RA differ in IFN activity, how much do edges gain only by carrying the squared IFN level, and does a reference with the squared score remove that gain, with heavy-tailed noise and with a less reliable score?
 3. *Parametrization.* When co-expression truly differs, why does the edge form detect it under penalized fitting while the same information entered as separate products and squares does not, and what does that imply for how network results should be tested?

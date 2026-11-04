@@ -69,7 +69,7 @@ Budget: 21 search queries against about 20, plus four blocked fetches; the overr
 
 ## 4. Theory check
 
-D5. Pearson. Exact LIONESS edges ($e_q = N r - (N-1) r_{(-q)}$) against $r + z_i z_j - \tfrac r2 (z_i^2 + z_j^2)$, $z$ standardized with divisor $N$. Script: `log/01-idea-review-theory-check.py`, numpy 2.3.4 in a scratch environment outside the project, seed 20261103, run 2026-11-03. Output:
+D5. Pearson. Exact LIONESS edges ($e_q = N r - (N-1) r_{(-q)}$) against $r + z_i z_j - \tfrac{r}{2}(z_i^2 + z_j^2)$, $z$ standardized with divisor $N$. Script: `log/01-idea-review-theory-check.py`, numpy 2.3.4 in a scratch environment outside the project, seed 20261103, run 2026-11-03. Output:
 
 ```
 PEARSON  dist   rho   N   cor(exact,approx)  max|exact-approx|  sd(exact)  cor(exact, zx*zy)
