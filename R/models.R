@@ -41,13 +41,16 @@ StratifiedFolds <- function(y, k = 5) {
 #' @param train Logical vector, `TRUE` for training samples.
 #' @param score_genes,gene_set Column indices of the score genes and the
 #'   network gene set.
+#' @param extra Further edge features to compute: any of `"ssn"`, `"iena"`,
+#'   `"sweet"`, `"bonobo"` ([SsnEdges()], [IenaEdges()], [SweetEdges()],
+#'   [BonoboEdges()]), each with the training fold as reference.
 #' @return A list with `train` and `test` elements, each holding `r0`, `r1`
 #'   (reference covariate matrices), `genes`, `quad`, `edges`, and `fo` (the
 #'   first-order edge features, with the training fold's correlation and
 #'   standardization for both parts).
 #' @export
 PilotFeatures <- function(cohort, train, score_genes = 1:5,
-                          gene_set = 6:50) {
+                          gene_set = 6:50, extra = character(0)) {
   x <- cohort$x
   sc <- StandardizeN(x[train, score_genes, drop = FALSE])
   score <- rowMeans(StandardizeN(x[, score_genes, drop = FALSE], sc$center,
@@ -74,7 +77,26 @@ PilotFeatures <- function(cohort, train, score_genes = 1:5,
          genes = g[rows, , drop = FALSE], quad = quad[rows, , drop = FALSE],
          edges = edges, fo = fo[rows, , drop = FALSE])
   }
-  list(train = part(train, edges_train), test = part(!train, edges_test))
+  out <- list(train = part(train, edges_train), test = part(!train, edges_test))
+  gtr <- g[train, , drop = FALSE]
+  gte <- g[!train, , drop = FALSE]
+  if ("ssn" %in% extra) {
+    out$train$ssn <- SsnEdges(gtr)
+    out$test$ssn <- SsnTestEdges(gte, gtr)
+  }
+  if ("iena" %in% extra) {
+    out$train$iena <- IenaEdges(gtr, gtr)
+    out$test$iena <- IenaEdges(gte, gtr)
+  }
+  if ("sweet" %in% extra) {
+    out$train$sweet <- SweetEdges(gtr)
+    out$test$sweet <- SweetTestEdges(gte, gtr)
+  }
+  if ("bonobo" %in% extra) {
+    out$train$bonobo <- BonoboEdges(gtr)
+    out$test$bonobo <- BonoboTestEdges(gte, gtr)
+  }
+  out
 }
 
 #' Fit a logistic reference model and score a test set
@@ -177,7 +199,9 @@ FitRda <- function(x_train, y, x_test, grid = seq(0, 1, by = 0.25), k = 5) {
 #' @param design_row One row of [PilotDesign()].
 #' @param rep Replicate index; the seed is the cell seed plus `rep`.
 #' @param models Which models to fit: the first pilot's seven by default;
-#'   `"F1R1"` adds the first-order edge features with the `R_1` terms.
+#'   `"F1R1"` adds the first-order edge features with the `R_1` terms, and
+#'   `"N3R1"`, `"N4R1"`, `"N5R1"`, `"N6R1"` the SSN, iENA, SWEET, and BONOBO
+#'   edges with the `R_1` terms.
 #'   The row's optional `noise` and `n_score` columns set the noise
 #'   distribution and the number of score genes (defaults `"normal"` and 5).
 #' @return A one-row data frame.
@@ -196,7 +220,9 @@ RunReplicate <- function(design_row, rep,
                  dimnames = list(NULL, models))
   for (f in 1:5) {
     tr <- folds != f
-    ft <- PilotFeatures(coh, tr, score_genes = seq_len(n_score))
+    extra <- c(N3R1 = "ssn", N4R1 = "iena", N5R1 = "sweet",
+               N6R1 = "bonobo")[intersect(models, c("N3R1", "N4R1", "N5R1", "N6R1"))]
+    ft <- PilotFeatures(coh, tr, score_genes = seq_len(n_score), extra = extra)
     a <- ft$train
     b <- ft$test
     ytr <- y[tr]
@@ -209,7 +235,11 @@ RunReplicate <- function(design_row, rep,
       E5 = function() FitElasticNet(a$r1, a$quad, ytr, b$r1, b$quad),
       N1R0 = function() FitElasticNet(a$r0, a$edges, ytr, b$r0, b$edges),
       N1R1 = function() FitElasticNet(a$r1, a$edges, ytr, b$r1, b$edges),
-      F1R1 = function() FitElasticNet(a$r1, a$fo, ytr, b$r1, b$fo)
+      F1R1 = function() FitElasticNet(a$r1, a$fo, ytr, b$r1, b$fo),
+      N3R1 = function() FitElasticNet(a$r1, a$ssn, ytr, b$r1, b$ssn),
+      N4R1 = function() FitElasticNet(a$r1, a$iena, ytr, b$r1, b$iena),
+      N5R1 = function() FitElasticNet(a$r1, a$sweet, ytr, b$r1, b$sweet),
+      N6R1 = function() FitElasticNet(a$r1, a$bonobo, ytr, b$r1, b$bonobo)
     )
     for (m in models) pred[!tr, m] <- out[[m]]()
   }
@@ -249,6 +279,13 @@ SummarizeCells <- function(reps) {
     gain_F1R1_vs_R1 = reps$F1R1 - reps$R1,
     diff_N1R1_vs_F1R1 = reps$N1R1 - reps$F1R1,
     diff_F1R1_vs_E5 = reps$F1R1 - reps$E5,
+    N3R1 = reps$N3R1, N4R1 = reps$N4R1, N5R1 = reps$N5R1, N6R1 = reps$N6R1,
+    diff_N3R1_vs_F1R1 = reps$N3R1 - reps$F1R1,
+    diff_N4R1_vs_F1R1 = reps$N4R1 - reps$F1R1,
+    diff_N5R1_vs_F1R1 = reps$N5R1 - reps$F1R1,
+    diff_N6R1_vs_F1R1 = reps$N6R1 - reps$F1R1,
+    gain_N5R1_vs_R1 = reps$N5R1 - reps$R1,
+    gain_N6R1_vs_R1 = reps$N6R1 - reps$R1,
     shift_gap = reps$shift_gap
   )
   out <- do.call(rbind, lapply(split(seq_len(nrow(reps)), reps$cell),

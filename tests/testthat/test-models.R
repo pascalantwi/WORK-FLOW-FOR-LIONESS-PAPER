@@ -136,3 +136,12 @@ test_that("PlotGains draws from saved summaries", {
   expect_equal(dim(m), c(12, 2))
   expect_true(file.exists(f))
 })
+
+test_that("RunReplicate fits the SSN, iENA, SWEET, and BONOBO models", {
+  d <- PilotBDesign()[7, ]
+  d$n1 <- 30
+  d$n0 <- 30
+  r <- suppressWarnings(RunReplicate(d, 1, models = c("R1", "N3R1", "N4R1", "N5R1", "N6R1")))
+  expect_true(all(r[, c("N3R1", "N4R1", "N5R1", "N6R1")] >= 0 &
+                    r[, c("N3R1", "N4R1", "N5R1", "N6R1")] <= 1))
+})

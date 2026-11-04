@@ -4,7 +4,13 @@
 \alias{PilotFeatures}
 \title{Features of the pilot's models, fitted on a training fold}
 \usage{
-PilotFeatures(cohort, train, score_genes = 1:5, gene_set = 6:50)
+PilotFeatures(
+  cohort,
+  train,
+  score_genes = 1:5,
+  gene_set = 6:50,
+  extra = character(0)
+)
 }
 \arguments{
 \item{cohort}{A list from \code{\link[=SimulateCohort]{SimulateCohort()}}.}
@@ -13,6 +19,10 @@ PilotFeatures(cohort, train, score_genes = 1:5, gene_set = 6:50)
 
 \item{score_genes, gene_set}{Column indices of the score genes and the
 network gene set.}
+
+\item{extra}{Further edge features to compute: any of \code{"ssn"}, \code{"iena"},
+\code{"sweet"}, \code{"bonobo"} (\code{\link[=SsnEdges]{SsnEdges()}}, \code{\link[=IenaEdges]{IenaEdges()}}, \code{\link[=SweetEdges]{SweetEdges()}},
+\code{\link[=BonoboEdges]{BonoboEdges()}}), each with the training fold as reference.}
 }
 \value{
 A list with \code{train} and \code{test} elements, each holding \code{r0}, \code{r1}
