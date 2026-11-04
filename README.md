@@ -79,7 +79,7 @@ Every stage ends at a stop: one file for you to read, committed at the stop, and
 From the project root, with the environments restored: the scripts in `analysis/` in order, then the render.
 
 ```bash
-Rscript analysis/01_simulation.R
+Rscript analysis/01_simulation.R --run production
 quarto render manuscript/manuscript.qmd
 ```
 
@@ -89,4 +89,4 @@ To work interactively, open R in the project root and run `devtools::load_all()`
 
 ## Data
 
-[For each raw input: the accession or URL, the date, and how it was obtained, by a download script (`analysis/00_download.R`) or by hand. Raw files are written once and never edited.]
+The application uses PRECISESADS (ELIXIR Luxembourg dataset ELU-2-E592B0-1, https://doi.org/10.17881/th9v-xt85), under controlled access for non-commercial research on systemic autoimmune diseases. It is not in this repository and cannot be downloaded by a script: access is requested through the ELIXIR Luxembourg data catalogue, and the files are then placed in `data/raw/` by hand, with the date and the version recorded here. [TO CONFIRM: the access request; until it is granted, `analysis/00_download.R` does not exist]{.tc} The simulation study needs no data.

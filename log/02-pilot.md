@@ -66,3 +66,7 @@ Time: about two hours of agent time around 54 minutes of compute.
 1. A test of the design table caught a seed collision that the pre-registration's own text denied; seed rules should be tested, not described.
 2. The verdict script of the first pilot could be reused only by rewriting; a rule-table format (clause, quantity, cells, threshold, type) that one script reads would make re-pilots cheaper and less error-prone.
 3. The first pilot's lesson (pair a matching clause with a signal clause) worked as intended: clause 1(a) showed there was a signal of 0.118 to match.
+
+## Stop answered (2026-11-04)
+
+- D-S3. The user read the re-pilot's close call as a pass ("Read the close call as a pass"). The stage record line says so. The question it leaves open, the size of the IFN artifact at a large IFN difference (0.0201, MCSE 0.0027, against 0.02), goes to stage 3's design proposal as a gradient of IFN differences.

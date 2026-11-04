@@ -126,3 +126,13 @@ test_that("RunReplicate fits F1R1 and the two-gene score", {
   r <- RunReplicate(d, 1, models = c("R1", "F1R1"))
   expect_true(all(c("R1", "F1R1") %in% names(r)))
 })
+
+test_that("PlotGains draws from saved summaries", {
+  s <- readRDS(test_path("fixtures", "pilot_b_cell_summaries.rds"))
+  f <- tempfile(fileext = ".png")
+  grDevices::png(f)
+  m <- PlotGains(s, PilotBDesign(), c(gain_N1R1_vs_R1 = "edges", gain_F1R1_vs_R1 = "first order"))
+  grDevices::dev.off()
+  expect_equal(dim(m), c(12, 2))
+  expect_true(file.exists(f))
+})
