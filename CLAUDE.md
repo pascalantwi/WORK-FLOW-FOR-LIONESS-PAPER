@@ -21,6 +21,7 @@ The repository is an R package plus analysis folders (a research compendium) wit
 ```
 idea.md                  the one input: the research idea, in any state
 proposal.md              stage 1's deliverable: the reviewed and verified proposal
+proposal-new/            the user's working copy of the proposal, to refine; the root proposal.md stays the official record
 project-spec.md          stage 2's spec: question, design, scope
 protocol.md              the ADEMP simulation protocol, written at the design stop of stage 3
 STATUS.md                the stage, the open stop, the stage record
