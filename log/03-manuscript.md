@@ -163,3 +163,7 @@ Lists for the stop message: core citations with full text pending, devlin1975rob
 2. `read_run_info()` both reads a run file and sets the paper's run label; reading a second script's run file through it silently relabelled every number. A helper that reads without setting the label, or a guard against a second call, would prevent it.
 3. `cv.glmnet` fails, rather than warns, when an inner fold's path stops after one penalty value; real data with few cases in a class reach that case, simulated data did not. A fallback in the package function is the robust place for it, with the default path untouched so that earlier runs reproduce.
 4. The checker counts digits in captions written in the YAML option; building captions in the setup chunk from the start would save a round.
+
+## Step 5.4 (revision 4): the clone proved
+
+A fresh clone of commit 45eee80, with `data/raw/` emptied: `renv::restore()` ok; `analysis/00_download.R` fetched the three raw files with checksums identical to the originals; 100 tests passed (the acceptance test skipped, as without its variable); `devtools::check()` 0 errors, 0 warnings, 0 notes (a first note came from the proof script's own log files in the package root, and went away when they were moved); the quick run and the replication reran, and `cell_summaries.rds`, `test_summaries.rds`, `s1_summaries.rds`, `known_answers.rds`, `design.rds`, `replication_summary.rds`, and `replication_mechanism.rds` are identical to the committed ones (`all.equal`, tolerance 1e-10); the manuscript rendered. No Python is used.
