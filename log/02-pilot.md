@@ -77,3 +77,14 @@ Time: about two hours of agent time around 54 minutes of compute.
 - `project-spec.md` rewritten from revision 4 (commit "Stage 2, step 1 (pilot-c)"), then `pilot-c/preregistration.md` committed alone before any pilot-c code ("Stage 2, step 2 (pilot-c): pre-registration").
 - Code (commit "Stage 2, step 3 (pilot-c): code"): `R/partial.R` (partial correlations and their LIONESS edges, computed directly, tested against a literal inverse-covariance implementation and against the Pearson edges with no conditioning set); the models built on E1 (`E5E1`, `F1E1`, `N1E1`, `N2E1`) in `RunReplicate()`; `PilotCDesign()`; `SummarizeCells()` now reads columns by exact name, since `$` would have matched `E5` to `E5E1` (found while writing the summaries, before any run). 77 tests pass (one glmnet convergence warning, as before); `devtools::check()` clean; the quick acceptance test reproduces the second pilot's replicates exactly.
 - Timing: 174 seconds for 10 replicates per cell (`pilot-c/results/timing.rds`); 200 replicates per cell, entered as an amendment before the run.
+- Run: 9 cells by 200 replicates in 3,316 seconds (`pilot-c/results/run_info.rds`, `pilot-c/run.log`); no restart.
+- Verdict (`Rscript pilot-c/verdict.R`): `piloted-pass`. All 18 clause rows passed, none within three MCSE of its threshold; neither open case of the pre-registration's section 5 decided a clause.
+- Known-answer checks: every code identity, including the new partial-correlation edges, below $10^{-13}$; the mean-shift formula held; the null cell's AUCs sat 2.8 to 4.3 MCSE below 0.5 for every model but E4 (decisions D7), as in both earlier pilots.
+- Outside the rule (decisions D8): adding 990 edges to E1 cost about 0.05 in AUC in the mean-shift cell, where the signal is in the gene levels, so $\Delta_1$ can be negative in real data from penalty dilution alone.
+- Report: `pilot-c/pilot-report.qmd`; the checker first gave one error (the spec section was titled "The spec", not "The draft spec") and two warnings (the word "survive", and no idea figure); fixed, and the checker then reported no errors or warnings. Looked at the rendered summary and the figure. Revision pass: the plain-language and impact sections read once as a new reader.
+
+## Process feedback (third pilot)
+
+1. `SummarizeCells()` read columns with `$`, which partially matches names; a new model name (`E5E1`) would have been read as an old one (`E5`). Summary code should read columns by exact name; caught before the run.
+2. Moving new known-answer checks into the middle of `KnownAnswerChecks()` would have shifted the random stream and the rows an existing test asserts on; new checks belong at the end.
+3. The workflow's revision rule (a dated section appended to the old proposal) conflicted with the user's request to replace the old files; a revision record section with a pointer to the git history kept both.

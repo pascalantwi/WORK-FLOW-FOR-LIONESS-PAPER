@@ -70,12 +70,12 @@ cell_lab <- function(cl) {
 
 **Scope.** This document reports the third pilot[^pilot], for revision 4 of the proposal (`proposal.md`, section 12): the user's new idea, in which every richer model is built on E1, the model with the IFN score, its square, composition, and the gene levels. It covers the idea, how the pilot was run, what it found, the project spec, and the decisions made along the way. It was built from `project-spec.md`, `decisions.md`, the saved results in `pilot-c/results/`, and, read-only, the second pilot's results in `pilot-b/results/`; every number in the text and figures is computed from those files when the document renders.
 
-**Status.** In `STATUS.md` the third pilot is marked `` `r status` ``[^pf]. SUMMARY_STATUS
+**Status.** In `STATUS.md` the third pilot is marked `` `r status` ``[^pf]. Every clause of the pre-registered rule passed, and none landed within three MCSE of its threshold. With every richer model built on E1, edges still equal their first-order formula, still find a real change in co-expression (also at 40 per class, and in the conditioned network N2), and add nothing when only interferon differs.
 
 | Pilot question | Answer | Key evidence |
 |---------|-------------|---------------------------------------------|
 | 1. Does the equivalence hold on the E1 base? | `r outcome(1, "(a)")` and `r outcome(1, "(b)")` | N1 gained `r gm(6, "d1_N1E1_vs_E1")` over E1 in `r cell_lab(6)`; N1 and F1 differed by `r fmt_range(c1b$value, 4)` across all `r nrow(design)` cells. |
-| 2. Does the signal survive at a small size and in N2? | `r outcome(2, "(a)")` and `r outcome(2, "(b)")` | N1 gained `r gm(7, "d1_N1E1_vs_E1")` over E1 at 40 per class; N2 gained `r gm(6, "g2_N2E1_vs_E1")` over E1 in cell 6. |
+| 2. Does the signal hold at 40 per class and in N2? | `r outcome(2, "(a)")` and `r outcome(2, "(b)")` | N1 gained `r gm(7, "d1_N1E1_vs_E1")` over E1 at 40 per class; N2 gained `r gm(6, "g2_N2E1_vs_E1")` over E1 in cell 6. |
 | 3. Does the E1 base remove the artifact? | `r outcome(3, "(a)")` and `r outcome(3, "(b)")` | In the IFN-only cells, N1 against E1 ranged over `r fmt_range(c3a$value, 4)` and N2 against E1 over `r fmt_range(c3b$value, 4)`. |
 
 **What needs your decision** (details in [Action items and limitations](#action-items-and-limitations)): the status call; the open `[TO CONFIRM]` items in the spec (highlighted in yellow): the PRECISESADS access request, the replication downloads, and the milestone dates.
@@ -86,13 +86,13 @@ cell_lab <- function(cl) {
 
 LIONESS[^lioness] gives every patient a value for every pair of genes, called an edge, meant to say how tightly the two genes move together in that patient. The exact formula behind it says what the value is made of: the correlation of the two genes across all patients, plus the product of the patient's own two standardized values, minus a correction for how far each gene alone sits from its average. So an edge can be computed from the patient's expression in one line.
 
-The new idea asks LIONESS to beat a stronger opponent than before. In the earlier pilots, LIONESS edges were added to a model with the interferon score and its square ($R_1$). Now they are added to a model that also holds every gene's level (E1), and each competitor (the one-line formula F1, the separate products and squares E5, and the partial-correlation edges N2) is added to the same E1. This pilot asks whether the earlier findings survive that change: whether edges still equal their formula, whether they still find a real change in co-expression, and whether interferon still leaks through when the gene levels are in the base. No patient data were analyzed.
+The new idea asks LIONESS to beat a stronger opponent than before. In the earlier pilots, LIONESS edges were added to a model with the interferon score and its square ($R_1$). Now they are added to a model that also holds every gene's level (E1), and each competitor (the one-line formula F1, the separate products and squares E5, and the partial-correlation edges N2) is added to the same E1. This pilot asks whether the earlier findings still hold after that change: whether edges still equal their formula, whether they still find a real change in co-expression, and whether interferon still leaks through when the gene levels are in the base. No patient data were analyzed.
 
 ## Potential impact
 
 LIONESS builds one network per sample from an aggregate network and has an R implementation [@kuijjer2019lioness; @kuijjer2019lionessr]. Earlier work reduced per-sample changes in correlation to a product of standardized deviations for large reference sets [@yu2017iena], and documented that subpopulation size and differential expression shift LIONESS edges [@kuijjer2026challenges]. New here: the exact closed form of the LIONESS edge, and the test of whether edges add anything to a classifier that already holds the gene levels, beyond their own first-order formula.
 
-IMPACT_PARAGRAPH
+Users compare edges between groups and feed them to classifiers, and read the result as rewired gene coupling. This pilot shows that the two checks the theory proposes still hold on the stronger base. Across all `r nrow(design)` cells, N1 and F1 differed by `r fmt_range(c1b$value, 4)` in AUC (@fig-gains), so a network result is a result about a quadratic function of expression that any reader can recompute without building a network. With the IFN score, its square, and the gene levels in the base, edges added `r fmt_range(c3a$value, 4)` in the IFN-only cells, while the same edges on $R_0$ gained up to `r fmt(max(sapply(ifn_cells, G, q = "gain_N1R0_vs_R0")), 3)` (@tbl-auc): the interferon artifact is real, and the base removes it. And edges still found a true co-expression change that the gene levels cannot see, gaining `r gm(6, "d1_N1E1_vs_E1")` over E1, where the same information as separate products and squares gained only `r gm(6, "gain_E5E1_vs_E1")`. The application to PRECISESADS, once access is granted, will show whether these hold in real blood.
 
 ## Application: the study behind the data
 
@@ -129,6 +129,26 @@ $$
 | $f_q$ | first-order edge: the reference correlation plus the influence function of the correlation at the sample |
 
 The partial-correlation edge of N2 replaces $r$ by the partial correlation of the two genes given the IFN score and composition, computed from residuals, with the same leave-one-out construction.
+
+```{r}
+#| label: fig-idea
+#| fig-cap: "The idea, an illustration on made-up numbers (not pilot output): 300 simulated samples. Left: two genes correlated 0.5; each point is one sample's exact LIONESS edge against its first-order edge, and the line is equality. Right: two genes that both load 0.8 on a factor F (interferon); each sample's edge against F squared, which is why the base must hold the squared IFN score."
+#| fig-width: 10
+#| fig-height: 4.2
+
+set.seed(21)
+n <- 300
+e <- matrix(rnorm(2 * n), n)
+x <- cbind(e[, 1], 0.5 * e[, 1] + sqrt(0.75) * e[, 2])
+f <- rnorm(n)
+xf <- cbind(0.8 * f + rnorm(n), 0.8 * f + rnorm(n))
+par(mfrow = c(1, 2), mar = c(4.2, 4.2, 2, 1))
+plot(LionessEdgesFirstOrder(x)[, 1], LionessEdges(x)[, 1], pch = 19, cex = 0.5, col = "#2166AC",
+     xlab = "First-order edge", ylab = "Exact LIONESS edge", main = "Edge against its formula")
+abline(0, 1, col = "grey40")
+plot(f^2, LionessEdges(xf)[, 1], pch = 19, cex = 0.5, col = "#B2182B",
+     xlab = "F squared", ylab = "Exact LIONESS edge", main = "Edge of two IFN genes against F squared")
+```
 
 ## Critiquing the model
 
@@ -223,7 +243,13 @@ knitr::include_graphics("results/auc_gains.png")
 
 Each finding is a claim followed by the output behind it. Read the claim, open the output, and check that you can see the claim there before accepting it.
 
-FINDINGS
+1. **N1 and F1 perform the same on the E1 base.** Their AUC difference ranged over `r fmt_range(c1b$value, 4)` across all `r nrow(design)` cells (@tbl-verdict, purple points in @fig-gains), within the pre-registered margin of 0.01 in every cell. The largest, `r gm(9, "d2_N1E1_vs_F1E1", 4)`, was in `r cell_lab(9)`, and favored the first-order edges, as with heavy-tailed noise in the second pilot.
+2. **There was a real signal to match.** In `r cell_lab(6)`, N1 gained `r gm(6, "d1_N1E1_vs_E1")` over E1, and `r gm(7, "d1_N1E1_vs_E1")` with 40 in the smaller class (@tbl-verdict, blue points).
+3. **The conditioned network keeps the signal.** N2 gained `r gm(6, "g2_N2E1_vs_E1")` over E1 in cell 6, `r fmt(-G(6, "diff_N2E1_vs_N1E1"), 4)` less than N1 (orange points).
+4. **The E1 base removes the interferon artifact.** In the IFN-only cells, N1 against E1 ranged over `r fmt_range(c3a$value, 4)` and N2 against E1 over `r fmt_range(c3b$value, 4)`, while N1 with $R_0$ gained `r gm(2, "gain_N1R0_vs_R0")` over $R_0$ at a large IFN difference, `r gm(4, "gain_N1R0_vs_R0")` with $t_5$ noise, and `r gm(3, "gain_N1R0_vs_R0", 4)` at a moderate one (red points). The second pilot's estimate in its large cell was `r sprintf("%s (MCSE %s)", fmt(GB(2, "gain_N1R0_vs_R0"), 4), fmt(MB(2, "gain_N1R0_vs_R0"), 4))`.
+5. **The edge form beats separate products and squares.** In the network cells, N1 gained over E5 by `r fmt_range(sapply(net_cells, G, q = "par_N1E1_vs_E5E1"), 3)`, although both hold the same quadratic information (green against blue points). E4, quadratic discriminant analysis, gained `r gm(6, "diff_E4_vs_E1")` over E1 in cell 6, less than N1.
+6. **Features without signal cost AUC.** In `r cell_lab(5)`, where the signal is in the gene levels, E1 gained `r gm(5, "gain_E1_vs_R1")` over $R_1$, and adding the 990 edges lowered the AUC by `r fmt(-G(5, "d1_N1E1_vs_E1"), 3)` (@tbl-auc): the penalty is diluted. So $\Delta_1$ can be negative in real data without any harm from edges as such (decisions log, D8).
+7. **The known-answer checks hold, with one flag.** Every code identity, including the partial-correlation edges against the inverse-covariance formula, agreed to better than $10^{-13}$, and the mean-shift formula held; in the null cell every model but E4 sat below 0.5 by 2.8 to 4.3 MCSE, shared by the models the clauses compare, so the paired differences are unaffected (@tbl-known-answer; decisions log, D7).
 
 ## Tables
 
@@ -278,7 +304,7 @@ knitr::kable(data.frame(
   row.names = FALSE)
 ```
 
-# The spec {#draft-spec}
+# The draft spec {#draft-spec}
 
 This is `project-spec.md`, read from the file when the document renders. Anything the agent[^agent] left for the user to decide is highlighted in yellow and starts with "To confirm".
 
@@ -304,7 +330,10 @@ cat(read_md_part("decisions.md"), "\n")
 
 ## Action items
 
-ACTION_ITEMS
+1. **Decide the status.** The rule gives `piloted-pass`. A pass starts stage 3, whose design stop writes `protocol.md` from the design of proposal section 7.3 (400 replicates per setting).
+2. **Resolve the yellow `[TO CONFIRM]` items** in the spec: the PRECISESADS access request (ask for the inception cohort and the centre labels), the downloads of GSE17755 and GSE235508, and the milestone dates.
+3. **Decide on fold-averaged AUC** beside pooled AUC for the full study (decisions log, D7).
+4. **Verify the citations.** Every citation was checked against its Crossref or PubMed record at stage 1; @devlin1975robust and @croux2010influence still lack full texts.
 
 ## Limitations
 

@@ -5,7 +5,7 @@
 | Proposal | `proposal.md`, revision 4, final 2026-11-06 |
 | Authors | as in `DESCRIPTION`, set by `tools/authors.R` before the final render |
 | Written | 2026-11-06 (replaces the spec of 2026-11-03) |
-| Status | final 2026-11-06; section 3 completed after the third pilot's verdict |
+| Status | final 2026-11-06; section 3 completed after the third pilot's verdict, 2026-11-06 |
 
 ## 1. Question and why it matters
 
@@ -31,11 +31,15 @@ Filled twice: the plan now, the answers after the verdict (stage 2, step 5). Thi
 
 Pass if every clause passes; fail if 1(a), 1(b), or 3(a) fails; close call otherwise, and for any clause within three MCSE of its threshold.
 
-**Verdict file:** [FILL: after the run]
+**Verdict file:** `pilot-c/results/verdict.rds` (status `piloted-pass`), from `Rscript pilot-c/verdict.R`; 200 replicates per cell, 9 cells, 55 minutes on three cores.
 
-**Plot:** [FILL: after the run]
+**Plot:** `pilot-c/results/auc_gains.png`.
 
-**The three pilot answers:** [FILL: after the run]
+**The three pilot answers:**
+
+1. Does the equivalence hold on the E1 base? Yes: N1 gained 0.109 (MCSE 0.005) over E1 in the strong network cell, and N1 and F1 differed by -0.0038 to 0.0010 in AUC across all nine cells.
+2. Does the signal survive at a small size and in the conditioned network? Yes: N1 gained 0.044 (MCSE 0.005) over E1 at 40 per class, and N2 gained 0.101 (MCSE 0.005) over E1 in the strong network cell.
+3. Does the E1 base remove the interferon artifact? Yes: in the IFN-only cells N1 against E1 ranged from -0.0006 to 0.0014, and N2 against E1 from 0.0003 to 0.0013, while N1 with $R_0$ gained 0.029 (MCSE 0.003) over $R_0$ at a large IFN difference.
 
 **The earlier pilots, for the record.** The first pilot (`pilot/`, 16 cells, 180 replicates) failed its rule: the IFN artifact was small (0.0067 at a moderate IFN difference) and the planned competitor, separate products and squares, reached only a quarter of the edges' gain with a true co-expression change, while first-order edges matched it. The second pilot (`pilot-b/`, 12 cells, 200 replicates) was a close call read as a pass: edges and first-order edges differed by -0.0054 to 0.0017 in AUC, the co-expression gain was 0.118 (MCSE 0.005), the artifact at a large IFN difference was 0.0201 (MCSE 0.0027) against a threshold of 0.02, and the squared score removed it. Both built the richer models on $R_1$.
 
