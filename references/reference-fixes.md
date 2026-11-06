@@ -1,4 +1,4 @@
-# Reference list fixes (2026-11-04)
+# Reference list fixes (2026-11-06)
 
 Each row is a correction to make in `references.md`, never in `references.bib`. Rerun build-bib.py after fixing; this file is rewritten on every run and should end up empty.
 
