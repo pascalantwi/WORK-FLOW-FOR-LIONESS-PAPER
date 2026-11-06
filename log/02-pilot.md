@@ -70,3 +70,10 @@ Time: about two hours of agent time around 54 minutes of compute.
 ## Stop answered (2026-11-04)
 
 - D-S3. The user read the re-pilot's close call as a pass ("Read the close call as a pass"). The stage record line says so. The question it leaves open, the size of the IFN artifact at a large IFN difference (0.0201, MCSE 0.0027, against 0.02), goes to stage 3's design proposal as a gradient of IFN differences.
+
+# Third pilot: pilot-c (revision 4, the user's new idea)
+
+- The user asked to redo the work up to stage 2 with the refined proposal and to see whether it passes before stage 3. Stage 1 was redone as revision 4 (`log/01-idea-review.md`, "Revision 4"), with stop 1 waived by the user.
+- `project-spec.md` rewritten from revision 4 (commit "Stage 2, step 1 (pilot-c)"), then `pilot-c/preregistration.md` committed alone before any pilot-c code ("Stage 2, step 2 (pilot-c): pre-registration").
+- Code (commit "Stage 2, step 3 (pilot-c): code"): `R/partial.R` (partial correlations and their LIONESS edges, computed directly, tested against a literal inverse-covariance implementation and against the Pearson edges with no conditioning set); the models built on E1 (`E5E1`, `F1E1`, `N1E1`, `N2E1`) in `RunReplicate()`; `PilotCDesign()`; `SummarizeCells()` now reads columns by exact name, since `$` would have matched `E5` to `E5E1` (found while writing the summaries, before any run). 77 tests pass (one glmnet convergence warning, as before); `devtools::check()` clean; the quick acceptance test reproduces the second pilot's replicates exactly.
+- Timing: 174 seconds for 10 replicates per cell (`pilot-c/results/timing.rds`); 200 replicates per cell, entered as an amendment before the run.

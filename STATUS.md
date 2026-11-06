@@ -5,7 +5,7 @@
 | Workflow version | 0.2.4-md (2026-11-03): tgrimes/research-workflow 0.2.4 with a Markdown reference list and no Zotero |
 | Project | LIONESS edges, the interferon score, and SLE versus RA |
 | Package | lionessifn |
-| Stage | 2, spec |
+| Stage | 2, pilot running |
 | Open stop | none: stage 2 in progress (third pilot, `pilot-c/`) |
 | Last update | 2026-11-06 |
 
