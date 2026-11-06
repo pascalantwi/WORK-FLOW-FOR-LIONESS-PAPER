@@ -88,3 +88,7 @@ Time: about two hours of agent time around 54 minutes of compute.
 1. `SummarizeCells()` read columns with `$`, which partially matches names; a new model name (`E5E1`) would have been read as an old one (`E5`). Summary code should read columns by exact name; caught before the run.
 2. Moving new known-answer checks into the middle of `KnownAnswerChecks()` would have shifted the random stream and the rows an existing test asserts on; new checks belong at the end.
 3. The workflow's revision rule (a dated section appended to the old proposal) conflicted with the user's request to replace the old files; a revision record section with a pointer to the git history kept both.
+
+## Questions at the stage 2 stop (2026-11-06)
+
+- D-S4. Asked whether other public data could answer the clinical question if PRECISESADS access fails, the user reviewed the options found in GEO and ArrayExpress (2026-11-06): within-SLE activity (GSE88884, GSE65391), tuberculosis (GSE19491), SLE against systemic JIA (GSE8650, GSE11907, GSE19491), Crohn's disease against ulcerative colitis and PBC against PSC (GSE119600), and the SLE and RA neutrophil series GSE326777 (34 SLE, 15 RA). The user decided to keep SLE against RA as the question ("let me maintain my own"); the proposal is unchanged. None of these datasets was downloaded or checked for batch aliasing. The stage 2 stop (the third pilot's pass) stays open.
