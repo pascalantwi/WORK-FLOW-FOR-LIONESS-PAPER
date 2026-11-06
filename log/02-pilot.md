@@ -92,3 +92,7 @@ Time: about two hours of agent time around 54 minutes of compute.
 ## Questions at the stage 2 stop (2026-11-06)
 
 - D-S4. Asked whether other public data could answer the clinical question if PRECISESADS access fails, the user reviewed the options found in GEO and ArrayExpress (2026-11-06): within-SLE activity (GSE88884, GSE65391), tuberculosis (GSE19491), SLE against systemic JIA (GSE8650, GSE11907, GSE19491), Crohn's disease against ulcerative colitis and PBC against PSC (GSE119600), and the SLE and RA neutrophil series GSE326777 (34 SLE, 15 RA). The user decided to keep SLE against RA as the question ("let me maintain my own"); the proposal is unchanged. None of these datasets was downloaded or checked for batch aliasing. The stage 2 stop (the third pilot's pass) stays open.
+
+## Stop answered (2026-11-06)
+
+- D-S5. The user accepted the third pilot's pass and asked for stage 3 and the replication downloads ("do 1 and 3 and stage 3"). `analysis/00_download.R` fetched GSE17755's series matrix (10.4 MB) and GSE326777's series matrix and gene counts (2.6 MB) into `data/raw/`, with checksums in `results/00_download_checksums.csv`; GSE17755's raw scanner files (1.1 GB) were not fetched, since the normalized matrix is what the analysis reads. The raw files are committed (13 MB). R's own downloader failed the proxy's TLS handshake, so the script uses the system curl with retries.

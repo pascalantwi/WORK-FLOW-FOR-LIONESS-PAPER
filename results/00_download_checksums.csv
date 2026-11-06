@@ -1,0 +1,4 @@
+"accession","url","file","fetched","bytes","md5"
+"GSE17755","https://ftp.ncbi.nlm.nih.gov/geo/series/GSE17nnn/GSE17755/matrix/GSE17755_series_matrix.txt.gz","GSE17755_series_matrix.txt.gz",FALSE,10426004,"340c0aef660000ce4c2b32377300e681"
+"GSE326777","https://ftp.ncbi.nlm.nih.gov/geo/series/GSE326nnn/GSE326777/matrix/GSE326777_series_matrix.txt.gz","GSE326777_series_matrix.txt.gz",FALSE,5641,"a5c42fc4c5b90df5b46ea22928f3cc1c"
+"GSE326777","https://ftp.ncbi.nlm.nih.gov/geo/series/GSE326nnn/GSE326777/suppl/GSE326777_gene_counts_matrix.tsv.gz","GSE326777_gene_counts_matrix.tsv.gz",FALSE,2586391,"9bf11fb8663bc287bcd92dad429c5861"

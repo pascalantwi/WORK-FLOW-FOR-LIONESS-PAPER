@@ -5,8 +5,8 @@
 | Workflow version | 0.2.4-md (2026-11-03): tgrimes/research-workflow 0.2.4 with a Markdown reference list and no Zotero |
 | Project | LIONESS edges, the interferon score, and SLE versus RA |
 | Package | lionessifn |
-| Stage | 2, piloted-pass |
-| Open stop | stage 2 stop: read `pilot-c/pilot-report.html` and decide (pass: stage 3 starts, and its design stop writes `protocol.md`) |
+| Stage | 3, drafting |
+| Open stop | none: stage 3 in progress (revision 4; the design was chosen by the user on 2026-11-06, `log/03-manuscript.md`) |
 | Last update | 2026-11-06 |
 
 The Stage row reads "stage number, state". The states a stage can be in:
@@ -36,3 +36,4 @@ One line per stage boundary, newest last: the date, the stage reached, the path 
 | 2026-11-04 | 3, design stop | `log/03-manuscript.md`, step 3.2 | design stop |
 | 2026-11-06 | 1, proposal final (revision 4, the user's new idea; stop 1 waived by the user) | `proposal.md` | none: stage 2 starts |
 | 2026-11-06 | 2, piloted-pass (pilot-c, revision 4) | `pilot-c/pilot-report.html` | stage 2 stop |
+| 2026-11-06 | 2, piloted-pass accepted by the user ("do 1 and 3 and stage 3"); stage 3 starts | `pilot-c/pilot-report.html` | none |
