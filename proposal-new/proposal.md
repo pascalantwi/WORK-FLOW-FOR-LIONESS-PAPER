@@ -108,19 +108,13 @@ All models predict SLE against RA. Revised 2026-11-06 at the user's request: eve
 | 3 | $R_0$ | B2 + residual IFN score (IFN score adjusted for composition) | The original baseline; shows the interferon artifact |
 | 4 | $R_1$ | $R_0$ + **squared residual IFN score** + squared composition | The fair baseline (Result 4) |
 | 5 | E1 | $R_1$ + gene levels | Ordinary expression model; **the base of every model below** |
-| 6 | E2 | random forest on the $R_1$ terms and the genes | Nonlinear expression, untargeted |
-| 7 | E3 | shrinkage linear discriminant analysis on the genes, with $R_1$ | Linear Gaussian classifier |
-| 8 | E4 | regularized discriminant analysis on the genes, with $R_1$ | Quadratic discriminant analysis |
-| 9 | E5 | **E1** + products and squares of standardized genes as separate inputs | Same quadratic information as the edges, different parametrization |
-| 10 | F1 | **E1** + first-order edges for every gene pair | The matched competitor of LIONESS |
-| 11 | N1 | **E1** + LIONESS edges | **The main LIONESS model** |
-| 12 | N2 | **E1** + LIONESS edges of the partial correlation given the IFN score and composition | The conditioned network |
-| 13 | N3 | **E1** + SSN edges | A sister perturbation method |
-| 14 | N4 | **E1** + iENA edges | Products of deviations only |
-| 15 | N5 | **E1** + SWEET edges | A size-weighted method |
-| 16 | N6 | **E1** + BONOBO edges | A Bayesian method |
-| 17 | N7 | **E1** + co-expression module eigengenes [@langfelder2008wgcna] | Population-level modules |
-| 18 | N8 | **E1** + products of pairs selected by differential correlation [@mckenzie2016dgca] | Population-level differential correlation |
+| 6 | E4 | regularized discriminant analysis on the genes, with $R_1$ | Quadratic discriminant analysis, the textbook quadratic classifier |
+| 7 | E5 | **E1** + products and squares of standardized genes as separate inputs | Same quadratic information as the edges, different parametrization |
+| 8 | F1 | **E1** + first-order edges for every gene pair | The matched competitor of LIONESS |
+| 9 | N1 | **E1** + LIONESS edges | **The main LIONESS model** |
+| 10 | N2 | **E1** + LIONESS edges of the partial correlation given the IFN score and composition | The conditioned network |
+
+**Models dropped (2026-11-06, the user's decision).** E2 (random forest), E3 (shrinkage linear discriminant analysis), and N3 to N8 (SSN, iENA, SWEET, BONOBO, module eigengenes, differential-correlation pairs) are not fitted. None answers one of the three questions of section 3; they only rank LIONESS against other methods. SSN, iENA, SWEET, and BONOBO are covered instead by a paragraph in the Discussion: each edge is also a closed-form function of the sample's own deviations, in the same quadratic family as the LIONESS edge [@liu2016ssn; @yu2017iena; @chen2023sweet; @saha2024bonobo]. Their functions stay in `R/networks.R` with their tests, unused by the simulation. This reverses the earlier choice to run SWEET and BONOBO in the simulation.
 
 One model is kept outside the nesting on purpose: **N1 with $R_0$** ($R_0$ + LIONESS edges, no squared IFN score and no genes), which shows how much edges gain from interferon alone (the artifact of Result 4).
 
@@ -150,9 +144,9 @@ One model is kept outside the nesting on purpose: **N1 with $R_0$** ($R_0$ + LIO
 - **S1, the unequal-groups law:** smaller-group share 0.5, 0.3, 0.15 by mean shift 0.25, 0.5, 1.
 - **S2-A, the artifact and its fix:** IFN difference from none to very large; IFN score from 2, 5, or 10 genes; normal or heavy-tailed noise; 40 to 300 per class.
 - **S2-B, equivalence, parametrization, and power:** co-expression change 0 to 0.4; 40 to 300 per class; smaller-group share down to 0.15; noise up to $t_3$; ridge, elastic net, or lasso.
-- **Models:** the eight of section 7 plus E1, eleven in all.
+- **Models:** the ten of section 7 that apply to simulated data ($R_0$, $R_1$, E1, E4, E5, F1, N1, N2) plus N1 with $R_0$; B1 and B2 need batch and are for real data only.
 - **Tests:** in seven settings, the application's superiority test of edges over E1 and the equivalence test of edges against F1 (margin 0.01), to measure their error rates and power.
-- **Size:** 400 replicates per setting (about 11.5 hours on three cores) or 500 (about 14 hours); a quick run of about 1.2 hours first.
+- **Size:** 400 replicates per setting (the user chose fewer than 500, 2026-11-06), a Monte Carlo standard error near 0.002 for a difference with replicate standard deviation 0.04. With fewer models, the run is expected to take about half the earlier 11.5 hours; the quick run measures it.
 
 ## 10. Real-data application
 
@@ -162,6 +156,28 @@ One model is kept outside the nesting on purpose: **N1 with $R_0$** ($R_0$ + LIO
 - **Checks first:** disease by centre and by sequencing batch; untreated counts; IFN score distribution by disease.
 - **Sensitivity analyses:** treated patients included; patients whose IFN scores overlap between diseases; batches holding both diseases.
 - **Optional extra analysis:** the original IFN-high and IFN-low comparisons, beside the main analysis, to show that both give the same answer.
+
+### 10.1 Replication of the simulation findings in two open data sets
+
+The simulation findings are tested again on real patients by applying the same pipeline (the same models, the same nested cross-validation, the same AUC differences) inside each data set. Each data set is analysed on its own; they are never pooled with each other or with PRECISESADS, since disease would then equal study. The predictions are written into `protocol.md` before either data set is analysed.
+
+| Data set | Patients used | Composition | Limits |
+|---|---|---|---|
+| GSE17755 (two-colour array, peripheral blood cells) | females only: 22 SLE, 93 RA | estimated from the genes (deconvolution) [@newman2015cibersort] | 10 of the 22 SLE were submitted seven months after every RA sample: a sensitivity analysis with the 12 SLE submitted with RA; no treatment recorded |
+| GSE235508 (whole-blood RNA-seq, pregnancy) | one time point per pregnancy (time point 1: 16 SLE, 23 RA) | estimated from the genes | nearly all SLE treated (3 of 101 samples coded 0); pregnancy changes cells and IFN; N2 not run (too few samples for the partial correlation) |
+
+| Simulation finding | Check on real data | Confirmed if |
+|---|---|---|
+| Edges equal their first-order formula | correlation of exact and first-order edges per sample; AUC of N1 against F1 | correlation above 0.99; AUC difference inside the equivalence margin, or its interval centred near 0 |
+| The interferon artifact | edges among IFN genes against the squared residual IFN score; N1 with $R_0$ against $R_0$ | the edges track the squared score; a gain over $R_0$ |
+| The squared score removes it | N1 against E1 beside N1 with $R_0$ against $R_0$ | the gain shrinks once the squared score is in the base |
+| Edge form against separate products | N1 against E5 | reported only: the truth is unknown in real data |
+
+Because the groups are small, AUC differences carry wide intervals (an AUC standard error of roughly 0.06 to 0.08); the checks of the formula and of the squared score do not depend on AUC and hold their meaning at these sizes. The cross-validation is repeated 20 times with new fold splits to steady the estimates.
+
+### 10.2 Validation of the trained model
+
+The PRECISESADS model is validated on the PRECISESADS inception cohort, an independent prospectively followed cohort [@barturen2021precisesads], if it is in the release; otherwise leave-centre-out across the 18 centres. New samples' edges use the add-one form against the training set, so a trained model applies unchanged on the same platform. A truly external whole-blood RNA-seq set (for example, the data of Sentis et al. 2026, 170 SLE and 19 RA, on request from the authors) is sought with Dr Grimes. GSE17755 and GSE235508 cannot validate the trained model: one is a different platform and tissue, the other a pregnancy population.
 
 ## 11. Contributions, impact, and risks
 
@@ -174,7 +190,10 @@ One model is kept outside the nesting on purpose: **N1 with $R_0$** ($R_0$ + LIO
 ## 12. Open decisions
 
 - [ ] Agree the main message with Dr Grimes (equivalence first; interferon second).
-- [ ] Approve the full-study design: 400 or 500 replicates per setting, with the models built on E1 (section 7).
+- [x] Full-study design chosen by the user (2026-11-06): models built on E1, E4 kept, E2, E3, and N3 to N8 dropped, 400 replicates per setting.
+- [ ] Confirm the design with Dr Grimes before the production run.
+- [ ] Ask in the PRECISESADS request for the inception cohort and the centre labels (section 10.2).
+- [ ] Look for an external whole-blood RNA-seq validation set with Dr Grimes.
 - [ ] Submit the PRECISESADS access request; decide the fallback if refused.
 - [ ] Decide whether to contact the BONOBO authors about the difference between their code and their equation 8.
 - [ ] Decide whether to keep the IFN-high and IFN-low comparison as an extra analysis.
