@@ -4,7 +4,7 @@
 |---|---|
 | What this is | A refined, self-contained version of the proposal, for the user to edit. It consolidates `proposal.md` (sections 1 to 12, including revision 3), both pilots, and the stage 3 design. |
 | Official record | `proposal.md` at the project root stays unchanged as the dated record the workflow follows. |
-| Written | 2026-11-05 |
+| Written | 2026-11-05; section 7 revised 2026-11-06 (models built on E1) |
 | Status | Draft for the user and Dr Grimes to refine; the full-study design awaits approval |
 
 ---
@@ -99,22 +99,34 @@ $$
 
 ## 7. The models
 
-All models predict SLE against RA. The models with genes or edges are elastic nets with the baseline terms unpenalized, so added features must improve on the baseline.
+All models predict SLE against RA. Revised 2026-11-06 at the user's request: every model after E1 is built on **E1** (the baseline with the gene levels), not on $R_1$, so the models nest: $R_0 \subset R_1 \subset$ E1 $\subset$ E1 + further features. A model with genes or edges is an elastic net; the $R_1$ terms are unpenalized, and the genes and the added features are penalized.
 
-| Name | Inputs | Purpose |
-|---|---|---|
-| $R_0$ | age, sex, cell composition, residual IFN score (IFN score adjusted for composition) | The original baseline; shows the interferon artifact |
-| $R_1$ | $R_0$ + **squared residual IFN score** + squared composition | The fair baseline (Result 4); reference of the main comparisons |
-| E1 | $R_1$ + gene levels | Ordinary expression model |
-| E5 | $R_1$ + products and squares of standardized genes as separate inputs | Same quadratic information as the edges, different parametrization |
-| F1 | $R_1$ + first-order edges for every gene pair | The matched competitor of LIONESS |
-| N1 ($R_0$) | $R_0$ + LIONESS edges | LIONESS without the squared IFN score |
-| N1 ($R_1$) | $R_1$ + LIONESS edges | **The main LIONESS model** |
-| N3 to N6 | $R_1$ + SSN, iENA, SWEET, or BONOBO edges | Other single-sample network methods |
+| # | Name | Inputs | Purpose |
+|---|---|---|---|
+| 1 | B1 | age, sex, batch | Clinical baseline |
+| 2 | B2 | B1 + cell composition | Composition |
+| 3 | $R_0$ | B2 + residual IFN score (IFN score adjusted for composition) | The original baseline; shows the interferon artifact |
+| 4 | $R_1$ | $R_0$ + **squared residual IFN score** + squared composition | The fair baseline (Result 4) |
+| 5 | E1 | $R_1$ + gene levels | Ordinary expression model; **the base of every model below** |
+| 6 | E2 | random forest on the $R_1$ terms and the genes | Nonlinear expression, untargeted |
+| 7 | E3 | shrinkage linear discriminant analysis on the genes, with $R_1$ | Linear Gaussian classifier |
+| 8 | E4 | regularized discriminant analysis on the genes, with $R_1$ | Quadratic discriminant analysis |
+| 9 | E5 | **E1** + products and squares of standardized genes as separate inputs | Same quadratic information as the edges, different parametrization |
+| 10 | F1 | **E1** + first-order edges for every gene pair | The matched competitor of LIONESS |
+| 11 | N1 | **E1** + LIONESS edges | **The main LIONESS model** |
+| 12 | N2 | **E1** + LIONESS edges of the partial correlation given the IFN score and composition | The conditioned network |
+| 13 | N3 | **E1** + SSN edges | A sister perturbation method |
+| 14 | N4 | **E1** + iENA edges | Products of deviations only |
+| 15 | N5 | **E1** + SWEET edges | A size-weighted method |
+| 16 | N6 | **E1** + BONOBO edges | A Bayesian method |
+| 17 | N7 | **E1** + co-expression module eigengenes [@langfelder2008wgcna] | Population-level modules |
+| 18 | N8 | **E1** + products of pairs selected by differential correlation [@mckenzie2016dgca] | Population-level differential correlation |
 
-The application adds the clinical baselines, a random forest, shrinkage linear discriminant analysis, partial-correlation edges, module eigengenes, and differentially correlated pairs, for 18 models in all.
+One model is kept outside the nesting on purpose: **N1 with $R_0$** ($R_0$ + LIONESS edges, no squared IFN score and no genes), which shows how much edges gain from interferon alone (the artifact of Result 4).
 
-**The key comparisons.** (1) N1 ($R_1$) against $R_1$: do edges add anything beyond interferon and its square? (2) N1 ($R_1$) against F1: do edges add anything beyond their own formula? Tested in that order.
+**The key comparisons.** (1) N1 against E1: do edges add anything beyond interferon, its square, composition, and the gene levels? (2) N1 against F1: do edges add anything beyond their own formula? Tested in that order. (3) N1 with $R_0$ against $R_0$, beside N1 against E1: the size of the interferon artifact and its removal.
+
+**Note on the pilots.** Both pilots built these models on $R_1$, not E1. The equivalence of N1 and F1 compares two models on the same base, and E1 contains the squared IFN score, so the pilots' conclusions are expected to carry over; the full study tests the E1-based models directly, and its quick run shows it first.
 
 ## 8. Evidence so far
 
@@ -139,7 +151,7 @@ The application adds the clinical baselines, a random forest, shrinkage linear d
 - **S2-A, the artifact and its fix:** IFN difference from none to very large; IFN score from 2, 5, or 10 genes; normal or heavy-tailed noise; 40 to 300 per class.
 - **S2-B, equivalence, parametrization, and power:** co-expression change 0 to 0.4; 40 to 300 per class; smaller-group share down to 0.15; noise up to $t_3$; ridge, elastic net, or lasso.
 - **Models:** the eight of section 7 plus E1, eleven in all.
-- **Tests:** in seven settings, the application's superiority test of edges over $R_1$ and the equivalence test of edges against F1 (margin 0.01), to measure their error rates and power.
+- **Tests:** in seven settings, the application's superiority test of edges over E1 and the equivalence test of edges against F1 (margin 0.01), to measure their error rates and power.
 - **Size:** 400 replicates per setting (about 11.5 hours on three cores) or 500 (about 14 hours); a quick run of about 1.2 hours first.
 
 ## 10. Real-data application
@@ -162,7 +174,7 @@ The application adds the clinical baselines, a random forest, shrinkage linear d
 ## 12. Open decisions
 
 - [ ] Agree the main message with Dr Grimes (equivalence first; interferon second).
-- [ ] Approve the full-study design: 400 or 500 replicates per setting.
+- [ ] Approve the full-study design: 400 or 500 replicates per setting, with the models built on E1 (section 7).
 - [ ] Submit the PRECISESADS access request; decide the fallback if refused.
 - [ ] Decide whether to contact the BONOBO authors about the difference between their code and their equation 8.
 - [ ] Decide whether to keep the IFN-high and IFN-low comparison as an extra analysis.
