@@ -85,8 +85,9 @@ for (s in summary) {
   print(s$tests, digits = 3)
 }
 for (m in mechanism) {
-  cat(sprintf("\n%s: formula correlation median %.4f (min %.4f); IFN-square correlation median %.3f\n",
+  cat(sprintf("\n%s: formula correlation median %.4f (min %.4f); IFN-square correlation median %.3f; median largest |z| %.1f; Spearman(agreement, largest |z|) %.2f\n",
               m$dataset, stats::median(m$formula_cor), min(m$formula_cor),
-              stats::median(m$ifn_cor)))
+              stats::median(m$ifn_cor), stats::median(m$gene_max_z),
+              m$agreement_vs_max_z))
 }
 cat(sprintf("elapsed %.0f s\n", elapsed))

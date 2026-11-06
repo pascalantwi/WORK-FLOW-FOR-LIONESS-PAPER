@@ -1,14 +1,7 @@
 ---
 title: "LIONESS edges are quadratic functions of expression: closed forms, an interferon artifact, and equivalence with first-order features"
 author:
-  - name: "[FILL: first author]"
-    corresponding: true
-    email: "[FILL: email]"
-    affiliations:
-      - name: "[FILL: affiliation]"
-  - name: "[FILL: second author]"
-    affiliations:
-      - name: "[FILL: affiliation]"
+  - name: "Authors are set by tools/authors.R before the final render"
 date: today
 bibliography: references.bib
 link-citations: true
@@ -116,16 +109,34 @@ td_mod <- td[td$mechanism == "network", ]
 rate <- function(v, e) prov(text = sprintf("%s (MCSE %s)", fmt(v, 2), fmt(e, 2)))
 ka_null <- ka[grepl("Null cell", ka$check), ]
 ka_s1 <- ka[grepl("equation \\(3\\)", ka$check), ]
+cap_design <- "The settings of study S2. Each row varies one factor around its family's base setting; $n$ is the size of class 1, the smaller class when its share is below one half; $\\Delta\\rho$ is the change in the module's correlation in class 1; the IFN difference is the shift in the mean of the interferon factor and the ratio of its standard deviations in class 1."
+cap_contrasts <- "Paired differences in out-of-sample AUC in the settings of study S2, averaged over replicates, with bars of two Monte Carlo standard errors. Red: LIONESS edges on the base without the squared IFN score against that base, the interferon artifact $A$. Blue: edges added to E1 against E1, $\\Delta_1$. Orange: partial-correlation edges added to E1 against E1. Green: products and squares added to E1 against E1. Purple: edges against their first-order formula, $\\Delta_2$. The grey line is no difference. Each label names the factor varied and, in parentheses, the base setting."
+# the replication has its own run file; readRDS() leaves the paper's run label alone
+rep_info <- readRDS(results_path("02_replication_run_info.rds"))
+cap_tests <- sprintf(paste(
+  "Rates of the two tests in the seven test settings, with bars of two Monte Carlo standard errors.",
+  "Blue: the rate at which the corrected resampled $t$-test declared that LIONESS edges add to E1",
+  "(superiority of $\\Delta_1$, one-sided at the %s%% level).",
+  "Purple: the rate at which the two one-sided tests declared edges and their first-order formula",
+  "equivalent within $\\pm %s$. The dashed line is %s."), lvl(5), lvl(0.01), lvl(0.05))
+cap_rep <- sprintf(paste(
+  "Contrasts in the two public series, as means over %s repeats of five-fold cross-validation,",
+  "with standard errors corrected for the overlap of training sets; for $\\Delta_2$, the %s%% interval.",
+  "$A$: LIONESS edges on the base without the squared score against that base. $\\Delta_1$: N1 against E1.",
+  "$\\Delta_2$: N1 against F1. $P$: N1 against E5. The sensitivity analyses keep, in GSE17755, the SLE",
+  "samples submitted with the RA samples and, in GSE326777, the samples without an N suffix."),
+  lvl(rep_info$n_rep), lvl(90))
 rep_sum <- read_results("replication_summary.rds")
 rep_mech <- read_results("replication_mechanism.rds")
 rep_get <- function(ds, an) rep_sum[[which(vapply(rep_sum, function(r) r$dataset == ds && r$analysis == an, logical(1)))]]
-rep_n <- function(ds, an) { r <- rep_get(ds, an); prov(text = sprintf("%d SLE and %d RA patients", r$n_sle, r$n_ra)) }
-rep_auc <- function(ds, an, m) prov(rep_get(ds, an)$auc[[m]], 3)
+rep_n <- function(ds, an) { r <- rep_get(ds, an); prov(text = sprintf("%d SLE and %d RA patients", r$n_sle, r$n_ra), run = rep_info$run) }
+rep_auc <- function(ds, an, m) prov(rep_get(ds, an)$auc[[m]], 3, run = rep_info$run)
 mech <- function(ds, what, d) {
   m <- rep_mech[[which(vapply(rep_mech, function(x) x$dataset == ds, logical(1)))]]
   v <- switch(what, formula = stats::median(m$formula_cor), formula_min = min(m$formula_cor),
-              ifn = stats::median(m$ifn_cor))
-  prov(v, d)
+              ifn = stats::median(m$ifn_cor), maxz = stats::median(m$gene_max_z),
+              rho = m$agreement_vs_max_z)
+  prov(v, d, run = rep_info$run)
 }
 ```
 
@@ -153,11 +164,11 @@ Every claim carries a numeric result with its uncertainty, through prov(): an es
 confidence interval or Monte Carlo SE, a rate with its band, a count against its permutation count.
 Quick-run numbers in the first draft. Write it last. -->
 
-**Background.** Single-sample network methods such as LIONESS give each patient a weight for every gene pair, read as that patient's co-expression network, and these edges are compared between patient groups and used to classify patients. What an edge is made of has not been derived.
+**Background.** Single-sample network methods such as LIONESS give each patient a weight for every gene pair, read as that patient's co-expression network, and these edges are compared between groups and used to classify patients. What an edge is made of has not been derived.
 
-**Results.** We show that the LIONESS edge of a Pearson correlation has an exact closed form and equals, to first order, the reference correlation plus the product of the patient's two standardized expression values, minus a term in their squares. In a simulation of 25 settings, a classifier given the edges and one given this first-order formula, each added to a base holding an interferon score, its square, cell composition, and the gene levels, differed in AUC by `r pm(all_cells, "d2_N1E1_vs_F1E1", 4)`. Interferon entered the edges as its square: on a base without the squared score, edges gained `r p1(cell_of("S2-A", "IFN difference", "very large"), "gain_N1R0_vs_R0")` in AUC at a very large interferon difference, and on the full base they added `r pm(ifn_cells, "d1_N1E1_vs_E1")`. With a true change in co-expression, edges gained `r p1(cell_of("S2-B", "module change", "0.4"), "d1_N1E1_vs_E1")` over the base, more than the same quadratic information entered as separate terms, by `r p1(cell_of("S2-B", "module change", "0.4"), "par_N1E1_vs_E5E1")`. In two public series of patients with lupus and rheumatoid arthritis, the exact and first-order edges correlated with a median of `r mech("GSE17755", "formula", 3)` and `r mech("GSE326777", "formula", 3)` across gene pairs.
+**Results.** The LIONESS edge of a Pearson correlation has an exact closed form and equals, to first order, the reference correlation plus the product of the patient's two standardized expression values, minus a term in their squares. In a simulation of `r nrow(d2)` settings, classifiers given the edges or this first-order formula, each added to a base holding an interferon score, its square, cell composition, and the gene levels, differed in AUC by `r prov(text = range_mcse(G(all_cells, "d2_N1E1_vs_F1E1"), M(all_cells, "d2_N1E1_vs_F1E1"), 4, 3))`. Interferon entered the edges as its square: without the squared score in the base, edges gained `r p1(cell_of("S2-A", "IFN difference", "very large"), "gain_N1R0_vs_R0")` in AUC at the largest interferon difference, and with it they added `r pm(ifn_cells, "d1_N1E1_vs_E1")`. With a true change in co-expression, edges gained `r p1(cell_of("S2-B", "module change", "0.4"), "d1_N1E1_vs_E1")`, more than the same information entered as separate products and squares, by `r p1(cell_of("S2-B", "module change", "0.4"), "par_N1E1_vs_E5E1")`. In public lupus and rheumatoid arthritis series, exact and first-order edges correlated with a median of `r mech("GSE326777", "formula", 4)` across gene pairs in sorted neutrophils and `r mech("GSE17755", "formula", 3)` in an array series with extreme values, and interferon-gene edges tracked the squared interferon score (median correlations `r mech("GSE17755", "ifn", 2)` and `r mech("GSE326777", "ifn", 2)`).
 
-**Conclusions.** A LIONESS edge is a quadratic function of the patient's own expression. A network claim should be checked against the first-order formula and against a base that holds the square of any shared factor, such as interferon.
+**Conclusions.** A LIONESS edge is a quadratic function of the patient's expression. A network claim should be checked against the first-order formula and against a base that holds the square of any shared factor, such as interferon.
 
 # Introduction
 
@@ -214,7 +225,7 @@ $$
 \mathrm{E}\left[z_{qi} z_{qj} \mid F_q\right] = \lambda_i \lambda_j F_q^2 .
 $$ {#eq-factor}
 
-An edge between two interferon-driven genes therefore carries the square of the interferon level. A classifier that holds the interferon score but not its square can gain from edges whenever the classes differ in the distribution of the squared score, although the genes' co-expression given the factor is the same in both classes.
+An edge between two interferon-driven genes therefore carries the square of the interferon level. A classifier that holds the interferon score but not its square gains from edges whenever the classes differ in the distribution of the squared score, although the genes' co-expression given the factor is the same in both classes.
 
 When two classes differ only in the means of genes $i$ and $j$, by $\Delta_i$ and $\Delta_j$ overall standard deviations, and class 1 has share $\pi$, the class difference in mean edge is, to first order (note S1.5),
 
@@ -226,7 +237,7 @@ which is zero for balanced classes and grows with imbalance, with no change in c
 
 ## The fix and the diagnostic
 
-Two comparisons follow from @eq-exact and @eq-factor. First, a classifier given the edges should be compared with one given the first-order edges, which a reader can compute from the expression data in one line; if the two perform the same, a network result is a result about that quadratic function of expression. Second, the base model must hold the square of any factor the classes may differ in. We use a nested set of models built on one base, E1, which holds age, sex, cell composition, the interferon (IFN) score adjusted for composition, the squares of the score and of composition, and the gene levels.
+Two comparisons follow from @eq-exact and @eq-factor. First, a classifier given the edges should be compared with one given the first-order edges, which a reader computes from the expression data in one line; if the two perform the same, a network result is a result about that quadratic function of expression. Second, the base model must hold the square of any factor in which the classes differ. We use a nested set of models built on one base, E1, which holds age, sex, cell composition, the interferon (IFN) score adjusted for composition, the squares of the score and of composition, and the gene levels.
 
 ## Models and evaluation
 
@@ -269,7 +280,7 @@ The aims are the four questions above: whether N1 and F1 classify alike, how muc
 
 ```{r}
 #| label: tbl-design
-#| tbl-cap: "The settings of study S2. Each row varies one factor around its family's base setting; $n$ is the size of class 1, the smaller class when its share $\\pi$ is below 0.5; $\\Delta\\rho$ is the change in the module's correlation in class 1; the IFN difference is the shift in the mean of the interferon factor and the ratio of its standard deviations in class 1."
+#| tbl-cap: !expr cap_design
 
 d2 <- design$s2
 lev <- function(fam, varied) {
@@ -307,11 +318,11 @@ kable_w(tab, c(22, 18, 22, 38))
 
 ### Edges and their first-order formula classified alike
 
-In every one of the `r nrow(d2)` settings of study S2, the classifier given the LIONESS edges and the classifier given their first-order formula reached the same AUC within `r pm(all_cells, "d2_N1E1_vs_F1E1", 4)` (@fig-contrasts, purple points). This held where the edges carried no class information and where they carried the most, with heavy-tailed noise, at every sample size, and under ridge, elastic-net, and lasso penalties. The largest difference, `r p1(cell_of("S2-B", "noise", noise = "t3"), "d2_N1E1_vs_F1E1", 4)`, came with noise from a $t$ distribution with three degrees of freedom, where the remainder of @eq-exact is largest.
+In all `r nrow(d2)` settings of study S2, the classifier given the LIONESS edges and the classifier given their first-order formula differed in AUC by `r pm(all_cells, "d2_N1E1_vs_F1E1", 4)` (@fig-contrasts, purple points). This held where the edges carried no class information and where they carried the most, with heavy-tailed noise, at every sample size, and under ridge, elastic-net, and lasso penalties. The largest difference, `r p1(cell_of("S2-B", "noise", noise = "t3"), "d2_N1E1_vs_F1E1", 4)`, came with noise from a $t$ distribution with three degrees of freedom, where the remainder of @eq-exact is largest.
 
 ```{r}
 #| label: fig-contrasts
-#| fig-cap: "Paired differences in out-of-sample AUC in the 25 settings of study S2, averaged over replicates, with bars of two Monte Carlo standard errors. Red: LIONESS edges on the base without the squared IFN score against that base, the interferon artifact $A$. Blue: edges added to E1 against E1, $\\Delta_1$. Orange: partial-correlation edges added to E1 against E1. Green: products and squares added to E1 against E1. Purple: edges against their first-order formula, $\\Delta_2$. The grey line is no difference. Each label names the factor varied and, in parentheses, the base setting."
+#| fig-cap: !expr cap_contrasts
 #| fig-width: 9
 #| fig-height: 8
 
@@ -328,11 +339,11 @@ PlotGains(s, d2, c(gain_N1R0_vs_R0 = "edges with R0 against R0 (A)",
 
 ### Interferon entered the edges, and the base removed it
 
-When the classes differed only in the interferon factor, edges added to the base without the squared score gained in AUC, and the gain grew with the difference: `r p1(cell_of("S2-A", "IFN difference", "none"), "gain_N1R0_vs_R0")` with no difference, `r p1(cell_of("S2-A", "IFN difference", "large"), "gain_N1R0_vs_R0")` at a large one, and `r p1(cell_of("S2-A", "IFN difference", "very large"), "gain_N1R0_vs_R0")` at a very large one (@fig-contrasts, red points). The gain also grew with the sample size, to `r p1(cell_of("S2-A", "size", n1 = 300), "gain_N1R0_vs_R0")` with 300 samples per class. On the base E1, which holds the squared score, the same edges added `r pm(ifn_cells, "d1_N1E1_vs_E1")` across all `r length(ifn_cells)` interferon settings (blue points), including the two-gene and ten-gene scores and heavy-tailed noise. The partial-correlation edges, which condition on the score, added `r pm(ifn_cells, "g2_N2E1_vs_E1")` (orange points).
+Edges gained from interferon alone, and the gain grew with the interferon difference. When the classes differed only in the interferon factor, edges added to the base without the squared score gained `r p1(cell_of("S2-A", "IFN difference", "none"), "gain_N1R0_vs_R0")` with no difference, `r p1(cell_of("S2-A", "IFN difference", "large"), "gain_N1R0_vs_R0")` at a large one, and `r p1(cell_of("S2-A", "IFN difference", "very large"), "gain_N1R0_vs_R0")` at the largest (@fig-contrasts, red points). The gain also grew with the sample size, to `r p1(cell_of("S2-A", "size", n1 = 300), "gain_N1R0_vs_R0")` with `r lvl(300)` samples per class. On the base E1, which holds the squared score, the same edges added `r pm(ifn_cells, "d1_N1E1_vs_E1")` across all `r length(ifn_cells)` interferon settings (blue points), including the two-gene and ten-gene scores and heavy-tailed noise. The partial-correlation edges, which condition on the score, added `r pm(ifn_cells, "g2_N2E1_vs_E1")` (orange points).
 
 ### The edge form detected co-expression that separate terms missed
 
-When the module's correlation differed between the classes, edges added to E1 gained up to `r p1(cell_of("S2-B", "module change", "0.4"), "d1_N1E1_vs_E1")` at a change of 0.4, and `r p1(cell_of("S2-B", "module change", "0.3"), "d1_N1E1_vs_E1")` at 0.3. The same quadratic information entered as separate products and squares gained `r p1(cell_of("S2-B", "module change", "0.4"), "gain_E5E1_vs_E1")` at 0.4 (green points), so the edge form beat it by `r p1(cell_of("S2-B", "module change", "0.4"), "par_N1E1_vs_E5E1")`; with a lasso penalty the gap was `r p1(cell_of("S2-B", "mixing", alpha = 1), "par_N1E1_vs_E5E1")`, and with a ridge penalty `r p1(cell_of("S2-B", "mixing", alpha = 0), "par_N1E1_vs_E5E1")`. The partial-correlation edges gained `r p1(cell_of("S2-B", "module change", "0.4"), "g2_N2E1_vs_E1")` at 0.4, and the regularized discriminant analysis `r p1(cell_of("S2-B", "module change", "0.4"), "diff_E4_vs_E1")` (@tbl-auc). With no change in the module, edges added `r pm(null_cells, "d1_N1E1_vs_E1")`.
+Edges found a true change in co-expression that the gene levels cannot show. When the module's correlation differed between the classes, edges added to E1 gained up to `r p1(cell_of("S2-B", "module change", "0.4"), "d1_N1E1_vs_E1")` at a change of `r lvl(0.4, 1)`, and `r p1(cell_of("S2-B", "module change", "0.3"), "d1_N1E1_vs_E1")` at `r lvl(0.3, 1)`. The same quadratic information entered as separate products and squares gained `r p1(cell_of("S2-B", "module change", "0.4"), "gain_E5E1_vs_E1")` at `r lvl(0.4, 1)` (green points), so the edge form beat it by `r p1(cell_of("S2-B", "module change", "0.4"), "par_N1E1_vs_E5E1")`; with a lasso penalty the gap was `r p1(cell_of("S2-B", "mixing", alpha = 1), "par_N1E1_vs_E5E1")`, and with a ridge penalty `r p1(cell_of("S2-B", "mixing", alpha = 0), "par_N1E1_vs_E5E1")`. The partial-correlation edges gained `r p1(cell_of("S2-B", "module change", "0.4"), "g2_N2E1_vs_E1")` at `r lvl(0.4, 1)`, and the regularized discriminant analysis `r p1(cell_of("S2-B", "module change", "0.4"), "diff_E4_vs_E1")` (@tbl-auc). With no change in the module, edges added `r pm(null_cells, "d1_N1E1_vs_E1")`.
 
 ```{r}
 #| label: tbl-auc
@@ -352,11 +363,11 @@ The largest Monte Carlo standard error of an AUC in @tbl-auc is `r prov(max(M(ne
 
 ### The tests applied to data
 
-In the test settings, each replicate ran the procedure used on real data. Where edges add nothing to E1 (no module change, and the large and very large interferon differences), the superiority test of $\Delta_1$ rejected at rates of `r prov(text = fmt_range(td_null$reject_d1, 2))` (Monte Carlo standard errors up to `r prov(max(td_null$reject_d1_mcse), 2)`), against the nominal 0.05 (@fig-tests). Its power rose with the module change, to `r rate(td_mod$reject_d1[td_mod$level == "0.3"], td_mod$reject_d1_mcse[td_mod$level == "0.3"])` at 0.3 and `r rate(td_mod$reject_d1[td_mod$level == "0.4"], td_mod$reject_d1_mcse[td_mod$level == "0.4"])` at 0.4. Equivalence of $\Delta_2$ within $\pm 0.01$ was declared in `r prov(text = fmt_range(td$equiv_d2, 2))` of the replicates, although the mean $\Delta_2$ in these settings was `r prov(text = fmt_range(td$d2, 4))`: with 80 samples per class the 90% interval of a fold-based AUC difference is wider than the margin.
+The superiority test kept its level and gained power with the effect, but the equivalence test seldom reached a decision. In the test settings, each replicate ran the procedure used on real data. Where edges add nothing to E1 (no module change, and the two largest interferon differences), the superiority test of $\Delta_1$ rejected at rates of `r prov(text = fmt_range(td_null$reject_d1, 2))` (Monte Carlo standard errors up to `r prov(max(td_null$reject_d1_mcse), 2)`), against the nominal `r lvl(0.05)` (@fig-tests). Its power rose with the module change, to `r rate(td_mod$reject_d1[td_mod$level == "0.3"], td_mod$reject_d1_mcse[td_mod$level == "0.3"])` at `r lvl(0.3, 1)` and `r rate(td_mod$reject_d1[td_mod$level == "0.4"], td_mod$reject_d1_mcse[td_mod$level == "0.4"])` at `r lvl(0.4, 1)`. Equivalence of $\Delta_2$ within $\pm$ `r lvl(0.01)` was declared in `r prov(text = fmt_range(td$equiv_d2, 2))` of the replicates, although the mean $\Delta_2$ in these settings was `r prov(text = fmt_range(td$d2, 4))`: with `r lvl(80)` samples per class the `r paste0(lvl(90), "%")` interval of a fold-based AUC difference is wider than the margin.
 
 ```{r}
 #| label: fig-tests
-#| fig-cap: "Rates of the two tests in the seven test settings, with bars of two Monte Carlo standard errors. Blue: the rate at which the corrected resampled $t$-test declared that LIONESS edges add to E1 (superiority of $\\Delta_1$ at 5%, one-sided). Purple: the rate at which the two one-sided tests declared edges and their first-order formula equivalent within $\\pm 0.01$. The dashed line is 0.05."
+#| fig-cap: !expr cap_tests
 #| fig-width: 7
 #| fig-height: 4.6
 
@@ -367,7 +378,7 @@ PlotTestRates(test_sum, design$test)
 
 ### The unequal-groups law held
 
-In study S1, the class difference in mean edge under a pure mean shift matched @eq-shift in all nine settings: the observed minus the predicted difference ranged over `r prov(text = range_mcse(s1$gap, s1$gap_mcse, 4, 4))`, while the predicted difference itself ranged from 0 for balanced classes to `r prov(max(s1$predicted), 3)` with a share of 0.15 and a shift of one standard deviation (@stbl-s1).
+In study S1, the class difference in mean edge under a pure mean shift matched @eq-shift in all nine settings: the observed minus the predicted difference ranged over `r prov(text = range_mcse(s1$gap, s1$gap_mcse, 4, 4))`, while the predicted difference itself ranged from zero for balanced classes to `r prov(max(s1$predicted), 3)` with a share of `r lvl(0.15)` and a shift of one standard deviation (Supplementary note S1.6).
 
 # Application
 
@@ -375,13 +386,15 @@ In study S1, the class difference in mean edge under a pure mean shift matched @
 
 The full question, untreated SLE against untreated RA in whole blood with measured cell composition, needs the PRECISESADS cohort [@barturen2021precisesads], which is under controlled access and is not analysed here. [TO CONFIRM: the PRECISESADS access request has not been submitted]{.tc} Two public series let us check, in real patients, the two findings that do not need a large sample: that edges equal their first-order formula, and that interferon enters the edges as its square. They are analysed as in the simulation, each on its own. GSE17755 gave `r rep_n("GSE17755", "primary")` and GSE326777 gave `r rep_n("GSE326777", "primary")`. Neither is large enough to estimate a small difference in AUC precisely, and the contrasts are reported with their corrected standard errors.
 
-## Edges equal their formula in real blood, and interferon enters as its square
+## Edges followed their formula where values were not extreme, and interferon entered as its square
 
-Across all samples of GSE17755, the exact LIONESS edge and its first-order formula correlated with a median of `r mech("GSE17755", "formula", 4)` over the 1,225 gene pairs of the gene set (smallest `r mech("GSE17755", "formula_min", 4)`), and in GSE326777 with a median of `r mech("GSE326777", "formula", 4)` (smallest `r mech("GSE326777", "formula_min", 4)`). For the ten pairs of interferon-score genes, the edge correlated with the squared centred IFN score with a median of `r mech("GSE17755", "ifn", 2)` in GSE17755 and `r mech("GSE326777", "ifn", 2)` in GSE326777. The contrasts are in @tbl-replication. [TO CONFIRM: in GSE17755 the gene levels alone separated the diseases almost perfectly (AUC of E1 `r rep_auc("GSE17755", "primary", "E1")`), which leaves no room for any added feature and suggests that disease and processing are confounded in this series]{.tc}
+In the neutrophils of GSE326777, the exact LIONESS edge and its first-order formula correlated across samples with a median of `r mech("GSE326777", "formula", 4)` over the `r lvl(choose(50, 2))` gene pairs of the gene set (smallest `r mech("GSE326777", "formula_min", 4)`). In GSE17755 the median was `r mech("GSE17755", "formula", 4)`, below the `r lvl(0.99)` we had set as the criterion, and some pairs agreed poorly (smallest `r mech("GSE17755", "formula_min", 2)`). The two series differ in their extreme values: in GSE17755 the median gene of the gene set had a sample `r mech("GSE17755", "maxz", 1)` standard deviations from its mean, against `r mech("GSE326777", "maxz", 1)` in GSE326777, and pairs with a more extreme value agreed less with their formula (Spearman correlation `r mech("GSE17755", "rho", 2)` in GSE17755 and `r mech("GSE326777", "rho", 2)` in GSE326777). [TO CONFIRM: this comparison was added after the planned checks, as an explanation; it agrees with the remainder of @eq-exact growing with the fourth power of a standardized value]{.tc} For the ten pairs of interferon-score genes, the edge correlated with the squared centred IFN score with a median of `r mech("GSE17755", "ifn", 2)` in GSE17755 and `r mech("GSE326777", "ifn", 2)` in GSE326777, above the `r lvl(0.3, 1)` we had set.
+
+In classification (@tbl-replication), the IFN score alone already separated the diseases, with an AUC of `r rep_auc("GSE17755", "primary", "R0")` in GSE17755 and `r rep_auc("GSE326777", "primary", "R0")` in GSE326777. Edges and their first-order formula differed by less than `r lvl(0.01)` in AUC in all four analyses, but with these sample sizes the `r paste0(lvl(90), "%")` intervals were wider than the margin, so equivalence was not declared. Neither edges nor any other added feature set improved on E1 beyond its standard error, and the interferon artifact $A$ was within its standard error of zero. In GSE17755 the gene levels alone reached an AUC of `r rep_auc("GSE17755", "primary", "E1")`, which leaves little room for any added feature. [TO CONFIRM: such near-perfect separation by gene levels suggests that disease and processing are confounded in GSE17755]{.tc}
 
 ```{r}
 #| label: tbl-replication
-#| tbl-cap: "Contrasts in the two public series, as means over 20 repeats of five-fold cross-validation, with standard errors corrected for the overlap of training sets (Nadeau and Bengio); for $\\Delta_2$, the 90% interval. $A$: LIONESS edges on the base without the squared score against that base. $\\Delta_1$: N1 against E1. $\\Delta_2$: N1 against F1. $P$: N1 against E5. The sensitivity analyses keep, in GSE17755, the SLE samples submitted with the RA samples and, in GSE326777, the samples without an N suffix."
+#| tbl-cap: !expr cap_rep
 
 tab <- do.call(rbind, lapply(rep_sum, function(r) {
   cc <- r$contrasts
@@ -398,11 +411,11 @@ kable_w(tab, c(11, 16, 9, 9, 13, 13, 17, 12))
 
 # Discussion
 
-A LIONESS edge of a Pearson correlation is, to first order, the reference correlation plus the product of the sample's two standardized values, minus a term in their squares (@eq-exact). Three consequences followed in simulation. A classifier given the edges and one given their first-order formula reached the same AUC in every setting, so a network result can be reproduced, and explained, without building a network. Interferon entered the edges as its square, so edges gained over a base that held the interferon score but not its square, and a base that held the square removed the gain. And when co-expression truly differed, the edge form found it where the same quadratic information, entered as separate products and squares, found much less.
+A LIONESS edge of a Pearson correlation is, to first order, the reference correlation plus the product of the sample's two standardized values, minus a term in their squares (@eq-exact). Three consequences followed in simulation. A classifier given the edges and one given their first-order formula reached the same AUC in every setting, so a network result is reproduced, and explained, without building a network. Interferon entered the edges as its square, so edges gained over a base that held the interferon score but not its square, and a base that held the square removed the gain. And when co-expression truly differed, the edge form found it where the same quadratic information, entered as separate products and squares, found much less.
 
-For a user, this gives two checks that any network claim should pass. The first is the formula: if the first-order edges, computed from the expression data in one line, do as well as the edges, the claim is about a quadratic function of expression, and it should be described as such. The second is the base: any factor that moves many genes and may differ between the groups, interferon in SLE and RA or cell composition in blood, should enter the base with its square. A third caution concerns group comparisons of mean edges: when the groups are unequal in size, a difference in gene means alone shifts the mean edge in proportion to $(1 - 2\pi)$ (@eq-shift), with no change in co-expression. Other single-sample methods share the structure: the SSN edge is the rescaled change in correlation when the sample is added to a reference set [@liu2016ssn], iENA's single-sample correlation is the product term alone [@yu2017iena], SWEET's edge is a weighted add-one change [@chen2023sweet], and BONOBO's is the correlation of a covariance updated with the sample's own deviation [@saha2024bonobo], so each is a function of the sample's own deviations and the same two checks apply.
+For a user, this gives two checks that any network claim should pass. The first is the formula: if the first-order edges, computed from the expression data in one line, do as well as the edges, the claim is about a quadratic function of expression, and it should be described as such. The second is the base: any factor that moves many genes and differs between the groups, interferon in SLE and RA or cell composition in blood, should enter the base with its square. A third caution concerns group comparisons of mean edges: when the groups are unequal in size, a difference in gene means alone shifts the mean edge in proportion to $(1 - 2\pi)$ (@eq-shift), with no change in co-expression. Other single-sample methods share the structure: the SSN edge is the rescaled change in correlation when the sample is added to a reference set [@liu2016ssn], iENA's single-sample correlation is the product term alone [@yu2017iena], SWEET's edge is a weighted add-one change [@chen2023sweet], and BONOBO's is the correlation of a covariance updated with the sample's own deviation [@saha2024bonobo], so each is a function of the sample's own deviations and the same two checks apply.
 
-The edge form helped because of the penalty, not because of new information. The first-order edges are a fixed linear combination of the products and squares, and a penalized classifier given that combination spends one coefficient on it, while one given the terms separately must find the combination itself at a higher cost in penalty; the advantage was present under ridge, elastic-net, and lasso penalties (@fig-contrasts). The tests applied to data held their level where edges add nothing to E1, and gained power as the change in co-expression grew (@fig-tests). Equivalence of edges and their formula, however, was rarely declared at 80 samples per class, although the two differed by little: with that sample size, a margin of 0.01 in AUC is narrower than the precision of repeated cross-validation, so an equivalence claim in data needs a larger cohort or a wider margin.
+The edge form helped because of the penalty, not because of new information. The first-order edges are a fixed linear combination of the products and squares, and a penalized classifier given that combination spends one coefficient on it, while one given the terms separately must find the combination itself at a higher cost in penalty; the advantage was present under ridge, elastic-net, and lasso penalties (@fig-contrasts). The tests applied to data held their level where edges add nothing to E1, and gained power as the change in co-expression grew (@fig-tests). Equivalence of edges and their formula, however, was declared in at most `r prov(text = fmt(max(td$equiv_d2), 2))` of the replicates at `r lvl(80)` samples per class, although the two differed by little: with that sample size, a margin of 0.01 in AUC is narrower than the precision of repeated cross-validation, so an equivalence claim in data needs a larger cohort or a wider margin.
 
 ```{r}
 #| label: tbl-novelty
@@ -430,7 +443,7 @@ novelty_table(data.frame(
   check.names = FALSE))
 ```
 
-The study has limits. The simulation used one interferon factor with equal loadings, one composition factor observed without error, and a fixed gene set, so the size of the artifact in blood, where several factors with unequal loadings act at once, is not known from it. The real-data checks used two small public series, without measured composition, and GSE17755 showed signs that disease and processing were confounded. The clinical question, whether LIONESS edges add information to the gene levels and the interferon terms when classifying SLE against RA, needs the larger PRECISESADS cohort, and its answer is not given here.
+The study has limits. The simulation used one interferon factor with equal loadings, one composition factor observed without error, and a fixed gene set, so the size of the artifact in blood, where several factors with unequal loadings act at once, is not known from it. The real-data checks used two small public series, without measured composition. In GSE17755 the first-order formula fitted less closely, where single samples took extreme values; a user with such data should compute the exact edges or screen out genes whose variance rests on one sample. GSE17755 also showed signs that disease and processing were confounded. The clinical question, whether LIONESS edges add information to the gene levels and the interferon terms when classifying SLE against RA, needs the larger PRECISESADS cohort, and its answer is not given here. @tbl-novelty sets what was known beside what this paper adds.
 
 Several extensions lie outside this paper: the formula-based comparison for the other single-sample methods fitted as classifiers, a corrected single-sample network method, other pairs of autoimmune diseases, and the use of edges in a clinical classifier.
 

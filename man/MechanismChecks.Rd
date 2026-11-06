@@ -14,8 +14,10 @@ MechanismChecks(data, score_genes, n_genes = 50)
 \item{n_genes}{Size of the gene set.}
 }
 \value{
-A list: \code{formula_cor} (one value per pair of the gene set) and
-\code{ifn_cor} (one value per pair of score genes).
+A list: \code{formula_cor} (one value per pair of the gene set),
+\code{ifn_cor} (one value per pair of score genes), \code{gene_max_z} (each gene's
+largest absolute standardized value), \code{pair_max_z}, and
+\code{agreement_vs_max_z} (their Spearman correlation with \code{formula_cor}).
 }
 \description{
 With all samples as the reference: for each gene pair of the gene set, the

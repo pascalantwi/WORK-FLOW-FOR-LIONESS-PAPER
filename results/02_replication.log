@@ -1,0 +1,58 @@
+
+GSE17755, primary: 22 SLE, 93 RA, 13182 genes
+  contrast    models pooled_mean fold_mean corrected_se
+1       d1   N1 - E1   -0.013905  -0.01374      0.01100
+2       d2   N1 - F1   -0.002126  -0.00283      0.00911
+3        A N1R0 - R0    0.005718   0.00594      0.01113
+4        P   N1 - E5    0.001442  -0.00234      0.01246
+5    N2_E1   N2 - E1   -0.020919  -0.02170      0.01718
+6    E4_E1   E4 - E1   -0.000953   0.00369      0.01303
+7    E1_R1   E1 - R1    0.055670   0.05009      0.02056
+8    R1_R0   R1 - R0   -0.006305  -0.00255      0.01013
+       d1 d1_se d1_p_one_sided       d2   d2_se d2_lo90 d2_hi90 d2_equivalent
+1 -0.0137 0.011          0.893 -0.00283 0.00911  -0.018  0.0123         FALSE
+
+GSE17755, same submission date: 12 SLE, 93 RA, 13182 genes
+  contrast    models pooled_mean fold_mean corrected_se
+1       d1   N1 - E1    -0.01582  -0.01044       0.0126
+2       d2   N1 - F1     0.00211   0.00380       0.0138
+3        A N1R0 - R0     0.01071   0.00937       0.0139
+4        P   N1 - E5    -0.00762  -0.00478       0.0126
+5    N2_E1   N2 - E1    -0.03145  -0.02143       0.0211
+6    E4_E1   E4 - E1    -0.00591   0.01023       0.0315
+7    E1_R1   E1 - R1     0.05484   0.04686       0.0349
+8    R1_R0   R1 - R0    -0.00493  -0.00558       0.0101
+       d1  d1_se d1_p_one_sided     d2  d2_se d2_lo90 d2_hi90 d2_equivalent
+1 -0.0104 0.0126          0.796 0.0038 0.0138 -0.0192  0.0268         FALSE
+
+GSE326777, primary: 34 SLE, 15 RA, 12173 genes
+  contrast    models pooled_mean fold_mean corrected_se
+1       d1   N1 - E1    0.015098  0.016905      0.03118
+2       d2   N1 - F1    0.001275 -0.000556      0.00822
+3        A N1R0 - R0   -0.002157 -0.001349      0.00820
+4        P   N1 - E5   -0.000196 -0.001984      0.00852
+5    N2_E1   N2 - E1    0.016373  0.018492      0.03291
+6    E4_E1   E4 - E1   -0.077255 -0.079762      0.08919
+7    E1_R1   E1 - R1   -0.014510 -0.016508      0.03105
+8    R1_R0   R1 - R0   -0.016275 -0.005317      0.01467
+      d1  d1_se d1_p_one_sided        d2   d2_se d2_lo90 d2_hi90 d2_equivalent
+1 0.0169 0.0312          0.294 -0.000556 0.00822 -0.0142  0.0131         FALSE
+
+GSE326777, no N suffix: 23 SLE, 15 RA, 12173 genes
+  contrast    models pooled_mean fold_mean corrected_se
+1       d1   N1 - E1   -6.81e-03 -0.015500      0.03269
+2       d2   N1 - F1   -1.30e-03  0.001333      0.00964
+3        A N1R0 - R0   -5.55e-18 -0.000333      0.01196
+4        P   N1 - E5   -8.70e-04 -0.002333      0.01184
+5    N2_E1   N2 - E1   -7.54e-03 -0.016167      0.03451
+6    E4_E1   E4 - E1   -3.10e-02 -0.071500      0.08034
+7    E1_R1   E1 - R1    4.93e-03  0.015333      0.03331
+8    R1_R0   R1 - R0   -1.49e-02 -0.003667      0.01175
+       d1  d1_se d1_p_one_sided      d2   d2_se d2_lo90 d2_hi90 d2_equivalent
+1 -0.0155 0.0327          0.682 0.00133 0.00964 -0.0147  0.0173         FALSE
+
+GSE17755: formula correlation median 0.9757 (min -0.4281); IFN-square correlation median 0.355; median largest |z| 9.3; Spearman(agreement, largest |z|) -0.47
+
+GSE326777: formula correlation median 0.9997 (min 0.9928); IFN-square correlation median 0.339; median largest |z| 2.3; Spearman(agreement, largest |z|) -0.75
+elapsed 314 s
+exit 0

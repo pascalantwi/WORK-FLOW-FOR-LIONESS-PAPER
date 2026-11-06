@@ -52,7 +52,7 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - number: 11
 - pages: 2074-2102
 - doi: 10.1002/sim.8086
-- record: seed entry carried from the research-workflow template's references.bib
+- record: Crossref record for the DOI, opened 2026-11-06
 - full_text: abstract only
 
 ### marwick2018
@@ -68,7 +68,7 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - number: 1
 - pages: 80-88
 - doi: 10.1080/00031305.2017.1375986
-- record: seed entry carried from the research-workflow template's references.bib
+- record: Crossref record for the DOI, opened 2026-11-06
 - full_text: abstract only
 
 ## Project entries

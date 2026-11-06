@@ -238,8 +238,10 @@ CorrectedTests <- function(d1, d2, k = 5L, margin = 0.01) {
 #' @param data A cohort from [ReadGse17755()] or [ReadGse326777()].
 #' @param score_genes Column names of the IFN score genes.
 #' @param n_genes Size of the gene set.
-#' @return A list: `formula_cor` (one value per pair of the gene set) and
-#'   `ifn_cor` (one value per pair of score genes).
+#' @return A list: `formula_cor` (one value per pair of the gene set),
+#'   `ifn_cor` (one value per pair of score genes), `gene_max_z` (each gene's
+#'   largest absolute standardized value), `pair_max_z`, and
+#'   `agreement_vs_max_z` (their Spearman correlation with `formula_cor`).
 #' @export
 MechanismChecks <- function(data, score_genes, n_genes = 50) {
   x <- data$x
@@ -257,5 +259,13 @@ MechanismChecks <- function(data, score_genes, n_genes = 50) {
                         numeric(1))
   e_ifn <- LionessEdges(x[, score_genes, drop = FALSE])
   ifn_cor <- apply(e_ifn, 2, function(v) stats::cor(v, (score - mean(score))^2))
-  list(formula_cor = formula_cor, ifn_cor = ifn_cor)
+  # exploratory: the remainder of the first-order form grows with outlying
+  # values, so the agreement is compared with each pair's largest |z|
+  max_z <- apply(abs(StandardizeN(g)$z), 2, max)
+  pr <- PairIndex(ncol(g))
+  pair_max_z <- pmax(max_z[pr[, 1]], max_z[pr[, 2]])
+  list(formula_cor = formula_cor, ifn_cor = ifn_cor, gene_max_z = max_z,
+       pair_max_z = pair_max_z,
+       agreement_vs_max_z = stats::cor(pair_max_z, formula_cor,
+                                       method = "spearman"))
 }

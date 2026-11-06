@@ -1,4 +1,4 @@
-This note derives the closed forms the paper relies on: the exact LIONESS edge of a Pearson correlation, its first-order form, the add-one form used to score new samples, the conditional expectation of an edge under a shared factor, and the class difference in mean edge under a pure mean shift. Each derivation uses only the first and second sample moments, so each can be checked against a direct computation, and each is.
+This note derives the closed forms the paper relies on: the exact LIONESS edge of a Pearson correlation, its first-order form, the add-one form used to score new samples, the conditional expectation of an edge under a shared factor, and the class difference in mean edge under a pure mean shift. Each derivation uses only the first and second sample moments, so each is checked against a direct computation.
 
 Notation. Sample $q$ of $N$; genes $i$ and $j$; $\bar x_i$ and $s_i$ the mean and standard deviation of gene $i$ over all $N$ samples (divisor $N$); $z_{qi} = (x_{qi} - \bar x_i)/s_i$; $r$ the Pearson correlation of genes $i$ and $j$ over all $N$ samples; $a = 1/(N - 1)$ and $b = 1/(N + 1)$.
 
@@ -32,7 +32,7 @@ e_q &= N r - (N - 1)\, r_{(-q)} \\
 \end{aligned}
 $$
 
-Line 1 expands each factor $(1 - a z^2)^{-1/2} = 1 + \tfrac{a}{2} z^2 + O(a^2)$, valid because $z_{qi}$ is $O_p(1)$ and $a \to 0$. Line 2 multiplies out. Line 3 is the definition, and line 4 substitutes line 2 and uses $(N - 1) a = 1$ and $(N - 1) O_p(a^2) = O_p(N^{-1})$. The leading terms are the reference correlation plus the influence function of the correlation at the sample [@devlin1975robust]. The edge is the jackknife pseudo-value of the correlation, which is why its first-order form is the influence function [CITE: the jackknife pseudo-value and its first-order agreement with the influence function]{.cite}. The paper uses this form as the features of model F1; `tests/testthat/test-lioness.R` checks that the remainder shrinks as $N$ grows.
+Line 1 expands each factor $(1 - a z^2)^{-1/2} = 1 + \tfrac{a}{2} z^2 + O(a^2)$, which holds because $z_{qi}$ is $O_p(1)$ and $a \to 0$. Line 2 multiplies out. Line 3 is the definition, and line 4 substitutes line 2 and uses $(N - 1) a = 1$ and $(N - 1) O_p(a^2) = O_p(N^{-1})$. The leading terms are the reference correlation plus the influence function of the correlation at the sample [@devlin1975robust]. The edge is the jackknife pseudo-value of the correlation, which is why its first-order form is the influence function [CITE: the jackknife pseudo-value and its first-order agreement with the influence function]{.cite}. The paper uses this form as the features of model F1; `tests/testthat/test-lioness.R` checks that the remainder shrinks as $N$ grows.
 
 ### S1.3 The add-one edge for a new sample {.unnumbered}
 
@@ -59,7 +59,7 @@ $$
 \end{aligned}
 $$
 
-where $\sigma_i^2$ is the noise variance of gene $i$. Line 1 holds because the cross terms have mean zero; line 2 substitutes it into S1.2. The edge's conditional mean is linear in $F_q^2$, so a classifier that holds $F$ but not $F^2$ can gain from edges whenever the classes differ in the distribution of $F^2$. The paper's base models $R_1$ and E1 hold the squared score.
+where $\sigma_i^2$ is the noise variance of gene $i$. Line 1 holds because the cross terms have mean zero; line 2 substitutes it into S1.2. The edge's conditional mean is linear in $F_q^2$, so a classifier that holds $F$ but not $F^2$ gains from edges whenever the classes differ in the distribution of $F^2$. The paper's base models $R_1$ and E1 hold the squared score.
 
 ### S1.5 The class difference in mean edge under a mean shift {.unnumbered}
 
