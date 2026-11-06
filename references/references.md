@@ -197,7 +197,7 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - doi: 10.64898/2026.02.27.708608
 - note: bioRxiv preprint
 - record: Crossref record for the DOI, opened 2026-11-03; PubMed PMID 41867852, opened 2026-11-03
-- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC13001488/ (read 2026-11-03; Figure 1 and its description reread 2026-11-06); Supplement 1 not downloaded: PubMed Central does not serve it and bioRxiv refuses automated downloads, so it needs the user's browser
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC13001488/ (read 2026-11-03); bioRxiv PDF of the main paper supplied by the user, read 2026-11-06 (references/pdfs/kuijjer2026challenges.pdf; Figure 1, the recast equations, and the Methods, which place the derivations in Supplemental File 1); Supplement 1 itself not yet read
 
 ### jahagirdar2021metabolomics
 
