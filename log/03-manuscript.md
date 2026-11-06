@@ -145,3 +145,21 @@ Revision pass 1 (paragraphs): each Results subsection's first sentence now state
 Checker (`check-manuscript.py`, journal bmc-bioinformatics): no errors. Warnings kept, with reasons: digits typed outside Results are design constants (loadings 0.8, correlations 0.3 and 0.4, the total of 400 in S1, the margin 0.01, the 90% interval), which also live in `results/design.rds` and `protocol.md`; bib entries not cited belong to the proposal and the reference list, not to this draft; "very" is the rendered design level "very large" in the design table; the percentage in the Methods is the 90% interval of the equivalence test, a design choice. Two errors found on the way and fixed: `morris2019` and `marwick2018` had no checklist rows and records never opened (both opened in Crossref on 2026-11-06); and reading the replication's run file through `read_run_info()` had relabelled every quick-run number as production, which would have hidden the quick label; the replication's numbers now carry their own run label.
 
 Lists for the stop message: core citations with full text pending, devlin1975robust; records not opened, none; one claim without a source, the jackknife pseudo-value and its first-order agreement with the influence function (supplement S1.2).
+
+## Time (revision 4)
+
+| Step | Time |
+|---|---|
+| Promote the study (design functions, test replicate, tests) | 40 min |
+| Protocol, with the timing of the costliest settings | 25 min |
+| Quick run | 26 min (in the background) |
+| Replication code and runs, including the glmnet fallback | 60 min |
+| Draft, checker, revision pass | 75 min |
+| Prove the clone | about 40 min (in the background) |
+
+## Process feedback (revision 4)
+
+1. The design stop was answered by the user's earlier choices rather than at a stop; the stage file could say how a design chosen during a proposal revision carries into step 3.2.
+2. `read_run_info()` both reads a run file and sets the paper's run label; reading a second script's run file through it silently relabelled every number. A helper that reads without setting the label, or a guard against a second call, would prevent it.
+3. `cv.glmnet` fails, rather than warns, when an inner fold's path stops after one penalty value; real data with few cases in a class reach that case, simulated data did not. A fallback in the package function is the robust place for it, with the default path untouched so that earlier runs reproduce.
+4. The checker counts digits in captions written in the YAML option; building captions in the setup chunk from the start would save a round.
