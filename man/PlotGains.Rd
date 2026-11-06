@@ -8,7 +8,8 @@ PlotGains(
   summaries,
   design,
   quantities,
-  cols = c("#B2182B", "#2166AC", "#E08214", "#1B7837", "#762A83")[seq_along(quantities)]
+  cols = c("#B2182B", "#2166AC", "#E08214", "#1B7837", "#762A83")[seq_along(quantities)],
+  labels = NULL
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ PlotGains(
 \code{summaries}, values are legend labels.}
 
 \item{cols}{Colors, one per quantity.}
+
+\item{labels}{Row labels, one per cell; built from the design when \code{NULL}.}
 }
 \value{
 Invisibly, the matrix of means; called for the plot.

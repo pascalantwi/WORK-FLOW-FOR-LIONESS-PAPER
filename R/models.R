@@ -138,10 +138,17 @@ FitElasticNet <- function(ref_train, pen_train, y, ref_test, pen_test,
   xtr <- cbind(ref_train, pen_train)
   xte <- cbind(ref_test, pen_test)
   pf <- c(rep(0, ncol(ref_train)), rep(1, ncol(pen_train)))
-  fit <- glmnet::cv.glmnet(xtr, y, family = "binomial", alpha = alpha,
-                           nfolds = 5, penalty.factor = pf,
-                           type.measure = "deviance")
-  drop(stats::predict(fit, newx = xte, s = "lambda.min", type = "link"))
+  # cv.glmnet, or its prediction, fails when a path ends after one penalty
+  # value (few cases in a fold, near-separable classes); only then the
+  # fallback runs, so every fit that cv.glmnet completes is unchanged
+  out <- tryCatch({
+    fit <- glmnet::cv.glmnet(xtr, y, family = "binomial", alpha = alpha,
+                             nfolds = 5, penalty.factor = pf,
+                             type.measure = "deviance")
+    drop(stats::predict(fit, newx = xte, s = "lambda.min", type = "link"))
+  }, error = function(e) NULL)
+  if (is.null(out)) out <- ElasticNetFallback(xtr, y, xte, pf, alpha)
+  out
 }
 
 #' Regularized discriminant analysis scores
@@ -400,4 +407,49 @@ TestReplicate <- function(design_row, rep, n_repeat = 5L, k = 5L,
   data.frame(cell = design_row$cell, rep = rep, d1 = mean(d1), d2 = mean(d2),
              reject_d1 = isTRUE(1 - stats::pt(t1, j - 1) < 0.05),
              equiv_d2 = (mean(d2) - half > -margin) && (mean(d2) + half < margin))
+}
+
+#' Cross-validated elastic net that tolerates truncated paths
+#'
+#' The fallback of [FitElasticNet()] when `cv.glmnet` fails: the penalty
+#' sequence of the fit on all training samples; stratified inner folds; each
+#' fold's linear predictors computed from its coefficients, with the last
+#' available fit carried forward where its path stops early; the penalty with
+#' the smallest binomial deviance.
+#'
+#' @param xtr,xte Training and test feature matrices.
+#' @param y Training labels.
+#' @param pf Penalty factors.
+#' @param alpha The elastic-net mixing parameter.
+#' @param k Number of inner folds.
+#' @return Linear predictors for the test samples.
+#' @export
+ElasticNetFallback <- function(xtr, y, xte, pf, alpha = 0.5, k = 5L) {
+  fit_path <- function(x, yy, lambda = NULL) {
+    suppressWarnings(glmnet::glmnet(x, yy, family = "binomial", alpha = alpha,
+                                    penalty.factor = pf, lambda = lambda))
+  }
+  coefs <- function(g, n_lambda, yy) {
+    # coef() returns the intercepts and slopes aligned; a fit that stopped
+    # before its first penalty value has no usable path, and the
+    # intercept-only model of its training labels stands in for it
+    b <- tryCatch(as.matrix(stats::coef(g)), error = function(e) NULL)
+    if (is.null(b) || ncol(b) == 0 || nrow(b) != ncol(xtr) + 1) {
+      b <- matrix(c(stats::qlogis(mean(yy)), rep(0, ncol(xtr))), ncol = 1)
+    }
+    b[, pmin(seq_len(n_lambda), ncol(b)), drop = FALSE]
+  }
+  full <- fit_path(xtr, y)
+  lam <- full$lambda
+  folds <- StratifiedFolds(y, k)
+  dev <- matrix(NA_real_, length(y), length(lam))
+  for (f in seq_len(k)) {
+    held <- folds == f
+    g <- fit_path(xtr[!held, , drop = FALSE], y[!held], lambda = lam)
+    eta <- cbind(1, xtr[held, , drop = FALSE]) %*% coefs(g, length(lam), y[!held])
+    p <- pmin(pmax(stats::plogis(eta), 1e-12), 1 - 1e-12)
+    dev[held, ] <- -2 * (y[held] * log(p) + (1 - y[held]) * log(1 - p))
+  }
+  best <- which.min(colMeans(dev))
+  drop(cbind(1, xte) %*% coefs(full, length(lam), y)[, best])
 }

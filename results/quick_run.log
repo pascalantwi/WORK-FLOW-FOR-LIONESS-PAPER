@@ -1,0 +1,11 @@
+[[1]]
+NULL
+
+[[2]]
+NULL
+
+[[3]]
+NULL
+
+quick run: S2 25 x 20, test 7 x 10, S1 9 x 100 replicates in 1561 s
+exit 0

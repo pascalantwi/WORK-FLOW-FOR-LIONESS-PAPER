@@ -6,6 +6,7 @@
 # GSE17755: series matrix (normalized log2 ratios against a pooled healthy
 #   reference, GPL1291) with the sample characteristics; the raw scanner
 #   files (1.1 GB) are not needed.
+# GPL1291: the platform table of GSE17755 (probe identifiers to gene symbols).
 # GSE326777: neutrophil RNA-seq gene counts and the series matrix (samples).
 
 devtools::load_all(here::here(), quiet = TRUE)
@@ -15,15 +16,19 @@ raw_dir <- here::here("data", "raw")
 dir.create(raw_dir, showWarnings = FALSE, recursive = TRUE)
 base <- "https://ftp.ncbi.nlm.nih.gov/geo/series"
 files <- data.frame(
-  accession = c("GSE17755", "GSE326777", "GSE326777"),
+  accession = c("GSE17755", "GPL1291", "GSE326777", "GSE326777"),
   url = c(
     file.path(base, "GSE17nnn/GSE17755/matrix/GSE17755_series_matrix.txt.gz"),
+    paste0("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL1291",
+           "&targ=self&form=text&view=data"),
     file.path(base, "GSE326nnn/GSE326777/matrix/GSE326777_series_matrix.txt.gz"),
     file.path(base, "GSE326nnn/GSE326777/suppl/GSE326777_gene_counts_matrix.tsv.gz")
   ),
   stringsAsFactors = FALSE
 )
-files$file <- file.path(raw_dir, basename(files$url))
+files$file <- file.path(raw_dir, ifelse(files$accession == "GPL1291",
+                                        "GPL1291_platform_table.txt",
+                                        basename(files$url)))
 options(timeout = 600)
 files$fetched <- FALSE
 for (i in seq_len(nrow(files))) {

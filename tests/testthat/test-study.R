@@ -59,3 +59,16 @@ test_that("TestReplicate returns the two decisions", {
   expect_type(out$equiv_d2, "logical")
   expect_true(abs(out$d1) <= 1 && abs(out$d2) <= 1)
 })
+
+test_that("the elastic-net fallback gives finite predictions near cv.glmnet's", {
+  set.seed(61)
+  x <- matrix(rnorm(120 * 6), 120, 6)
+  y <- rbinom(120, 1, plogis(x[, 1]))
+  pf <- c(0, rep(1, 5))
+  p <- ElasticNetFallback(x[1:90, ], y[1:90], x[91:120, ], pf)
+  expect_length(p, 30)
+  expect_true(all(is.finite(p)))
+  q <- FitElasticNet(x[1:90, 1, drop = FALSE], x[1:90, -1], y[1:90],
+                     x[91:120, 1, drop = FALSE], x[91:120, -1])
+  expect_gt(cor(p, q), 0.9)
+})

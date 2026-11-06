@@ -1,45 +1,95 @@
-<!--
-The supplementary note: the derivations the paper relies on, included by manuscript.qmd after the
-references (stage 3, step 3.4). One subsection per result, S1.1, S1.2, and so on. Each derivation is
-one step per line with the step's justification after the display, and ends with where the paper
-uses the result and which test in tests/testthat/ checks it. Markers, prov(), and lvl() work here as
-in the paper, and the checker scans this file too.
+This note derives the closed forms the paper relies on: the exact LIONESS edge of a Pearson correlation, its first-order form, the add-one form used to score new samples, the conditional expectation of an edge under a shared factor, and the class difference in mean edge under a pure mean shift. Each derivation uses only the first and second sample moments, so each can be checked against a direct computation, and each is.
 
-Supplementary figures and tables are numbered Figure S1, Table S1, ... by the cross-reference kinds
-in manuscript.qmd's YAML. Write each as a fenced div whose id starts with sfig- or stbl-, with the
-chunk inside (no fig- or tbl- label) and the caption as the div's last paragraph, and refer to it
-as @sfig-name or @stbl-name. A chunk label of the form sfig-name does not work. Delete these comments.
--->
+Notation. Sample $q$ of $N$; genes $i$ and $j$; $\bar x_i$ and $s_i$ the mean and standard deviation of gene $i$ over all $N$ samples (divisor $N$); $z_{qi} = (x_{qi} - \bar x_i)/s_i$; $r$ the Pearson correlation of genes $i$ and $j$ over all $N$ samples; $a = 1/(N - 1)$ and $b = 1/(N + 1)$.
 
-[FILL: one plain-language paragraph: what this note derives and why the paper needs it.]
+### S1.1 The exact LIONESS edge {.unnumbered}
 
-[FILL: the notation in one sentence, in the paper's symbols.]
+The correlation without sample $q$ is
 
-### S1.1 [FILL: the first result] {.unnumbered}
+$$
+r_{(-q)} = \frac{r - a\, z_{qi} z_{qj}}{\sqrt{\left(1 - a\, z_{qi}^2\right)\left(1 - a\, z_{qj}^2\right)}} .
+$$
 
-[FILL: the statement, in the paper's notation.]
+Write $S_{ij} = \sum_p (x_{pi} - \bar x_i)(x_{pj} - \bar x_j) = N s_i s_j r$ and $d_{qi} = x_{qi} - \bar x_i = s_i z_{qi}$. Removing sample $q$ changes the mean to $\bar x_i - d_{qi}/(N - 1)$, and the cross-product about the new mean is
 
 $$
 \begin{aligned}
-a &= b \\
-  &= c
+S_{ij}^{(-q)} &= S_{ij} - \frac{N}{N - 1}\, d_{qi} d_{qj} \\
+&= N s_i s_j \left(r - a\, z_{qi} z_{qj}\right),
 \end{aligned}
 $$
 
-[FILL: the justification of each line, numbered as the lines; where the paper uses the result; the test that checks it.]
+and in the same way $S_{ii}^{(-q)} = N s_i^2 \left(1 - a\, z_{qi}^2\right)$. Line 1 is the downdate of a sum of squares and cross-products by one observation; line 2 substitutes $d_{qi} = s_i z_{qi}$ and $N/(N - 1) = N a$. The ratio $S_{ij}^{(-q)} / \sqrt{S_{ii}^{(-q)} S_{jj}^{(-q)}}$ gives the display. The LIONESS edge is $e_q = N r - (N - 1)\, r_{(-q)}$. The paper uses this form for every training edge; `tests/testthat/test-lioness.R` checks it against leave-one-out refits to $10^{-12}$.
 
-### S1.2 [FILL: a supplementary figure or table, if any] {.unnumbered}
+### S1.2 The first-order edge {.unnumbered}
 
-[FILL: the sentence that refers to it, as @sfig-example.]
+$$
+\begin{aligned}
+r_{(-q)} &= \left(r - a\, z_{qi} z_{qj}\right)\left(1 + \tfrac{a}{2}\left(z_{qi}^2 + z_{qj}^2\right) + O_p\left(a^2\right)\right) \\
+&= r - a\, z_{qi} z_{qj} + \tfrac{a r}{2}\left(z_{qi}^2 + z_{qj}^2\right) + O_p\left(a^2\right), \\
+e_q &= N r - (N - 1)\, r_{(-q)} \\
+&= r + z_{qi} z_{qj} - \tfrac{r}{2}\left(z_{qi}^2 + z_{qj}^2\right) + O_p\left(N^{-1}\right).
+\end{aligned}
+$$
 
-::: {#sfig-example}
+Line 1 expands each factor $(1 - a z^2)^{-1/2} = 1 + \tfrac{a}{2} z^2 + O(a^2)$, valid because $z_{qi}$ is $O_p(1)$ and $a \to 0$. Line 2 multiplies out. Line 3 is the definition, and line 4 substitutes line 2 and uses $(N - 1) a = 1$ and $(N - 1) O_p(a^2) = O_p(N^{-1})$. The leading terms are the reference correlation plus the influence function of the correlation at the sample [@devlin1975robust]. The edge is the jackknife pseudo-value of the correlation, which is why its first-order form is the influence function [CITE: the jackknife pseudo-value and its first-order agreement with the influence function]{.cite}. The paper uses this form as the features of model F1; `tests/testthat/test-lioness.R` checks that the remainder shrinks as $N$ grows.
+
+### S1.3 The add-one edge for a new sample {.unnumbered}
+
+For a new sample standardized by the reference mean and standard deviation, adding it to the $N$ reference samples gives
+
+$$
+\begin{aligned}
+S_{ij}^{(+q)} &= S_{ij} + \frac{N}{N + 1}\, d_{qi} d_{qj} = N s_i s_j \left(r + b\, z_{qi} z_{qj}\right), \\
+r_{(+q)} &= \frac{r + b\, z_{qi} z_{qj}}{\sqrt{\left(1 + b\, z_{qi}^2\right)\left(1 + b\, z_{qj}^2\right)}}, \\
+e_q &= (N + 1)\, r_{(+q)} - N r .
+\end{aligned}
+$$
+
+Line 1 is the update of a sum of cross-products by one observation, line 2 the ratio, and line 3 the LIONESS edge of a sample added to the reference. A test sample never enters its training reference, so cross-validated performance is not inflated. The paper uses this form for every test edge; `tests/testthat/test-lioness.R` checks it against direct computation.
+
+### S1.4 An edge under a shared factor {.unnumbered}
+
+Let $z_{qi} = \lambda_i F_q + \varepsilon_{qi}$, with the factor $F_q$ and the noise terms independent, and the noise of different genes independent. Then, for $i \ne j$,
+
+$$
+\begin{aligned}
+\mathrm{E}\left[z_{qi} z_{qj} \mid F_q\right] &= \lambda_i \lambda_j F_q^2, \\
+\mathrm{E}\left[e_q \mid F_q\right] &= r + \lambda_i \lambda_j F_q^2 - \tfrac{r}{2}\left(\lambda_i^2 + \lambda_j^2\right) F_q^2 - \tfrac{r}{2}\left(\sigma_i^2 + \sigma_j^2\right) + O\left(N^{-1}\right),
+\end{aligned}
+$$
+
+where $\sigma_i^2$ is the noise variance of gene $i$. Line 1 holds because the cross terms have mean zero; line 2 substitutes it into S1.2. The edge's conditional mean is linear in $F_q^2$, so a classifier that holds $F$ but not $F^2$ can gain from edges whenever the classes differ in the distribution of $F^2$. The paper's base models $R_1$ and E1 hold the squared score.
+
+### S1.5 The class difference in mean edge under a mean shift {.unnumbered}
+
+Let class 1 have share $\pi$ and differ from class 0 only in the means of genes $i$ and $j$, by $\Delta_i$ and $\Delta_j$ in units of the overall standard deviation, with the same within-class covariance. The overall mean of $z_{qi}$ is zero, so its class means are $(1 - \pi)\Delta_i$ and $-\pi \Delta_i$. To first order,
+
+$$
+\begin{aligned}
+\mathrm{E}_1[e] - \mathrm{E}_0[e] &\approx \left[(1 - \pi)^2 - \pi^2\right] \left[\Delta_i \Delta_j - \tfrac{r}{2}\left(\Delta_i^2 + \Delta_j^2\right)\right] \\
+&= (1 - 2\pi) \left[\Delta_i \Delta_j - \tfrac{r}{2}\left(\Delta_i^2 + \Delta_j^2\right)\right].
+\end{aligned}
+$$
+
+Line 1 applies S1.2 in each class: the within-class second moments are equal and cancel, and each product or square of class means contributes its class's mean shift. Line 2 uses $(1 - \pi)^2 - \pi^2 = 1 - 2\pi$. The difference is zero for balanced classes and grows with imbalance, with no change in co-expression. The paper's study S1 checks it against the simulated difference (`MeanShiftEdgeDifference()`).
+
+### S1.6 The unequal-groups law in study S1 {.unnumbered}
+
+@stbl-s1 gives, for each setting of study S1, the class difference in mean LIONESS edge over the 45 pairs of the module, the difference that @eq-shift predicts, and their gap with its Monte Carlo standard error.
+
+::: {#stbl-s1}
 
 ```{r}
-#| eval: false
-
-# Draw from the results objects only; the figure function lives in R/.
+gap_register("stbl-s1", what = "S1 observed and predicted mean-edge differences", cells = nrow(s1),
+             n_rep = ri$n_rep_s1, production = "9 settings, 1,000 replicates each")
+t1 <- merge(design$s1[, c("cell", "share", "level")], s1, by = "cell")
+kable_w(data.frame(`Share of class 1` = t1$share, `Mean shift (SD)` = t1$level,
+                   Observed = fmt(t1$observed, 4), Predicted = fmt(t1$predicted, 4),
+                   Gap = sprintf("%s (%s)", fmt(t1$gap, 4), fmt(t1$gap_mcse, 4)),
+                   check.names = FALSE), c(16, 16, 22, 22, 24))
 ```
 
-[FILL: the caption, computed numbers through prov() like any caption.]
+The class difference in mean LIONESS edge under a pure mean shift in study S1: observed, predicted by @eq-shift, and their gap (Monte Carlo standard error), with a total of 400 samples per cohort.
 
 :::
