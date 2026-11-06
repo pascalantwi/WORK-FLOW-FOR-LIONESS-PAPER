@@ -130,13 +130,15 @@ FitReference <- function(x_train, y, x_test) {
 #' @param ref_train,ref_test Reference covariate matrices (unpenalized).
 #' @param pen_train,pen_test Penalized feature matrices.
 #' @param y Training labels.
+#' @param alpha The elastic-net mixing parameter (0 ridge, 1 lasso).
 #' @return Linear predictors for the test samples.
 #' @export
-FitElasticNet <- function(ref_train, pen_train, y, ref_test, pen_test) {
+FitElasticNet <- function(ref_train, pen_train, y, ref_test, pen_test,
+                          alpha = 0.5) {
   xtr <- cbind(ref_train, pen_train)
   xte <- cbind(ref_test, pen_test)
   pf <- c(rep(0, ncol(ref_train)), rep(1, ncol(pen_train)))
-  fit <- glmnet::cv.glmnet(xtr, y, family = "binomial", alpha = 0.5,
+  fit <- glmnet::cv.glmnet(xtr, y, family = "binomial", alpha = alpha,
                            nfolds = 5, penalty.factor = pf,
                            type.measure = "deviance")
   drop(stats::predict(fit, newx = xte, s = "lambda.min", type = "link"))
@@ -215,8 +217,10 @@ FitRda <- function(x_train, y, x_test, grid = seq(0, 1, by = 0.25), k = 5) {
 #'   products and squares, the first-order edges, the LIONESS edges, or the
 #'   partial-correlation LIONESS edges, penalized, with the `R_1` terms
 #'   unpenalized.
-#'   The row's optional `noise` and `n_score` columns set the noise
-#'   distribution and the number of score genes (defaults `"normal"` and 5).
+#'   The row's optional `noise`, `n_score`, and `alpha` columns set the noise
+#'   distribution, the number of score genes, and the elastic-net mixing
+#'   (defaults `"normal"`, 5, and 0.5). With more than five score genes the
+#'   gene set drops them, so that the score and the edges share no gene.
 #' @return A one-row data frame.
 #' @export
 RunReplicate <- function(design_row, rep,
@@ -225,6 +229,9 @@ RunReplicate <- function(design_row, rep,
   set.seed(design_row$seed + rep)
   noise <- if (is.null(design_row$noise)) "normal" else design_row$noise
   n_score <- if (is.null(design_row$n_score)) 5L else design_row$n_score
+  alpha <- if (is.null(design_row$alpha)) 0.5 else design_row$alpha
+  gene_set <- if (n_score > 5) setdiff(6:50, seq_len(n_score)) else 6:50
+  fit_en <- function(...) FitElasticNet(..., alpha = alpha)
   coh <- SimulateCohort(design_row$mechanism, design_row$level,
                         design_row$n1, design_row$n0, noise = noise)
   y <- coh$y
@@ -236,31 +243,32 @@ RunReplicate <- function(design_row, rep,
     extra_map <- c(N3R1 = "ssn", N4R1 = "iena", N5R1 = "sweet",
                    N6R1 = "bonobo", N2E1 = "partial")
     extra <- extra_map[intersect(models, names(extra_map))]
-    ft <- PilotFeatures(coh, tr, score_genes = seq_len(n_score), extra = extra)
+    ft <- PilotFeatures(coh, tr, score_genes = seq_len(n_score),
+                        gene_set = gene_set, extra = extra)
     a <- ft$train
     b <- ft$test
     ytr <- y[tr]
     out <- list(
       R0 = function() FitReference(a$r0, ytr, b$r0),
       R1 = function() FitReference(a$r1, ytr, b$r1),
-      E1 = function() FitElasticNet(a$r1, a$genes, ytr, b$r1, b$genes),
+      E1 = function() fit_en(a$r1, a$genes, ytr, b$r1, b$genes),
       E4 = function() FitRda(cbind(a$genes, a$r0[, c("comp", "ifn")]), ytr,
                              cbind(b$genes, b$r0[, c("comp", "ifn")])),
-      E5 = function() FitElasticNet(a$r1, a$quad, ytr, b$r1, b$quad),
-      N1R0 = function() FitElasticNet(a$r0, a$edges, ytr, b$r0, b$edges),
-      N1R1 = function() FitElasticNet(a$r1, a$edges, ytr, b$r1, b$edges),
-      F1R1 = function() FitElasticNet(a$r1, a$fo, ytr, b$r1, b$fo),
-      N3R1 = function() FitElasticNet(a$r1, a$ssn, ytr, b$r1, b$ssn),
-      N4R1 = function() FitElasticNet(a$r1, a$iena, ytr, b$r1, b$iena),
-      N5R1 = function() FitElasticNet(a$r1, a$sweet, ytr, b$r1, b$sweet),
-      N6R1 = function() FitElasticNet(a$r1, a$bonobo, ytr, b$r1, b$bonobo),
-      E5E1 = function() FitElasticNet(a$r1, cbind(a$genes, a$quad), ytr,
+      E5 = function() fit_en(a$r1, a$quad, ytr, b$r1, b$quad),
+      N1R0 = function() fit_en(a$r0, a$edges, ytr, b$r0, b$edges),
+      N1R1 = function() fit_en(a$r1, a$edges, ytr, b$r1, b$edges),
+      F1R1 = function() fit_en(a$r1, a$fo, ytr, b$r1, b$fo),
+      N3R1 = function() fit_en(a$r1, a$ssn, ytr, b$r1, b$ssn),
+      N4R1 = function() fit_en(a$r1, a$iena, ytr, b$r1, b$iena),
+      N5R1 = function() fit_en(a$r1, a$sweet, ytr, b$r1, b$sweet),
+      N6R1 = function() fit_en(a$r1, a$bonobo, ytr, b$r1, b$bonobo),
+      E5E1 = function() fit_en(a$r1, cbind(a$genes, a$quad), ytr,
                                       b$r1, cbind(b$genes, b$quad)),
-      F1E1 = function() FitElasticNet(a$r1, cbind(a$genes, a$fo), ytr,
+      F1E1 = function() fit_en(a$r1, cbind(a$genes, a$fo), ytr,
                                       b$r1, cbind(b$genes, b$fo)),
-      N1E1 = function() FitElasticNet(a$r1, cbind(a$genes, a$edges), ytr,
+      N1E1 = function() fit_en(a$r1, cbind(a$genes, a$edges), ytr,
                                       b$r1, cbind(b$genes, b$edges)),
-      N2E1 = function() FitElasticNet(a$r1, cbind(a$genes, a$pedges), ytr,
+      N2E1 = function() fit_en(a$r1, cbind(a$genes, a$pedges), ytr,
                                       b$r1, cbind(b$genes, b$pedges))
     )
     for (m in models) pred[!tr, m] <- out[[m]]()
@@ -338,4 +346,58 @@ SummarizeCells <- function(reps) {
   }))
   rownames(out) <- NULL
   out
+}
+
+#' One replicate of a test setting: the real-data procedure on a simulated cohort
+#'
+#' Repeated stratified k-fold cross-validation of E1, N1 (E1 plus LIONESS
+#' edges), and F1 (E1 plus first-order edges); the AUC in each test fold; and
+#' the two primary tests of proposal section 7.2 on the fold differences:
+#' the corrected resampled t-test (Nadeau and Bengio) of
+#' `Delta_1 = AUC(N1) - AUC(E1)`, one-sided at 5%, and the two one-sided tests
+#' of `Delta_2 = AUC(N1) - AUC(F1)` with margin `margin` (equivalence when the
+#' 90% interval lies inside it), both with the corrected variance
+#' `(1 / J + n_test / n_train) s^2` over the `J` folds.
+#'
+#' @param design_row One row of `StudyDesign()$test`.
+#' @param rep Replicate index; the seed is the cell seed plus `rep`.
+#' @param n_repeat,k Repeats and folds.
+#' @param margin The equivalence margin.
+#' @return A one-row data frame: `cell`, `rep`, the mean fold differences
+#'   `d1` and `d2`, `reject_d1` (superiority of N1 over E1 declared),
+#'   `equiv_d2` (equivalence of N1 and F1 declared).
+#' @export
+TestReplicate <- function(design_row, rep, n_repeat = 5L, k = 5L,
+                          margin = 0.01) {
+  set.seed(design_row$seed + rep)
+  noise <- if (is.null(design_row$noise)) "normal" else design_row$noise
+  coh <- SimulateCohort(design_row$mechanism, design_row$level,
+                        design_row$n1, design_row$n0, noise = noise)
+  y <- coh$y
+  d1 <- d2 <- numeric(0)
+  for (r in seq_len(n_repeat)) {
+    folds <- StratifiedFolds(y, k)
+    for (f in seq_len(k)) {
+      tr <- folds != f
+      ft <- PilotFeatures(coh, tr)
+      a <- ft$train
+      b <- ft$test
+      e1 <- FitElasticNet(a$r1, a$genes, y[tr], b$r1, b$genes)
+      n1 <- FitElasticNet(a$r1, cbind(a$genes, a$edges), y[tr],
+                          b$r1, cbind(b$genes, b$edges))
+      f1 <- FitElasticNet(a$r1, cbind(a$genes, a$fo), y[tr],
+                          b$r1, cbind(b$genes, b$fo))
+      yt <- y[!tr]
+      d1 <- c(d1, Auc(n1, yt) - Auc(e1, yt))
+      d2 <- c(d2, Auc(n1, yt) - Auc(f1, yt))
+    }
+  }
+  j <- length(d1)
+  ratio <- 1 / (k - 1)  # n_test / n_train for k folds
+  se <- function(d) sqrt((1 / j + ratio) * stats::var(d))
+  t1 <- mean(d1) / se(d1)
+  half <- stats::qt(0.95, j - 1) * se(d2)
+  data.frame(cell = design_row$cell, rep = rep, d1 = mean(d1), d2 = mean(d2),
+             reject_d1 = isTRUE(1 - stats::pt(t1, j - 1) < 0.05),
+             equiv_d2 = (mean(d2) - half > -margin) && (mean(d2) + half < margin))
 }

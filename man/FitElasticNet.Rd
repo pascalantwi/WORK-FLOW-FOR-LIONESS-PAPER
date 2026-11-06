@@ -4,7 +4,7 @@
 \alias{FitElasticNet}
 \title{Fit an elastic net with unpenalized reference terms and score a test set}
 \usage{
-FitElasticNet(ref_train, pen_train, y, ref_test, pen_test)
+FitElasticNet(ref_train, pen_train, y, ref_test, pen_test, alpha = 0.5)
 }
 \arguments{
 \item{ref_train, ref_test}{Reference covariate matrices (unpenalized).}
@@ -12,6 +12,8 @@ FitElasticNet(ref_train, pen_train, y, ref_test, pen_test)
 \item{pen_train, pen_test}{Penalized feature matrices.}
 
 \item{y}{Training labels.}
+
+\item{alpha}{The elastic-net mixing parameter (0 ridge, 1 lasso).}
 }
 \value{
 Linear predictors for the test samples.

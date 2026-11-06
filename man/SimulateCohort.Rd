@@ -4,21 +4,30 @@
 \alias{SimulateCohort}
 \title{Simulate one cohort for a pilot cell}
 \usage{
-SimulateCohort(mechanism, level, n1, n0, p = 50, noise = c("normal", "t5"))
+SimulateCohort(
+  mechanism,
+  level,
+  n1,
+  n0,
+  p = 50,
+  noise = c("normal", "t5", "t3")
+)
 }
 \arguments{
 \item{mechanism}{One of \code{"null"}, \code{"ifn"}, \code{"shift"}, \code{"network"}.}
 
-\item{level}{For \code{"ifn"}, \code{"moderate"} or \code{"large"}; for \code{"shift"}, the
+\item{level}{For \code{"ifn"}, \code{"none"}, \code{"small"}, \code{"moderate"}, \code{"large"}, or
+\code{"very large"} (shift and SD ratio of \code{f} in class 1: 0 and 1, 0.25 and
+1.25, 0.5 and 1.5, 1 and 2.25, 1.5 and 3); for \code{"shift"}, the
 mean shift; for \code{"network"}, the correlation change; ignored for null.}
 
 \item{n1, n0}{Sizes of class 1 and class 0.}
 
 \item{p}{Number of genes (50 in the pilot).}
 
-\item{noise}{\code{"normal"}, or \code{"t5"} for noise drawn from a t distribution
-with 5 degrees of freedom scaled to unit variance (before the module's
-correlation is applied).}
+\item{noise}{\code{"normal"}, or \code{"t5"} or \code{"t3"} for noise drawn from a t
+distribution with 5 or 3 degrees of freedom scaled to unit variance
+(before the module's correlation is applied).}
 }
 \value{
 A list with \code{x} (samples by genes), \code{y} (0 or 1), \code{age}, \code{sex},

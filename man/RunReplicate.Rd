@@ -23,8 +23,10 @@ are \code{"E5E1"}, \code{"F1E1"}, \code{"N1E1"}, and \code{"N2E1"}: the genes pl
 products and squares, the first-order edges, the LIONESS edges, or the
 partial-correlation LIONESS edges, penalized, with the \code{R_1} terms
 unpenalized.
-The row's optional \code{noise} and \code{n_score} columns set the noise
-distribution and the number of score genes (defaults \code{"normal"} and 5).}
+The row's optional \code{noise}, \code{n_score}, and \code{alpha} columns set the noise
+distribution, the number of score genes, and the elastic-net mixing
+(defaults \code{"normal"}, 5, and 0.5). With more than five score genes the
+gene set drops them, so that the score and the edges share no gene.}
 }
 \value{
 A one-row data frame.
