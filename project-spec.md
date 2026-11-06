@@ -1,79 +1,71 @@
-# Project spec: LIONESS beyond the IFN score in SLE and RA
+# Project spec: LIONESS edges, the interferon score, and SLE versus RA
 
 | | |
 |---|---|
-| Proposal | `proposal.md`, final 2026-11-03 |
+| Proposal | `proposal.md`, revision 4, final 2026-11-06 |
 | Authors | as in `DESCRIPTION`, set by `tools/authors.R` before the final render |
-| Written | 2026-11-03 |
-| Status | final 2026-11-03; section 3 completed after the verdict, 2026-11-03 |
+| Written | 2026-11-06 (replaces the spec of 2026-11-03) |
+| Status | final 2026-11-06; section 3 completed after the third pilot's verdict |
 
 ## 1. Question and why it matters
 
-**Question (one sentence):** Is a LIONESS co-expression edge anything more than a closed-form quadratic function of each sample's own expression, and, when classifying SLE against RA from whole blood, do LIONESS edges add information beyond the IFN score, its square, cell composition, and their own first-order (influence-function) features? (Revised 2026-11-03 after the first pilot, `proposal.md`, section 12.6; the question before it asked only about the IFN score and the matched quadratic model.)
+**Question (one sentence):** Is a LIONESS co-expression edge anything more than a closed-form quadratic function of each sample's own expression, and, when classifying SLE against RA from whole blood, do LIONESS edges add information beyond the IFN score, its square, cell composition, the gene levels, and their own first-order features?
 
-**Why it matters:** A LIONESS edge is a known quadratic function of the sample's own expression (proposal, section 4), so a network gain is a quadratic-expression gain unless it survives the matched comparison. In IFN-driven diseases, edges between IFN genes carry the square of the IFN factor, so a reference without that square credits IFN signal to the network. A user who reports network rewiring needs to know which comparisons the claim must survive.
+**Why it matters:** LIONESS edges are read as each patient's own co-expression network, and differences between groups are reported as rewiring. If an edge is a quadratic function of the patient's own expression, a network finding must survive two comparisons before it means co-expression: against its own first-order formula, and against a baseline that holds the square of any shared factor such as interferon. In SLE and RA, where many gene pairs share the IFN factor, a network finding that skips these comparisons can be interferon in disguise.
 
 ## 2. Mechanism we suspect
 
-The exact LIONESS Pearson edge is $e_q = N r - (N-1)(r - a z_{qi} z_{qj})/\sqrt{(1 - a z_{qi}^2)(1 - a z_{qj}^2)}$ with $a = 1/(N-1)$ (proposal, equation 1), which to first order is $r + z_{qi} z_{qj} - \tfrac{r}{2}(z_{qi}^2 + z_{qj}^2)$: the reference correlation plus the influence function of the correlation at the sample. Users read the edge as the correlation in the sample's own subpopulation. Three gaps follow. Genes sharing a factor $F$ give edges near $a_i a_j F^2$, so edges add information over a reference with $F$ but not $F^2$ (zero when the classes have the same distribution of $F$, large when they differ in its spread). A mean shift between unbalanced classes moves the group mean of an edge by $(1 - 2\pi)[\Delta_i \Delta_j - \tfrac{r}{2}(\Delta_i^2 + \Delta_j^2)]$ with no change in co-expression (zero at $\pi = 0.5$). And any classification gain from edges should be matched by a linear model on the products $z_i z_j$ and squares $z_i^2$. If the mechanism is wrong, edges would add information beyond the matched quadratic model in cells with no co-expression difference.
+The LIONESS edge is $e_q = N r - (N - 1) r_{(-q)}$, and its exact closed form (proposal, equation 2) equals, to first order, $r + z_{qi} z_{qj} - \tfrac{r}{2}(z_{qi}^2 + z_{qj}^2)$: the reference correlation plus the influence function of the correlation at the sample. Three gaps follow. Genes sharing a factor $F$ give $z_{qi} z_{qj} \approx a_i a_j F_q^2$, so edges gain over a baseline with $F$ but not $F^2$ whenever the classes differ in the distribution of $F$. A mean shift between unbalanced classes moves the group mean of an edge by $(1 - 2\pi)[\Delta_i \Delta_j - \tfrac{r}{2}(\Delta_i^2 + \Delta_j^2)]$ with no change in co-expression. And the classification gain of edges should equal that of their first-order formula. If the mechanism were wrong, edges would beat the formula, or would keep a gain over a baseline that holds $F^2$ and the gene levels when only $F$ differs.
 
 ## 3. Pilot
 
-Filled twice: the plan now, the answers after the verdict (stage 2, step 5).
+Filled twice: the plan now, the answers after the verdict (stage 2, step 5). This is the third pilot; the first two are summarized at the end of this section.
 
-**Code:** `pilot/pilot.R`, run from the project root with `Rscript pilot/pilot.R`; functions in `R/`, tests in `tests/testthat/`; the verdict by `Rscript pilot/verdict.R`.
+**Code:** `pilot-c/pilot.R`, run from the project root with `Rscript pilot-c/pilot.R --reps <n>`; functions in `R/`, tests in `tests/testthat/`; the verdict by `Rscript pilot-c/verdict.R`.
 
-**Pass rule:** from the proposal, section 7, as numbers; clause by clause in `pilot/preregistration.md`, section 2.
+**Pass rule:** from the proposal, section 12, clause by clause in `pilot-c/preregistration.md`, section 2. $\Delta_1 = \mathrm{AUC}(\text{N1}) - \mathrm{AUC}(\text{E1})$ and $\Delta_2 = \mathrm{AUC}(\text{N1}) - \mathrm{AUC}(\text{F1})$, paired within a replicate.
 
-1. In the IFN-only cell with the moderate IFN difference, $\pi$ = 0.5, and 80 per class, LIONESS edges added to $R_0$ raise the out-of-fold AUC by at least 0.05, and by more than three Monte Carlo standard errors.
-2. The same gain is at least 0.03 at 40 per class.
-3. (a) In every IFN-only and mean-shift cell, the AUC of edges with $R_1$ lies within 0.01 of the AUC of the matched quadratic model with $R_1$ (or within three Monte Carlo standard errors when that is wider); (b) in the network cell with change 0.4, $\pi$ = 0.5, and 80 per class, the matched quadratic model reaches at least 90% of the AUC gain of the edges over $R_1$.
+1. Does the equivalence hold on the E1 base? (a) In the strong network cell (cell 6), $\Delta_1 \ge 0.05$ and above three MCSE. (b) In every cell, $\lvert \Delta_2 \rvert \le \max(0.01, 3\,\text{MCSE})$.
+2. Does the signal survive at a small size and in the conditioned network? (a) At 40 per class (cell 7), $\Delta_1 \ge 0.03$. (b) In cell 6, N2 gains at least 0.05 over E1.
+3. Does the E1 base remove the interferon artifact? (a) In the IFN-only cells (2, 3, 4), $\lvert \Delta_1 \rvert \le \max(0.01, 3\,\text{MCSE})$. (b) The same for N2 against E1.
 
-Pass if 1, 2, and 3 pass; close call if 1 and 3 pass and the gain of question 2 lies between 0.01 and 0.03; fail if 1 or 3(a) fails.
+Pass if every clause passes; fail if 1(a), 1(b), or 3(a) fails; close call otherwise, and for any clause within three MCSE of its threshold.
 
-**Verdict file:** `pilot/results/verdict.rds` (status `piloted-fail`), from `Rscript pilot/verdict.R`; 180 replicates per cell, 16 cells, 54 minutes on three cores.
+**Verdict file:** [FILL: after the run]
 
-**Plot:** `pilot/results/auc_gains.png`.
+**Plot:** [FILL: after the run]
 
-**The three pilot answers:**
+**The three pilot answers:** [FILL: after the run]
 
-1. Does the effect exist? Yes, but small, and no by the rule: edges added to a reference without the squared IFN score raised the AUC by 0.0067 (MCSE 0.0022) in the moderate IFN cell, against a threshold of 0.05; 0.031 in the large cell.
-2. Is it large enough to matter at realistic sample sizes? No: -0.0017 (MCSE 0.0019) at 40 per class.
-3. Is there an obvious fix or diagnostic? The squared score in the reference removes the gain (edges with $R_1$ against $R_1$: within 0.003 of zero in every IFN-only cell), and clause 3(a) passed in all seven cells; but the pre-registered matched quadratic model reached only a quarter of the edges' gain in the network cell (clause 3(b) value -0.075, MCSE 0.003). An exploratory probe after the verdict found that first-order edges as features match the exact edges (`pilot/decisions.md`, D9).
-
-**The re-pilot (`pilot-b/`, revision 3, after the first pilot failed):** verdict file `pilot-b/results/verdict.rds`, status `piloted-close-call`; 200 replicates per cell, 12 cells, 47 minutes on three cores.
-
-1. Does the equivalence hold? Yes: edges with $R_1$ gained 0.118 (MCSE 0.005) over $R_1$ in the strong network cell, and edges and first-order edges differed by -0.0054 to 0.0017 in AUC across all 12 cells.
-2. Is it large enough to matter at realistic sizes? The co-expression signal yes: 0.048 (MCSE 0.005) at 40 per class. The IFN artifact at a large IFN difference is a close call: 0.0201 (MCSE 0.0027) against 0.02.
-3. Is there an obvious fix or diagnostic? Yes: with the squared score in the reference, edges added -0.0025 to -0.0019 in the IFN-only cells, and -0.0022 with a two-gene score.
+**The earlier pilots, for the record.** The first pilot (`pilot/`, 16 cells, 180 replicates) failed its rule: the IFN artifact was small (0.0067 at a moderate IFN difference) and the planned competitor, separate products and squares, reached only a quarter of the edges' gain with a true co-expression change, while first-order edges matched it. The second pilot (`pilot-b/`, 12 cells, 200 replicates) was a close call read as a pass: edges and first-order edges differed by -0.0054 to 0.0017 in AUC, the co-expression gain was 0.118 (MCSE 0.005), the artifact at a large IFN difference was 0.0201 (MCSE 0.0027) against a threshold of 0.02, and the squared score removed it. Both built the richer models on $R_1$.
 
 ## 4. ADEMP skeleton
 
-**Aims.** (1) How much AUC do LIONESS edges add over a reference with the IFN score but not its square, when the classes differ only in the IFN factor? (2) Does the gain vanish against the matched quadratic model, in cells with and without a true co-expression difference? (3) How does the group mean of an edge depend on group balance under a pure mean shift?
+**Aims.** (1) Do LIONESS edges and their first-order features give the same out-of-sample AUC? (2) How much do edges gain from the squared IFN level alone, and does a base with the squared score remove it? (3) Does the edge form detect a co-expression difference that separate products and squares miss? (4) Does equation (3) hold for unequal groups?
 
 **Data-generating mechanisms.**
 
-- Factors varied: mechanism (null; IFN only; mean shift only; true network); IFN difference (moderate: mean of $F$ shifted 0.5 SD and SD ratio 1.5; large: shift 1 SD and ratio 2.25); conditional correlation change in a 10-gene module (0.1, 0.2, 0.4); share of the smaller class $\pi$ (0.5, 0.3); size of the smaller class (40, 80, 150).
-- Factors fixed: 50 genes (genes 1 to 20 load 0.8 on $F$; genes 1 to 5 form the IFN score, as the five IFN5 genes do; genes 21 to 30 form a module with within-class noise correlation 0.3; genes 31 to 50 load 0.4 on composition $C$), so the IFN score and composition enter as they would in blood; Gaussian noise, so the known-answer cells have closed forms; age and sex unrelated to class, so the reference's clinical terms are present but carry no signal; mean shift of 0.5 SD on the module genes in the mean-shift cells.
-- Known-answer cells: the null cells (every AUC near 0.5); the closed forms of the edges (tests).
+- Factors varied: share of the smaller class (0.5, 0.3, 0.15) and mean shift (0.25, 0.5, 1) in S1; IFN difference (none to very large), score genes (2, 5, 10), noise (normal, $t_5$), and size (40 to 300) in S2-A; module correlation change (0 to 0.4), size, share, noise (normal, $t_5$, $t_3$), and elastic-net mixing (0, 0.5, 1) in S2-B; one factor at a time around base settings (9 settings in S1, 25 in S2).
+- Factors fixed: 50 genes (20 on the IFN factor, 5 of them the score; a 10-gene module; 20 on composition), as in the pilots, so the results stay comparable; composition observed without error and the gene set fixed at the 45 non-score genes, named as limitations.
+- Known-answer cells: the null (every AUC near 0.5); equation (3) in S1; the closed forms against literal LIONESS (tests).
 
-**Estimands.** The out-of-sample AUC of each model, and its difference from $R_1$ (or $R_0$): the probability that a random case from class 1 outranks a random case from class 0 under the model fitted on a sample of the cell's size.
+**Estimands.** The out-of-sample AUC of each model, the probability that a random class-1 sample outranks a random class-0 sample under the model fitted on a sample of the cell's size; the contrasts $\Delta_1$, $\Delta_2$, $A$, and $P$ of proposal equation (6).
 
-**Methods compared.** $R_0$ (logistic regression on age, sex, $C$, and the residual IFN score); $R_1$ ($R_0$ plus the squares of the residual score and $C$); E1 (elastic net on the 45 non-score genes with $R_1$ unpenalized); E4 (regularized discriminant analysis on the 45 genes, the residual score, and $C$); E5 (elastic net on the products and squares of the 45 standardized genes with $R_1$ unpenalized); N1 with $R_0$ and N1 with $R_1$ (elastic net on the 990 LIONESS-Pearson edges among the 45 genes, the reference unpenalized). Elastic net with $\alpha$ = 0.5 and $\lambda$ chosen by inner 5-fold cross-validation (glmnet 5.2); outer 5-fold cross-validation stratified by class. LIONESS edges for training samples use the training fold as reference (exact form); test samples are scored against the training fold (proposal, Result 5).
+**Methods compared.** $R_0$, $R_1$ (logistic regression); E1, E5, F1, N1, N2 (elastic net, mixing 0.5, penalty by inner 5-fold cross-validation, glmnet 5.2, the base terms unpenalized; E5, F1, N1, and N2 add their features to E1); E4 (regularized discriminant analysis on the genes with composition and the IFN score, tuned on a grid by inner 5-fold cross-validation); N1 with $R_0$. Outer 5-fold cross-validation stratified by class; LIONESS test edges by the add-one form.
 
-**Performance measures.** Out-of-fold AUC per model and replicate; paired differences from $R_0$ and $R_1$; Monte Carlo standard errors from the replicate standard deviation of the paired differences; in mean-shift cells, the observed group-mean edge difference against equation (3).
+**Performance measures.** Pooled out-of-fold AUC and the paired contrasts with Monte Carlo standard errors; in S1, the bias of the class difference in mean edge against equation (3); in seven test settings, the rejection rate of the $\Delta_1$ test and the rate at which equivalence of $\Delta_2$ (margin 0.01) is declared.
 
-**Replicates and Monte Carlo SE target.** 200 per cell if the timing allows, giving a Monte Carlo standard error near 0.003 for an AUC difference with replicate standard deviation 0.04; the count is set from the timing run (pre-registration, section 3).
+**Replicates and Monte Carlo SE target.** 400 per S2 setting (MCSE near 0.002 for a contrast with replicate standard deviation 0.04); 300 in the test settings (MCSE 0.013 for a rate near 0.05); 1,000 per S1 setting.
 
 ## 5. Application
 
-**Dataset:** PRECISESADS, ELIXIR Luxembourg ELU-2-E592B0-1 (doi 10.17881/th9v-xt85), controlled access; not yet requested, so not on disk. [TO CONFIRM: the access request is submitted by the user and Dr Grimes; the contingency if refused is open in proposal section 6]{.tc}
+**Dataset:** PRECISESADS, ELIXIR Luxembourg ELU-2-E592B0-1 (doi 10.17881/th9v-xt85), controlled access, not yet requested, so not on disk. [TO CONFIRM: the access request, asking for the inception cohort and the centre labels; the fallback if refused]{.tc} Replication: GSE17755 (22 SLE and 93 RA, females) and GSE235508 (16 SLE and 23 RA at one time point), public, not yet downloaded; the download needs the user's approval.
 
-**Comparison:** untreated SLE against untreated RA, whole-blood RNA-seq, with flow-cytometry composition; counts by diagnosis to be read from the paper's Supplementary Table 1 once accessed.
+**Comparison:** untreated SLE against untreated RA in whole-blood RNA-seq, with flow-cytometry composition, centre, and batch.
 
-**What to show:** whether the AUC gain that edges show over a reference without the squared IFN score disappears against $R_1$ and against the matched quadratic model in real blood.
+**What to show:** whether edges keep any gain over E1 in real blood, whether that gain equals the first-order formula's, and whether the gain over $R_0$ is the squared IFN level.
 
-The pilot is a simulation only, as the proposal states (section 7).
+The pilot is a simulation only, as the proposal states (section 12).
 
 ## 6. Target journal
 
@@ -87,7 +79,7 @@ The pilot is a simulation only, as the proposal states (section 7).
 
 | Stage | Ends with | Due |
 |---|---|---|
-| 2. Pilot | `pilot/pilot-report.html`, the verdict file, `pilot/decisions.md` | 2026-11-04 |
+| 2. Pilot | `pilot-c/pilot-report.html`, the verdict file, `pilot-c/decisions.md` | 2026-11-06 |
 | 3. Manuscript, design stop | `protocol.md` from the approved design | [TO CONFIRM: date]{.tc} |
 | 3. Manuscript, first draft | `manuscript/manuscript.html` in draft mode | [TO CONFIRM: date]{.tc} |
 | 3. Manuscript, settled | the draft after the revision rounds | [TO CONFIRM: date]{.tc} |
@@ -99,11 +91,11 @@ The pilot is a simulation only, as the proposal states (section 7).
 
 The project must not add:
 
-- Single-sample methods beyond the six in the model list (CSN, SSPGI, LIONESS on mutual information): each is its own critique.
-- A new single-sample network method, or a corrected LIONESS: a constructive paper for later.
-- Diseases beyond SLE and RA, although PRECISESADS holds seven: a second application is a different paper.
-- A biomarker or a diagnostic classifier for clinical use: the classification task is the instrument of the critique, not the result.
-- Second-order theory beyond the exact forms (bounds for heavy tails, regularized partial correlation): parked as its own theory note.
+- Other single-sample methods (SSN, iENA, SWEET, BONOBO, CSN, SSPGI) as fitted models: the theory paragraph covers them, and a benchmark of them is a different paper.
+- Population-level network methods (module eigengenes, differential-correlation pairs) and other classifiers (random forests, shrinkage linear discriminant analysis).
+- A new or corrected single-sample network method: a constructive paper for later.
+- Disease pairs beyond SLE and RA as main results, although PRECISESADS holds seven diseases; Sjögren's against RA is at most a replication of the artifact.
+- A diagnostic classifier for clinical use: the classification task is the instrument, not the result.
 
 ## 9. Reading
 
