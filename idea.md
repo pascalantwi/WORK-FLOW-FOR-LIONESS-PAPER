@@ -1,41 +1,31 @@
-# Idea: When do LIONESS single-sample networks add information in IFN-stratified SLE and RA?
+# Idea: What is a LIONESS edge, and does it add to expression when classifying SLE against RA?
 
 ## The idea in a paragraph
 
-This study provides a rigorous evaluation of single-sample networks in a difficult clinical setting, establishing whether and when LIONESS adds information beyond the IFN score, clinical and cell-composition baselines, expression-based classifiers and established co-expression network methods. To interpret the edges, a first-order approximation of the LIONESS edge is given for Pearson and partial correlation, which shows that an edge is mainly the product of the sample's standardized deviations from the reference mean, plus a term that depends on the reference correlation, and therefore indicates which expression-based models a network method must be compared with. On this basis, single-sample networks are compared with seventeen models within one nested cross-validation framework, including baselines, expression-based classifiers, quadratic discriminant analysis and established network methods, with the primary comparison made against a reference model that already contains the residual IFN score. Safeguards against false network signals are built into the design through conditioning on the IFN score, controls matched on the IFN score, exclusion of treated patients and adjustment for batch. The pipeline is applied to IFN-low SLE and with IFN-low RA and IFN-High SLE and with IFN-high RA.
+LIONESS single-sample network edges are read as each patient's own co-expression network and are compared between patient groups and used to classify patients. This project derives what a LIONESS edge is made of and tests the consequences. The exact LIONESS edge of a Pearson correlation has a closed form; to first order it is the reference correlation plus the product of the patient's two standardized expression values, minus a term in their squares, so an edge is a quadratic function of the patient's own expression. Three consequences are tested: edges and their first-order formula should classify patients equally well; a shared factor such as the interferon (IFN) signature enters edges as its square, so edges can look informative only because the comparison model lacks the squared IFN score; and unequal group sizes alone shift group means of edges by a factor $(1 - 2\pi)$. The tests are a simulation study and the classification of systemic lupus erythematosus (SLE) against rheumatoid arthritis (RA) from whole-blood transcriptomes, in all patients together with the IFN score as a continuous variable. LIONESS must beat a nested set of models built on one base: clinical and composition covariates, the residual IFN score and its square, and the gene levels (model E1); the richer models add one feature set each to E1 (quadratic discriminant analysis beside them).
 
 ## Question
 
-Do LIONESS single-sample network edges (Pearson and partial correlation) improve the classification of SLE against RA, within IFN-low and within IFN-high strata, over a reference model that already contains the residual IFN score, clinical covariates, and cell composition?
+Is a LIONESS co-expression edge anything more than a closed-form quadratic function of each sample's own expression? And when classifying SLE against RA from whole blood, do LIONESS edges add information beyond the IFN score, its square, cell composition, the gene levels, and their own first-order features?
 
 ## Mechanism
 
-A first-order approximation of the LIONESS edge, for Pearson and partial correlation: the edge is mainly the product of the sample's standardized deviations from the reference mean, plus a term that depends on the reference correlation. So a LIONESS edge is close to a quadratic function of the sample's own expression, which says which expression-based models (for example quadratic discriminant analysis) a network method must be compared with.
+The LIONESS edge $e_q = N r - (N - 1) r_{(-q)}$ equals, to first order, $r + z_{qi} z_{qj} - \tfrac{r}{2}(z_{qi}^2 + z_{qj}^2)$, the reference correlation plus the influence function of the correlation at the sample. Genes that share a factor $F$ give $z_{qi} z_{qj} \approx a_i a_j F_q^2$, so the edge carries $F^2$.
 
 ## Aims
 
-1. Give the first-order approximation of the LIONESS edge for Pearson and partial correlation, and use it to interpret edges.
-2. Compare single-sample networks with seventeen models in one nested cross-validation framework (baselines, expression-based classifiers, quadratic discriminant analysis, established network methods), the primary comparison being against a reference model that already contains the residual IFN score.
-3. Apply the pipeline to IFN-low SLE against IFN-low RA, and to IFN-high SLE against IFN-high RA, with safeguards against false network signals: conditioning on the IFN score, controls matched on the IFN score, exclusion of treated patients, and adjustment for batch.
+1. Equivalence: do LIONESS edges and their first-order features give the same out-of-sample classification?
+2. Artifact and fix: how much do edges gain only by carrying the squared IFN level, and does a baseline with the squared score remove that gain?
+3. Parametrization: why does the edge form detect a real co-expression difference that the same information, entered as separate products and squares, does not?
 
-## Literature
+## Models
 
-Kuijjer, Tung, Yuan, Quackenbush, and Glass (2019), "Estimating sample-specific regulatory networks", iScience 14, 226-240 (LIONESS).
-
-## Your own prior work
-
-The repository pascalantwi/lioness-network-analysis: a LIONESS pipeline with Pearson correlation (lionessR, limma on edges), rebuilt from raw GEO data on the osteosarcoma cohort of Kuijjer et al. (GSE42352 / GSE33382, 84 pre-chemotherapy biopsies, 53 with known metastasis follow-up) as a proof of concept before moving to lupus data.
+B1 (age, sex, batch); B2 (B1 + composition); $R_0$ (B2 + residual IFN score); $R_1$ ($R_0$ + squared residual IFN score + squared composition); E1 ($R_1$ + gene levels, the base); E4 (regularized discriminant analysis); E5, F1, N1, N2 (E1 + products and squares, first-order edges, LIONESS edges, and partial-correlation LIONESS edges given the IFN score and composition); N1 with $R_0$ outside the nesting, to show the artifact. SSN, iENA, SWEET, BONOBO, random forests, shrinkage linear discriminant analysis, module eigengenes, and differential-correlation pairs are not fitted.
 
 ## Data
 
-[Not yet named: whole-blood or PBMC expression of SLE and RA patients with an IFN score, treatment status, batch, and cell composition available or estimable.]
-
-## Theory
-
-The first-order approximation above, stated without derivation.
+PRECISESADS (whole-blood RNA-seq, flow cytometry, treatment, 18 centres; controlled access) for the application; GSE17755 and GSE235508 for replication of the simulation's findings inside each dataset; validation on the PRECISESADS inception cohort, or leave-centre-out.
 
 ## Notes
 
-Supervised by Dr Tyler Grimes. The reference list is kept in Markdown (`references/references.md`); no Zotero.
-
-Revision at stop 1 (2026-11-03): the user does not want IFN-low and IFN-high strata; SLE is compared with RA in all patients, with the IFN score as a continuous variable. The paragraph above is kept as first written.
+Rewritten 2026-11-06 from the refined proposal (`proposal-new/proposal.md`). The first version of this file (IFN-low and IFN-high strata, seventeen models) is in the git history and in the revision record of `proposal.md`.

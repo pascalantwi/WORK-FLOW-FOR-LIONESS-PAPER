@@ -203,3 +203,27 @@ Pass 1 (paragraphs): each section's first sentence was checked to state its answ
 2. The stage has no place for a theory-check script; it went to `log/01-idea-review-theory-check.py`. A stated home (for example `log/` with a fixed name) would remove the guess.
 3. The step 9 reference check could run partly offline if `build-bib.py` accepted a flag marking entries whose record was not opened, so that its fault list separates "not yet checked" from "checked and wrong".
 4. The idea named "seventeen models" without listing them; the inventory step could ask for every list the idea counts.
+
+## Revision 4 (2026-11-06): the new idea, at the user's request
+
+The user asked to redo the work "up to stage 2" with the refined proposal (`proposal-new/proposal.md`), replacing the old files, so that a pilot decides whether the new design passes before stage 3.
+
+- `idea.md` rewritten from the refined proposal; the first version stays in the git history.
+- `proposal.md` rewritten as revision 4 from `proposal-new/proposal.md`, with the workflow's pilot plan (section 12) and a revision record (section 14) that points to the earlier text (`git show 65f660c:proposal.md`). This replaces the rule that a revision is a dated section appended to the old text; the user asked for the old files to be replaced, and the record section keeps the history.
+- Kept, not deleted: `pilot/` and `pilot-b/`. The new proposal cites their numbers as evidence (section 6), and the pre-registered results are the record that the third pilot builds on. The user allowed deletion but did not require it.
+- Reference list: one entry added, `sentis2026lupusarthritis` (Crossref record and PubMed PMID 42743789, opened 2026-11-06; supporting, abstract read), for the candidate external validation cohort in section 7.6. `references.bib` regenerated; no new faults.
+- The theory checks of section 4 stand unchanged: the theory did not change. The literature verdict of section 5 stands: no new search was run beyond the PubMed and GEO searches of 2026-11-06 recorded below.
+
+| # | Date | Source | Query or record | What it gave |
+|---|---|---|---|---|
+| 32 | 2026-11-06 | GEO | GSE17755 sample records (244), GPL1291 platform table; GSE235508 sample records (335) | patient counts, sexes, submission dates, medication codes, IFN5 genes on the platform (section 7.5) |
+| 33 | 2026-11-06 | PubMed esearch and efetch | single-sample, sample-specific, and individual-specific networks with lupus, rheumatoid, or autoimmune; lupus and rheumatoid arthritis classifiers; IFN signature in lupus and RA blood | Sentis 2026, Higgs 2011, Reynier 2011, Rodríguez-Carrio 2019, Pelissier 2024 (PANDA and LIONESS in RA synovium); only Sentis 2026 entered the reference list |
+| 34 | 2026-11-06 | PubMed efetch | PMID 33497037 (Barturen 2021) | the independent inception cohort (section 7.6) |
+
+### Decisions made in place of stop 1
+
+The user's message asked to go on to stage 2 without a stop at the proposal ("do up to stage 2 to see if it will pass before stage 3"), so stop 1 was not held. Decisions:
+
+- D21. The design is the one the user chose on 2026-11-06: ten models with E1 as the base, E4 kept, 400 replicates per setting in the full study. The user should check section 7.1 and section 12.
+- D22. The pilot tests what is new: the E1 base, N2, and E4. The interferon artifact over $R_0$ is reported but not judged, since its models did not change and the second pilot measured it (0.0201, MCSE 0.0027). The user should check the pass rule in section 12.
+- D23. N2's conditioning set in the simulation is the IFN score and composition, as in the application.

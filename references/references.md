@@ -311,6 +311,21 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - record: PubMed record PMID 33497037, opened 2026-11-03 (132 authors)
 - full_text: https://publicatio.bibl.u-szeged.hu/21552/1/BarturenArthRheumatol2021.pdf (repository copy, read 2026-11-03)
 
+### sentis2026lupusarthritis
+
+> Sentis, G., Kalantzi, C., Flouda, S., Banos, A., Garantziotis, P., Manolakou, T., Chatzidionysiou, K., Kapsala, N., Pieta, A., Chavatza, K., Triantafyllias, K., Filia, A., Bertsias, G., Parodis, I., Boumpas, D. T., & Nikolopoulos, D. (2026). Whole-blood transcriptomics identifies a distinct metabolic and inflammatory signature in lupus arthritis compared with rheumatoid arthritis. *Journal of Autoimmunity*, 164, 103634. https://doi.org/10.1016/j.jaut.2026.103634
+
+- type: article
+- author: Sentis, George and Kalantzi, Chrysoula and Flouda, Sofia and Banos, Aggelos and Garantziotis, Panagiotis and Manolakou, Theodora and Chatzidionysiou, Katerina and Kapsala, Noemin and Pieta, Antigone and Chavatza, Katerina and Triantafyllias, Konstantinos and Filia, Anastasia and Bertsias, George and Parodis, Ioannis and Boumpas, Dimitrios T. and Nikolopoulos, Dionysis
+- title: Whole-blood transcriptomics identifies a distinct metabolic and inflammatory signature in lupus arthritis compared with rheumatoid arthritis
+- journal: Journal of Autoimmunity
+- year: 2026
+- volume: 164
+- pages: 103634
+- doi: 10.1016/j.jaut.2026.103634
+- record: Crossref record for the DOI and PubMed record PMID 42743789, opened 2026-11-06
+- full_text: abstract only (PubMed, read 2026-11-06); cited as supporting
+
 ### precisesads2017data
 
 > ELIXIR Luxembourg (2017). PRECISESADS: Cross Sectional Study & Inception Cohort data (V1.0). Data set, controlled access, ELU-2-E592B0-1. https://doi.org/10.17881/th9v-xt85
