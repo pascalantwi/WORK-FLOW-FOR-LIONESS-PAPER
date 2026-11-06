@@ -4,8 +4,8 @@
 |---|---|
 | What this is | A refined, self-contained version of the proposal, for the user to edit. It consolidates `proposal.md` (sections 1 to 12, including revision 3), both pilots, and the stage 3 design. |
 | Official record | `proposal.md` at the project root stays unchanged as the dated record the workflow follows. |
-| Written | 2026-11-05; section 7 revised 2026-11-06 (models built on E1) |
-| Status | Draft for the user and Dr Grimes to refine; the full-study design awaits approval |
+| Written | 2026-11-05; revised 2026-11-06 (models built on E1; model set reduced with E4 kept; 400 replicates; replication and validation plan) |
+| Status | Draft for the user and Dr Grimes to refine; the full-study design is chosen by the user and awaits Dr Grimes's confirmation |
 
 ---
 
@@ -15,7 +15,7 @@ LIONESS is a popular method that gives each patient a score for every pair of ge
 
 Checking the mathematics showed that a LIONESS score is a simple formula of the patient's own gene levels: roughly the product of the patient's two standardized gene values, plus a small correction. Two simulation studies then showed that this simple formula predicts exactly as well as LIONESS. Interferon leaks into LIONESS scores as interferon *squared*, and adding the squared IFN score to the comparison model removes that leak. LIONESS still detects real changes in how genes work together, because its formula packages that information well.
 
-The project now asks whether LIONESS predicts SLE against RA beyond the IFN score, its square, cell composition, and its own simple formula, in all patients together.
+The project now asks whether LIONESS predicts SLE against RA beyond the IFN score, its square, cell composition, the ordinary gene levels, and its own simple formula, in all patients together.
 
 ## 2. The research problem
 
@@ -25,7 +25,7 @@ The project now asks whether LIONESS predicts SLE against RA beyond the IFN scor
 
 ## 3. Research question
 
-**Main question.** Is a LIONESS co-expression edge anything more than a closed-form quadratic function of each sample's own expression? And when classifying SLE against RA from whole blood, do LIONESS edges add information beyond the IFN score, its square, cell composition, and their own first-order features?
+**Main question.** Is a LIONESS co-expression edge anything more than a closed-form quadratic function of each sample's own expression? And when classifying SLE against RA from whole blood, do LIONESS edges add information beyond the IFN score, its square, cell composition, the gene levels, and their own first-order features?
 
 1. **Equivalence.** Do the exact LIONESS edges and their first-order features give the same out-of-sample classification, so that a network result can be reproduced without building a network?
 2. **Artifact and fix.** When SLE and RA differ in IFN activity, how much do edges gain only by carrying the squared IFN level, and does a baseline with the squared score remove that gain?
@@ -39,7 +39,7 @@ The project now asks whether LIONESS predicts SLE against RA beyond the IFN scor
 | Patients | Two comparisons: IFN-high SLE against IFN-high RA, and IFN-low SLE against IFN-low RA | All patients together; the user dropped the split |
 | How interferon is handled | By the split | By the model: every patient's IFN score and its square |
 | Key insight | An edge is mainly the product of the patient's standardized deviations plus a term in the reference correlation | The exact closed form, of which that insight is the first-order part |
-| What LIONESS must beat | The IFN score, baselines, expression classifiers, network methods (17 models) | The same, plus the squared IFN score and the first-order formula (18 models) |
+| What LIONESS must beat | The IFN score, baselines, expression classifiers, network methods (17 models) | The IFN score and its square, composition, the gene levels (E1, the base of every richer model), quadratic discriminant analysis, separate products and squares, and the first-order formula (10 models); other network methods covered by the theory |
 | Main message | Does LIONESS add information? | LIONESS edges are a formula; network claims must be checked against that formula and against the squared IFN score |
 
 ## 5. What is already known
@@ -139,7 +139,7 @@ One model is kept outside the nesting on purpose: **N1 with $R_0$** ($R_0$ + LIO
 | Squared IFN score removes the artifact (normal and heavy-tailed noise) | −0.0025 to −0.0019 |
 | The same with a two-gene IFN score | −0.0022 |
 
-## 9. The full study (design awaiting approval)
+## 9. The full study (design chosen; awaiting Dr Grimes)
 
 - **S1, the unequal-groups law:** smaller-group share 0.5, 0.3, 0.15 by mean shift 0.25, 0.5, 1.
 - **S2-A, the artifact and its fix:** IFN difference from none to very large; IFN score from 2, 5, or 10 genes; normal or heavy-tailed noise; 40 to 300 per class.
