@@ -269,3 +269,30 @@ MechanismChecks <- function(data, score_genes, n_genes = 50) {
        agreement_vs_max_z = stats::cor(pair_max_z, formula_cor,
                                        method = "spearman"))
 }
+
+#' Patients within the common support of the IFN score
+#'
+#' The IFN score of every sample (the mean of the score genes standardized
+#' over all samples of the series), and for each patient whether that score
+#' lies between the `lower` and `upper` quantiles of the other disease's
+#' scores (`protocol.md`, sections 7 and 10).
+#'
+#' @param data A cohort from [ReadGse17755()] or [ReadGse326777()].
+#' @param score_genes Column names of the IFN score genes.
+#' @param lower,upper Quantiles of the other disease's scores.
+#' @return A logical vector, `TRUE` for the patients kept.
+#' @export
+CommonSupport <- function(data, score_genes, lower = 0.05, upper = 0.95) {
+  x <- data$x[, score_genes, drop = FALSE]
+  mu <- colMeans(x, na.rm = TRUE)
+  miss <- which(is.na(x), arr.ind = TRUE)
+  if (nrow(miss)) x[miss] <- mu[miss[, 2]]
+  score <- rowMeans(StandardizeN(x)$z)
+  keep <- logical(length(score))
+  for (cl in c(0L, 1L)) {
+    other <- stats::quantile(score[data$y != cl], c(lower, upper))
+    rows <- data$y == cl
+    keep[rows] <- score[rows] >= other[1] & score[rows] <= other[2]
+  }
+  keep
+}

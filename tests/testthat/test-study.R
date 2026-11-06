@@ -72,3 +72,16 @@ test_that("the elastic-net fallback gives finite predictions near cv.glmnet's", 
                      x[91:120, 1, drop = FALSE], x[91:120, -1])
   expect_gt(cor(p, q), 0.9)
 })
+
+test_that("CommonSupport keeps the patients inside the other class's range", {
+  set.seed(71)
+  x <- matrix(rnorm(200 * 3), 200, 3, dimnames = list(NULL, c("a", "b", "c")))
+  y <- rep(0:1, each = 100)
+  x[y == 1, 1:2] <- x[y == 1, 1:2] + 1.5
+  keep <- CommonSupport(list(x = x, y = y), c("a", "b"))
+  s <- rowMeans(StandardizeN(x[, c("a", "b")])$z)
+  q0 <- quantile(s[y == 0], c(0.05, 0.95))
+  expect_equal(keep[y == 1], s[y == 1] >= q0[1] & s[y == 1] <= q0[2])
+  expect_lt(mean(keep), 1)
+  expect_gt(mean(keep), 0)
+})

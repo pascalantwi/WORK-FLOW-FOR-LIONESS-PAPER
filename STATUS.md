@@ -39,3 +39,4 @@ One line per stage boundary, newest last: the date, the stage reached, the path 
 | 2026-11-06 | 2, piloted-pass accepted by the user ("do 1 and 3 and stage 3"); stage 3 starts | `pilot-c/pilot-report.html` | none |
 | 2026-11-06 | 3, draft at stop (revision 4, quick-run numbers) | `manuscript/manuscript.html` | first draft |
 | 2026-11-06 | 3, revision round 1 (novelty framing) | `manuscript/manuscript.html` | first draft, revised |
+| 2026-11-06 | 3, revision round 2 (overlapping-interferon subsets; analysis B withdrawn) | `manuscript/manuscript.html` | first draft, revised |

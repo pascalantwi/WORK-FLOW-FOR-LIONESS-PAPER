@@ -2867,11 +2867,12 @@ Figure 2: Rates of the two tests in the seven test settings, with bars of two M
 <h2 data-number="4.2" class="anchored" data-anchor-id="edges-followed-their-formula-where-values-were-not-extreme-and-interferon-entered-as-its-square"><span class="header-section-number">4.2</span> Edges followed their formula where values were not extreme, and interferon entered as its square</h2>
 <p>In the neutrophils of GSE326777, the exact LIONESS edge and its first-order formula correlated across samples with a median of 0.9997 over the 1,225 gene pairs of the gene set (smallest 0.9928). In GSE17755 the median was 0.9757, below the 0.99 we had set as the criterion, and some pairs agreed poorly (smallest -0.43). The two series differ in their extreme values: in GSE17755 the median gene of the gene set had a sample 9.3 standard deviations from its mean, against 2.3 in GSE326777, and pairs with a more extreme value agreed less with their formula (Spearman correlation -0.47 in GSE17755 and -0.75 in GSE326777). <span class="tc">TO CONFIRM: this comparison was added after the planned checks, as an explanation; it agrees with the remainder of <a href="#eq-exact" class="quarto-xref">Equation 2</a> growing with the fourth power of a standardized value</span> For the ten pairs of interferon-score genes, the edge correlated with the squared centred IFN score with a median of 0.36 in GSE17755 and 0.34 in GSE326777, above the 0.3 we had set.</p>
 <p>In classification (<a href="#tbl-replication" class="quarto-xref">Table 3</a>), the IFN score alone already separated the diseases, with an AUC of 0.942 in GSE17755 and 0.836 in GSE326777. Edges and their first-order formula differed by less than 0.01 in AUC in all four analyses, but with these sample sizes the 90% intervals were wider than the margin, so equivalence was not declared. Neither edges nor any other added feature set improved on E1 beyond its standard error, and the interferon artifact <span class="math inline">\(A\)</span> was within its standard error of zero. In GSE17755 the gene levels alone reached an AUC of 0.991, which leaves little room for any added feature. <span class="tc">TO CONFIRM: such near-perfect separation by gene levels suggests that disease and processing are confounded in GSE17755</span></p>
+<p>To look for the artifact where interferon does not decide the comparison, each series was restricted to the patients whose IFN score lay within the range of the other disease’s scores, each series still analysed on its own. The subsets held 9 SLE and 23 RA patients and 13 SLE and 7 RA patients. In GSE17755 the IFN score alone separated the diseases less well than before (AUC 0.766), and the artifact <span class="math inline">\(A\)</span> was 0.007 (standard error 0.025), within its standard error of zero. In GSE326777 every model scored below an AUC of one half, so twenty patients were too few for any classifier to learn from, and that subset is not informative (<a href="#tbl-replication" class="quarto-xref">Table 3</a>).</p>
 <div class="cell">
 <div id="tbl-replication" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-replication-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table 3: Contrasts in the two public series, as means over 20 repeats of five-fold cross-validation, with standard errors corrected for the overlap of training sets; for <span class="math inline">\(\Delta_2\)</span>, the 90% interval. <span class="math inline">\(A\)</span>: LIONESS edges on the base without the squared score against that base. <span class="math inline">\(\Delta_1\)</span>: N1 against E1. <span class="math inline">\(\Delta_2\)</span>: N1 against F1. <span class="math inline">\(P\)</span>: N1 against E5. The sensitivity analyses keep, in GSE17755, the SLE samples submitted with the RA samples and, in GSE326777, the samples without an N suffix.
+Table 3: Contrasts in the two public series, as means over 20 repeats of five-fold cross-validation, with standard errors corrected for the overlap of training sets; for <span class="math inline">\(\Delta_2\)</span>, the 90% interval. <span class="math inline">\(A\)</span>: LIONESS edges on the base without the squared score against that base. <span class="math inline">\(\Delta_1\)</span>: N1 against E1. <span class="math inline">\(\Delta_2\)</span>: N1 against F1. <span class="math inline">\(P\)</span>: N1 against E5. The sensitivity analyses keep, in GSE17755, the SLE samples submitted with the RA samples and, in GSE326777, the samples without an N suffix; the overlapping-IFN analyses keep the patients whose IFN score lies within the range of the other disease. Each series is analysed on its own.
 </figcaption>
 <div aria-describedby="tbl-replication-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -2938,6 +2939,26 @@ Table 3: Contrasts in the two public series, as means over 20 repeats of five-f
 <td>-0.016 (0.033)</td>
 <td>0.001 (-0.015 to 0.017)</td>
 <td>-0.002 (0.012)</td>
+</tr>
+<tr class="odd">
+<td>GSE17755</td>
+<td>overlapping IFN</td>
+<td>9, 23</td>
+<td>0.942</td>
+<td>0.007 (0.025)</td>
+<td>-0.087 (0.070)</td>
+<td>-0.002 (-0.073 to 0.070)</td>
+<td>0.065 (0.067)</td>
+</tr>
+<tr class="even">
+<td>GSE326777</td>
+<td>overlapping IFN</td>
+<td>13, 7</td>
+<td>0.300</td>
+<td>-0.025 (0.080)</td>
+<td>-0.023 (0.125)</td>
+<td>-0.037 (-0.171 to 0.097)</td>
+<td>0.000 (0.098)</td>
 </tr>
 </tbody>
 </table>

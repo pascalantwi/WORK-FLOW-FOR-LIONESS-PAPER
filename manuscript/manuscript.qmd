@@ -124,13 +124,19 @@ cap_rep <- sprintf(paste(
   "with standard errors corrected for the overlap of training sets; for $\\Delta_2$, the %s%% interval.",
   "$A$: LIONESS edges on the base without the squared score against that base. $\\Delta_1$: N1 against E1.",
   "$\\Delta_2$: N1 against F1. $P$: N1 against E5. The sensitivity analyses keep, in GSE17755, the SLE",
-  "samples submitted with the RA samples and, in GSE326777, the samples without an N suffix."),
+  "samples submitted with the RA samples and, in GSE326777, the samples without an N suffix; the",
+  "overlapping-IFN analyses keep the patients whose IFN score lies within the range of the other disease. Each series is analysed on its own."),
   lvl(rep_info$n_rep), lvl(90))
 rep_sum <- read_results("replication_summary.rds")
 rep_mech <- read_results("replication_mechanism.rds")
 rep_get <- function(ds, an) rep_sum[[which(vapply(rep_sum, function(r) r$dataset == ds && r$analysis == an, logical(1)))]]
 rep_n <- function(ds, an) { r <- rep_get(ds, an); prov(text = sprintf("%d SLE and %d RA patients", r$n_sle, r$n_ra), run = rep_info$run) }
 rep_auc <- function(ds, an, m) prov(rep_get(ds, an)$auc[[m]], 3, run = rep_info$run)
+rep_con <- function(ds, an, nm) {
+  cc <- rep_get(ds, an)$contrasts
+  prov(text = sprintf("%s (standard error %s)", fmt(cc$fold_mean[cc$contrast == nm], 3),
+                      fmt(cc$corrected_se[cc$contrast == nm], 3)), run = rep_info$run)
+}
 mech <- function(ds, what, d) {
   m <- rep_mech[[which(vapply(rep_mech, function(x) x$dataset == ds, logical(1)))]]
   v <- switch(what, formula = stats::median(m$formula_cor), formula_min = min(m$formula_cor),
@@ -391,6 +397,8 @@ The full question, untreated SLE against untreated RA in whole blood with measur
 In the neutrophils of GSE326777, the exact LIONESS edge and its first-order formula correlated across samples with a median of `r mech("GSE326777", "formula", 4)` over the `r lvl(choose(50, 2))` gene pairs of the gene set (smallest `r mech("GSE326777", "formula_min", 4)`). In GSE17755 the median was `r mech("GSE17755", "formula", 4)`, below the `r lvl(0.99)` we had set as the criterion, and some pairs agreed poorly (smallest `r mech("GSE17755", "formula_min", 2)`). The two series differ in their extreme values: in GSE17755 the median gene of the gene set had a sample `r mech("GSE17755", "maxz", 1)` standard deviations from its mean, against `r mech("GSE326777", "maxz", 1)` in GSE326777, and pairs with a more extreme value agreed less with their formula (Spearman correlation `r mech("GSE17755", "rho", 2)` in GSE17755 and `r mech("GSE326777", "rho", 2)` in GSE326777). [TO CONFIRM: this comparison was added after the planned checks, as an explanation; it agrees with the remainder of @eq-exact growing with the fourth power of a standardized value]{.tc} For the ten pairs of interferon-score genes, the edge correlated with the squared centred IFN score with a median of `r mech("GSE17755", "ifn", 2)` in GSE17755 and `r mech("GSE326777", "ifn", 2)` in GSE326777, above the `r lvl(0.3, 1)` we had set.
 
 In classification (@tbl-replication), the IFN score alone already separated the diseases, with an AUC of `r rep_auc("GSE17755", "primary", "R0")` in GSE17755 and `r rep_auc("GSE326777", "primary", "R0")` in GSE326777. Edges and their first-order formula differed by less than `r lvl(0.01)` in AUC in all four analyses, but with these sample sizes the `r paste0(lvl(90), "%")` intervals were wider than the margin, so equivalence was not declared. Neither edges nor any other added feature set improved on E1 beyond its standard error, and the interferon artifact $A$ was within its standard error of zero. In GSE17755 the gene levels alone reached an AUC of `r rep_auc("GSE17755", "primary", "E1")`, which leaves little room for any added feature. [TO CONFIRM: such near-perfect separation by gene levels suggests that disease and processing are confounded in GSE17755]{.tc}
+
+To look for the artifact where interferon does not decide the comparison, each series was restricted to the patients whose IFN score lay within the range of the other disease's scores, each series still analysed on its own. The subsets held `r rep_n("GSE17755", "overlapping IFN")` and `r rep_n("GSE326777", "overlapping IFN")`. In GSE17755 the IFN score alone separated the diseases less well than before (AUC `r rep_auc("GSE17755", "overlapping IFN", "R0")`), and the artifact $A$ was `r rep_con("GSE17755", "overlapping IFN", "A")`, within its standard error of zero. In GSE326777 every model scored below an AUC of one half, so twenty patients were too few for any classifier to learn from, and that subset is not informative (@tbl-replication).
 
 ```{r}
 #| label: tbl-replication

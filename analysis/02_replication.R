@@ -1,6 +1,7 @@
 # analysis/02_replication.R
 # The replication of protocol.md, section 8, in GSE17755 and GSE326777, each
-# analysed on its own, with a sensitivity analysis in each. Run from the
+# analysed on its own, with a sensitivity analysis in each, and the
+# overlapping-interferon subsets of the amendment of section 10 (A). Run from the
 # project root after analysis/00_download.R:
 #   Rscript analysis/02_replication.R
 # Writes results/replication_summary.rds, results/replication_repeats.rds,
@@ -31,7 +32,13 @@ analyses <- list(
        data = Subset(g17, g17$same_batch), score = score17),
   list(dataset = "GSE326777", analysis = "primary", data = g32, score = score32),
   list(dataset = "GSE326777", analysis = "no N suffix",
-       data = Subset(g32, !g32$suffix_n), score = score32))
+       data = Subset(g32, !g32$suffix_n), score = score32),
+  # amendment A (protocol.md, section 10): the overlapping-interferon subsets;
+  # appended last, so the seeds of the four analyses above are unchanged
+  list(dataset = "GSE17755", analysis = "overlapping IFN",
+       data = Subset(g17, CommonSupport(g17, score17)), score = score17),
+  list(dataset = "GSE326777", analysis = "overlapping IFN",
+       data = Subset(g32, CommonSupport(g32, score32)), score = score32))
 
 contrasts <- list(d1 = c("N1", "E1"), d2 = c("N1", "F1"), A = c("N1R0", "R0"),
                   P = c("N1", "E5"), N2_E1 = c("N2", "E1"), E4_E1 = c("E4", "E1"),
