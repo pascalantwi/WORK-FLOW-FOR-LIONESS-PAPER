@@ -32,7 +32,7 @@ e_q &= N r - (N - 1)\, r_{(-q)} \\
 \end{aligned}
 $$
 
-Line 1 expands each factor $(1 - a z^2)^{-1/2} = 1 + \tfrac{a}{2} z^2 + O(a^2)$, which holds because $z_{qi}$ is $O_p(1)$ and $a \to 0$. Line 2 multiplies out. Line 3 is the definition, and line 4 substitutes line 2 and uses $(N - 1) a = 1$ and $(N - 1) O_p(a^2) = O_p(N^{-1})$. The leading terms are the reference correlation plus the influence function of the correlation at the sample [@devlin1975robust]. The edge is the jackknife pseudo-value of the correlation, which is why its first-order form is the influence function [CITE: the jackknife pseudo-value and its first-order agreement with the influence function]{.cite}. The paper uses this form as the features of model F1; `tests/testthat/test-lioness.R` checks that the remainder shrinks as $N$ grows.
+Line 1 expands each factor $(1 - a z^2)^{-1/2} = 1 + \tfrac{a}{2} z^2 + O(a^2)$, which holds because $z_{qi}$ is $O_p(1)$ and $a \to 0$. Line 2 multiplies out. Line 3 is the definition, and line 4 substitutes line 2 and uses $(N - 1) a = 1$ and $(N - 1) O_p(a^2) = O_p(N^{-1})$. The leading terms are the reference correlation plus the influence function of the correlation at the sample [@devlin1975robust]. The edge has the form of the jackknife pseudo-value of the correlation [@quenouille1956bias; @miller1974jackknife], and this derivation shows that, for the correlation, its first-order form is the influence function. The paper uses this form as the features of model F1; `tests/testthat/test-lioness.R` checks that the remainder shrinks as $N$ grows.
 
 ### S1.3 The add-one edge for a new sample {.unnumbered}
 

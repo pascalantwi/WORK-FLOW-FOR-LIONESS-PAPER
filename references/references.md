@@ -197,7 +197,7 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - doi: 10.64898/2026.02.27.708608
 - note: bioRxiv preprint
 - record: Crossref record for the DOI, opened 2026-11-03; PubMed PMID 41867852, opened 2026-11-03
-- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC13001488/ (read 2026-11-03); Supplement 1 not downloaded
+- full_text: https://pmc.ncbi.nlm.nih.gov/articles/PMC13001488/ (read 2026-11-03; Figure 1 and its description reread 2026-11-06); Supplement 1 not downloaded: PubMed Central does not serve it and bioRxiv refuses automated downloads, so it needs the user's browser
 
 ### jahagirdar2021metabolomics
 
@@ -325,6 +325,38 @@ Cited by every manuscript of this workflow (the ADEMP sentence and the reproduci
 - doi: 10.1016/j.jaut.2026.103634
 - record: Crossref record for the DOI and PubMed record PMID 42743789, opened 2026-11-06
 - full_text: abstract only (PubMed, read 2026-11-06); cited as supporting
+
+### quenouille1956bias
+
+> Quenouille, M. H. (1956). Notes on bias in estimation. *Biometrika*, 43(3-4), 353-360. https://doi.org/10.1093/biomet/43.3-4.353
+
+- type: article
+- author: Quenouille, M. H.
+- title: Notes on bias in estimation
+- journal: Biometrika
+- year: 1956
+- volume: 43
+- number: 3-4
+- pages: 353-360
+- doi: 10.1093/biomet/43.3-4.353
+- record: Crossref record for the DOI, opened 2026-11-06
+- full_text: not read; pre-1980 source cited as definitional (the jackknife)
+
+### miller1974jackknife
+
+> Miller, R. G. (1974). The jackknife: a review. *Biometrika*, 61(1), 1-15. https://doi.org/10.1093/biomet/61.1.1
+
+- type: article
+- author: Miller, Rupert G.
+- title: The jackknife: a review
+- journal: Biometrika
+- year: 1974
+- volume: 61
+- number: 1
+- pages: 1-15
+- doi: 10.1093/biomet/61.1.1
+- record: Crossref record for the DOI, opened 2026-11-06
+- full_text: not read; pre-1980 source cited as definitional (jackknife pseudo-values)
 
 ### precisesads2017data
 

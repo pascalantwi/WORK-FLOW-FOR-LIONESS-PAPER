@@ -167,3 +167,15 @@ Lists for the stop message: core citations with full text pending, devlin1975rob
 ## Step 5.4 (revision 4): the clone proved
 
 A fresh clone of commit 45eee80, with `data/raw/` emptied: `renv::restore()` ok; `analysis/00_download.R` fetched the three raw files with checksums identical to the originals; 100 tests passed (the acceptance test skipped, as without its variable); `devtools::check()` 0 errors, 0 warnings, 0 notes (a first note came from the proof script's own log files in the package root, and went away when they were moved); the quick run and the replication reran, and `cell_summaries.rds`, `test_summaries.rds`, `s1_summaries.rds`, `known_answers.rds`, `design.rds`, `replication_summary.rds`, and `replication_mechanism.rds` are identical to the committed ones (`all.equal`, tolerance 1e-10); the manuscript rendered. No Python is used.
+
+## Revision 1 (2026-11-06)
+
+The user asked for the novelty to be framed openly and the Kuijjer 2026 supplement checked.
+
+| Comment | Change | Where |
+|---|---|---|
+| Frame the jackknife pseudo-value link openly | The Introduction now says the edge has the form of the jackknife pseudo-value of the correlation (Quenouille 1956; Miller 1974, definitional, Crossref records opened 2026-11-06), names what earlier work did and did not do, and states what is new; the supplement's uncited claim was rewritten so that the influence-function form rests on the paper's own derivation (S1.2); the novelty table gained rows for the pseudo-value and for the common-variables recast | Introduction, paragraph 2; supplement S1.2; @tbl-novelty |
+| Check the Kuijjer 2026 supplement | Main text reread (PMC XML): they recast the LIONESS edge as a background correlation plus a scaled differential-correlation term, "using common variables"; no jackknife, influence function, first-order form, or expression of the change in correlation through the sample's standardized values appears in the main text. Supplement 1 could not be fetched: PubMed Central lists it (media-1.pdf) but does not serve it, and bioRxiv refuses automated downloads (a request with a browser identity was refused by the session's safety check and not repeated). The user is asked to download it by browser | `references/references.md`, kuijjer2026challenges |
+| Candidate sources not used | Andersen and Pohar Perme 2010 and Overgaard, Parner, and Pedersen 2017 were opened (Crossref, PubMed); neither abstract states the pseudo-value and influence-function agreement, and their full texts were not available, so neither is cited | — |
+
+Checker: no errors; markers 7 to confirm, 0 claims without a source.
