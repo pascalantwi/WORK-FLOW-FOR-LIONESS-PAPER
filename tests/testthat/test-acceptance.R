@@ -20,8 +20,10 @@ test_that("the package reproduces the re-pilot", {
   expect_equal(as.matrix(new[, models]), as.matrix(ref[, models]),
                tolerance = 1e-10, ignore_attr = TRUE)
   if (mode == "full") {
-    expect_equal(SummarizeCells(new)$mean,
-                 readRDS(test_path("fixtures", "pilot_b_cell_summaries.rds"))$mean,
-                 tolerance = 1e-10)
+    # matched on cell and quantity: later quantities add rows the fixture lacks
+    old_s <- readRDS(test_path("fixtures", "pilot_b_cell_summaries.rds"))
+    m <- merge(old_s, SummarizeCells(new), by = c("cell", "quantity"))
+    expect_equal(nrow(m), nrow(old_s))
+    expect_equal(m$mean.y, m$mean.x, tolerance = 1e-10)
   }
 })

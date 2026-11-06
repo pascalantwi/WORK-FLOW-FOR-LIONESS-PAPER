@@ -22,7 +22,9 @@ network gene set.}
 
 \item{extra}{Further edge features to compute: any of \code{"ssn"}, \code{"iena"},
 \code{"sweet"}, \code{"bonobo"} (\code{\link[=SsnEdges]{SsnEdges()}}, \code{\link[=IenaEdges]{IenaEdges()}}, \code{\link[=SweetEdges]{SweetEdges()}},
-\code{\link[=BonoboEdges]{BonoboEdges()}}), each with the training fold as reference.}
+\code{\link[=BonoboEdges]{BonoboEdges()}}), each with the training fold as reference, and
+\code{"partial"}, the LIONESS edges of the partial correlation given the IFN
+score and composition (\code{\link[=LionessPartialEdges]{LionessPartialEdges()}}), element \code{pedges}.}
 }
 \value{
 A list with \code{train} and \code{test} elements, each holding \code{r0}, \code{r1}

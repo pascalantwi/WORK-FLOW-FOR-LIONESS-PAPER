@@ -18,7 +18,11 @@ RunReplicate(
 \item{models}{Which models to fit: the first pilot's seven by default;
 \code{"F1R1"} adds the first-order edge features with the \code{R_1} terms, and
 \code{"N3R1"}, \code{"N4R1"}, \code{"N5R1"}, \code{"N6R1"} the SSN, iENA, SWEET, and BONOBO
-edges with the \code{R_1} terms.
+edges with the \code{R_1} terms. The models built on E1 (proposal revision 4)
+are \code{"E5E1"}, \code{"F1E1"}, \code{"N1E1"}, and \code{"N2E1"}: the genes plus the
+products and squares, the first-order edges, the LIONESS edges, or the
+partial-correlation LIONESS edges, penalized, with the \code{R_1} terms
+unpenalized.
 The row's optional \code{noise} and \code{n_score} columns set the noise
 distribution and the number of score genes (defaults \code{"normal"} and 5).}
 }

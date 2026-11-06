@@ -107,3 +107,29 @@ PilotBDesign <- function() {
   d$n_score <- ifelse(d$stress == "two-gene score", 2L, 5L)
   d
 }
+
+#' The third pilot's design table
+#'
+#' The 9 cells of `pilot-c/preregistration.md`, section 3, with the seed and
+#' the noise distribution of each cell. Seeds are `20361103 + 1000c`, so that
+#' no replicate stream overlaps those of [PilotDesign()] or [PilotBDesign()].
+#'
+#' @return A data frame as [PilotBDesign()].
+#' @export
+PilotCDesign <- function() {
+  d <- data.frame(
+    cell = 1:9,
+    mechanism = c("null", "ifn", "ifn", "ifn", "shift", rep("network", 4)),
+    level = c("", "large", "moderate", "large", "0.5", "0.4", "0.4", "0.2",
+              "0.4"),
+    stress = c("", "", "", "t5 noise", "", "", "", "", "t5 noise"),
+    share = c(0.5, 0.5, 0.5, 0.5, 0.3, 0.5, 0.5, 0.5, 0.5),
+    n1 = c(80, 80, 80, 80, 80, 80, 40, 80, 80),
+    stringsAsFactors = FALSE
+  )
+  d$n0 <- round(d$n1 * (1 - d$share) / d$share)
+  d$seed <- 20361103L + 1000L * d$cell
+  d$noise <- ifelse(d$stress == "t5 noise", "t5", "normal")
+  d$n_score <- 5L
+  d
+}

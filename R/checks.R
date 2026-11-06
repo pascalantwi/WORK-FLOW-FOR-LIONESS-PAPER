@@ -6,8 +6,8 @@
 #'
 #' @param summaries Optional output of [SummarizeCells()] from the run.
 #' @param seed Seed for the simulated inputs of the code-identity checks.
-#' @param design The design the summaries come from ([PilotDesign()] or
-#'   [PilotBDesign()]).
+#' @param design The design the summaries come from ([PilotDesign()],
+#'   [PilotBDesign()], or [PilotCDesign()]).
 #' @return A data frame: `check`, `setting`, `known`, `computed`, `mcse`
 #'   (`NA` for exact identities), and `type` (`"identity"` or `"mcse"`).
 #' @export
@@ -42,8 +42,39 @@ KnownAnswerChecks <- function(summaries = NULL, seed = 1L,
       Auc(1:10, rep(0:1, each = 5)))
   add("AUC of tied scores", "all scores equal", 0.5,
       Auc(rep(1, 10), rep(0:1, each = 5)))
+  # partial-correlation LIONESS edges against the inverse-covariance formula
+  x <- matrix(stats::rnorm(30 * 4), 30, 4)
+  cond <- cbind(stats::rnorm(30), stats::rnorm(30))
+  x[, 1:2] <- x[, 1:2] + cond[, 1]
+  PcorLit <- function(xx, cc) {
+    p <- ncol(xx)
+    pr <- PairIndex(p)
+    apply(pr, 1, function(ij) {
+      pm <- solve(stats::cov(cbind(xx[, ij], cc)))
+      -pm[1, 2] / sqrt(pm[1, 1] * pm[2, 2])
+    })
+  }
+  rho <- PcorLit(x, cond)
+  lit <- t(sapply(seq_len(30), function(q) {
+    30 * rho - 29 * PcorLit(x[-q, ], cond[-q, ])
+  }))
+  add("Partial-correlation LIONESS edge equals the inverse-covariance formula",
+      "N = 30, 4 genes, 2 conditioning variables; largest absolute difference",
+      0, max(abs(LionessPartialEdges(x, cond) - lit)))
+  x_new <- matrix(stats::rnorm(3 * 4), 3, 4)
+  c_new <- cbind(stats::rnorm(3), stats::rnorm(3))
+  lit_new <- t(sapply(1:3, function(q) {
+    31 * PcorLit(rbind(x, x_new[q, ]), rbind(cond, c_new[q, ])) - 30 * rho
+  }))
+  add("Partial-correlation add-one edge equals the inverse-covariance formula",
+      "reference N = 30, 3 new samples; largest absolute difference", 0,
+      max(abs(LionessPartialTestEdges(x_new, c_new, x, cond) - lit_new)))
+  add("Partial-correlation edge with no conditioning set equals the Pearson edge",
+      "N = 30, 4 genes; largest absolute difference", 0,
+      max(abs(LionessPartialEdges(x) - LionessEdges(x))))
   if (!is.null(summaries)) {
-    models <- intersect(c("R0", "R1", "E1", "E4", "E5", "F1R1", "N1R0", "N1R1"),
+    models <- intersect(c("R0", "R1", "E1", "E4", "E5", "F1R1", "N1R0", "N1R1",
+                          "E5E1", "F1E1", "N1E1", "N2E1"),
                         unique(summaries$quantity[!is.na(summaries$mean)]))
     for (cl in design$cell[design$mechanism == "null"]) {
       for (m in models) {

@@ -11,8 +11,8 @@ KnownAnswerChecks(summaries = NULL, seed = 1L, design = PilotDesign())
 
 \item{seed}{Seed for the simulated inputs of the code-identity checks.}
 
-\item{design}{The design the summaries come from (\code{\link[=PilotDesign]{PilotDesign()}} or
-\code{\link[=PilotBDesign]{PilotBDesign()}}).}
+\item{design}{The design the summaries come from (\code{\link[=PilotDesign]{PilotDesign()}},
+\code{\link[=PilotBDesign]{PilotBDesign()}}, or \code{\link[=PilotCDesign]{PilotCDesign()}}).}
 }
 \value{
 A data frame: \code{check}, \code{setting}, \code{known}, \code{computed}, \code{mcse}

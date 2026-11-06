@@ -43,7 +43,9 @@ StratifiedFolds <- function(y, k = 5) {
 #'   network gene set.
 #' @param extra Further edge features to compute: any of `"ssn"`, `"iena"`,
 #'   `"sweet"`, `"bonobo"` ([SsnEdges()], [IenaEdges()], [SweetEdges()],
-#'   [BonoboEdges()]), each with the training fold as reference.
+#'   [BonoboEdges()]), each with the training fold as reference, and
+#'   `"partial"`, the LIONESS edges of the partial correlation given the IFN
+#'   score and composition ([LionessPartialEdges()]), element `pedges`.
 #' @return A list with `train` and `test` elements, each holding `r0`, `r1`
 #'   (reference covariate matrices), `genes`, `quad`, `edges`, and `fo` (the
 #'   first-order edge features, with the training fold's correlation and
@@ -95,6 +97,13 @@ PilotFeatures <- function(cohort, train, score_genes = 1:5,
   if ("bonobo" %in% extra) {
     out$train$bonobo <- BonoboEdges(gtr)
     out$test$bonobo <- BonoboTestEdges(gte, gtr)
+  }
+  if ("partial" %in% extra) {
+    # conditioning set: the IFN score (training standardization) and composition
+    cond <- cbind(ifn = score, comp = cohort$comp)
+    out$train$pedges <- LionessPartialEdges(gtr, cond[train, , drop = FALSE])
+    out$test$pedges <- LionessPartialTestEdges(gte, cond[!train, , drop = FALSE],
+                                               gtr, cond[train, , drop = FALSE])
   }
   out
 }
@@ -201,7 +210,11 @@ FitRda <- function(x_train, y, x_test, grid = seq(0, 1, by = 0.25), k = 5) {
 #' @param models Which models to fit: the first pilot's seven by default;
 #'   `"F1R1"` adds the first-order edge features with the `R_1` terms, and
 #'   `"N3R1"`, `"N4R1"`, `"N5R1"`, `"N6R1"` the SSN, iENA, SWEET, and BONOBO
-#'   edges with the `R_1` terms.
+#'   edges with the `R_1` terms. The models built on E1 (proposal revision 4)
+#'   are `"E5E1"`, `"F1E1"`, `"N1E1"`, and `"N2E1"`: the genes plus the
+#'   products and squares, the first-order edges, the LIONESS edges, or the
+#'   partial-correlation LIONESS edges, penalized, with the `R_1` terms
+#'   unpenalized.
 #'   The row's optional `noise` and `n_score` columns set the noise
 #'   distribution and the number of score genes (defaults `"normal"` and 5).
 #' @return A one-row data frame.
@@ -220,8 +233,9 @@ RunReplicate <- function(design_row, rep,
                  dimnames = list(NULL, models))
   for (f in 1:5) {
     tr <- folds != f
-    extra <- c(N3R1 = "ssn", N4R1 = "iena", N5R1 = "sweet",
-               N6R1 = "bonobo")[intersect(models, c("N3R1", "N4R1", "N5R1", "N6R1"))]
+    extra_map <- c(N3R1 = "ssn", N4R1 = "iena", N5R1 = "sweet",
+                   N6R1 = "bonobo", N2E1 = "partial")
+    extra <- extra_map[intersect(models, names(extra_map))]
     ft <- PilotFeatures(coh, tr, score_genes = seq_len(n_score), extra = extra)
     a <- ft$train
     b <- ft$test
@@ -239,7 +253,15 @@ RunReplicate <- function(design_row, rep,
       N3R1 = function() FitElasticNet(a$r1, a$ssn, ytr, b$r1, b$ssn),
       N4R1 = function() FitElasticNet(a$r1, a$iena, ytr, b$r1, b$iena),
       N5R1 = function() FitElasticNet(a$r1, a$sweet, ytr, b$r1, b$sweet),
-      N6R1 = function() FitElasticNet(a$r1, a$bonobo, ytr, b$r1, b$bonobo)
+      N6R1 = function() FitElasticNet(a$r1, a$bonobo, ytr, b$r1, b$bonobo),
+      E5E1 = function() FitElasticNet(a$r1, cbind(a$genes, a$quad), ytr,
+                                      b$r1, cbind(b$genes, b$quad)),
+      F1E1 = function() FitElasticNet(a$r1, cbind(a$genes, a$fo), ytr,
+                                      b$r1, cbind(b$genes, b$fo)),
+      N1E1 = function() FitElasticNet(a$r1, cbind(a$genes, a$edges), ytr,
+                                      b$r1, cbind(b$genes, b$edges)),
+      N2E1 = function() FitElasticNet(a$r1, cbind(a$genes, a$pedges), ytr,
+                                      b$r1, cbind(b$genes, b$pedges))
     )
     for (m in models) pred[!tr, m] <- out[[m]]()
   }
@@ -265,28 +287,42 @@ RunReplicate <- function(design_row, rep,
 #' @return A long data frame: `cell`, `quantity`, `mean`, `mcse`, `n_rep`.
 #' @export
 SummarizeCells <- function(reps) {
+  # exact column lookup: `$` would partially match E5 to E5E1
+  col <- function(nm) {
+    if (nm %in% names(reps)) reps[[nm]] else rep(NA_real_, nrow(reps))
+  }
   q <- list(
-    R0 = reps$R0, R1 = reps$R1, E1 = reps$E1, E4 = reps$E4, E5 = reps$E5,
-    N1R0 = reps$N1R0, N1R1 = reps$N1R1,
-    gain_N1R0_vs_R0 = reps$N1R0 - reps$R0,
-    gain_N1R1_vs_R1 = reps$N1R1 - reps$R1,
-    gain_E5_vs_R1 = reps$E5 - reps$R1,
-    gain_E1_vs_R1 = reps$E1 - reps$R1,
-    gain_E4_vs_R1 = reps$E4 - reps$R1,
-    diff_N1R1_vs_E5 = reps$N1R1 - reps$E5,
-    b_clause = (reps$E5 - reps$R1) - 0.9 * (reps$N1R1 - reps$R1),
-    F1R1 = reps$F1R1,
-    gain_F1R1_vs_R1 = reps$F1R1 - reps$R1,
-    diff_N1R1_vs_F1R1 = reps$N1R1 - reps$F1R1,
-    diff_F1R1_vs_E5 = reps$F1R1 - reps$E5,
-    N3R1 = reps$N3R1, N4R1 = reps$N4R1, N5R1 = reps$N5R1, N6R1 = reps$N6R1,
-    diff_N3R1_vs_F1R1 = reps$N3R1 - reps$F1R1,
-    diff_N4R1_vs_F1R1 = reps$N4R1 - reps$F1R1,
-    diff_N5R1_vs_F1R1 = reps$N5R1 - reps$F1R1,
-    diff_N6R1_vs_F1R1 = reps$N6R1 - reps$F1R1,
-    gain_N5R1_vs_R1 = reps$N5R1 - reps$R1,
-    gain_N6R1_vs_R1 = reps$N6R1 - reps$R1,
-    shift_gap = reps$shift_gap
+    R0 = col("R0"), R1 = col("R1"), E1 = col("E1"), E4 = col("E4"), E5 = col("E5"),
+    N1R0 = col("N1R0"), N1R1 = col("N1R1"),
+    gain_N1R0_vs_R0 = col("N1R0") - col("R0"),
+    gain_N1R1_vs_R1 = col("N1R1") - col("R1"),
+    gain_E5_vs_R1 = col("E5") - col("R1"),
+    gain_E1_vs_R1 = col("E1") - col("R1"),
+    gain_E4_vs_R1 = col("E4") - col("R1"),
+    diff_N1R1_vs_E5 = col("N1R1") - col("E5"),
+    b_clause = (col("E5") - col("R1")) - 0.9 * (col("N1R1") - col("R1")),
+    F1R1 = col("F1R1"),
+    gain_F1R1_vs_R1 = col("F1R1") - col("R1"),
+    diff_N1R1_vs_F1R1 = col("N1R1") - col("F1R1"),
+    diff_F1R1_vs_E5 = col("F1R1") - col("E5"),
+    N3R1 = col("N3R1"), N4R1 = col("N4R1"), N5R1 = col("N5R1"), N6R1 = col("N6R1"),
+    diff_N3R1_vs_F1R1 = col("N3R1") - col("F1R1"),
+    diff_N4R1_vs_F1R1 = col("N4R1") - col("F1R1"),
+    diff_N5R1_vs_F1R1 = col("N5R1") - col("F1R1"),
+    diff_N6R1_vs_F1R1 = col("N6R1") - col("F1R1"),
+    gain_N5R1_vs_R1 = col("N5R1") - col("R1"),
+    gain_N6R1_vs_R1 = col("N6R1") - col("R1"),
+    E5E1 = col("E5E1"), F1E1 = col("F1E1"), N1E1 = col("N1E1"),
+    N2E1 = col("N2E1"),
+    d1_N1E1_vs_E1 = col("N1E1") - col("E1"),
+    d2_N1E1_vs_F1E1 = col("N1E1") - col("F1E1"),
+    g2_N2E1_vs_E1 = col("N2E1") - col("E1"),
+    par_N1E1_vs_E5E1 = col("N1E1") - col("E5E1"),
+    gain_F1E1_vs_E1 = col("F1E1") - col("E1"),
+    gain_E5E1_vs_E1 = col("E5E1") - col("E1"),
+    diff_E4_vs_E1 = col("E4") - col("E1"),
+    diff_N2E1_vs_N1E1 = col("N2E1") - col("N1E1"),
+    shift_gap = col("shift_gap")
   )
   out <- do.call(rbind, lapply(split(seq_len(nrow(reps)), reps$cell),
                                function(rows) {
