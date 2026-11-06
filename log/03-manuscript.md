@@ -179,3 +179,7 @@ The user asked for the novelty to be framed openly and the Kuijjer 2026 suppleme
 | Candidate sources not used | Andersen and Pohar Perme 2010 and Overgaard, Parner, and Pedersen 2017 were opened (Crossref, PubMed); neither abstract states the pseudo-value and influence-function agreement, and their full texts were not available, so neither is cited | — |
 
 Checker: no errors; markers 7 to confirm, 0 claims without a source.
+
+## Revision 2 (2026-11-06): analyses for the interferon artifact
+
+- D-S11. The user asked for analyses that could show the interferon artifact in real data ("if A and B will help go ahead"); a protocol amendment added A (overlapping-interferon subsets of GSE17755 and GSE326777) and B (a semi-synthetic analysis in GSE65391, SLE only). Minutes later the user withdrew B: "I want my SLE and RA, I do not want only 1 disease then stop". B is marked withdrawn in `protocol.md`; nothing for it was downloaded, coded, or run. A, which stays within SLE and RA, waits for the user's word.
