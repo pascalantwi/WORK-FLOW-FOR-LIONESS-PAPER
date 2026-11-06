@@ -1,6 +1,6 @@
 # Drafting log (stage 3)
 
-Status: the paper test holds for a critique whose claims are the equivalence of LIONESS edges and their first-order features, the shared-factor artifact and its fix, and the effect of parametrization; the application to PRECISESADS waits on data access, and the run will not cover real data until then.
+Status (revision 4, 2026-11-06): the paper test holds for a critique whose claims are the equivalence of LIONESS edges and their first-order features on a base with the gene levels (E1), the shared-factor artifact and its fix, and the effect of parametrization; the clinical answer (SLE against RA) waits on PRECISESADS access, and the run covers real data only through two small public datasets, GSE17755 and GSE326777.
 
 Started 2026-11-04, after the user read the re-pilot's close call as a pass.
 
@@ -89,3 +89,37 @@ Twenty-five cells in S2 (one-at-a-time around the base cells, not a full factori
 - D-S5. BONOBO's weight $\delta_i$: equation 8 of the paper is $1/\left[3 + 2 \sum_k s_{kk}^2 / \sum_k \eta(k)\right]$ with $\eta(k)$ the variance of the leave-one-out variances of gene $k$; the authors' implementation (`compute_bonobo()` in netZooPy 0.11.0, installed from PyPI, read in full) computes $1/\left[3 + 2\, \overline{\sqrt{s_{kk}}} / \operatorname{var}_k(s_{kk})\right]$, the mean standard deviation over the variance of the gene variances. The two differ. The implementation, which users run, is followed (`BonoboDelta()`), and the paper will say so. The R functions were checked against netZooPy on a fixture (30 samples, 6 genes, one outlying sample): every edge and every $\delta_i$ agree to $10^{-8}$ (`tests/testthat/test-networks.R`; the reference values in `tests/testthat/fixtures/bonobo_netzoopy.csv` were written by netZooPy's own function in double precision).
 - New functions in `R/networks.R` (SSN, iENA, SWEET, BONOBO, each with a test-sample form that uses the training fold only), tested against literal implementations of each definition (SWEET with an explicitly duplicated sample); models N3R1 to N6R1 in `RunReplicate()`. 62 tests pass; the re-pilot still reproduces.
 - Timing of the four (`log/03-design-timing.rds`): 0.8 to 1.2 seconds per replicate at 80 per class and 3.8 to 4.1 at 300.
+
+
+# Revision 4 (2026-11-06): stage 3 restarted after the third pilot
+
+The user accepted the third pilot's pass (`pilot-c/`) and asked for stage 3 ("do 1 and 3 and stage 3"). Everything above this heading belongs to the design of revision 3 and stands as the record.
+
+## Paper test (revision 4)
+
+| Question | Answer | Where |
+|---|---|---|
+| 1. A procedure in wide use | LIONESS with Pearson correlation (the lionessR default), edges compared between groups or used as classifier features | `proposal.md`, sections 1 and 5 |
+| 2. A setting it was not built for | Whole blood in SLE and RA: a shared IFN factor and composition move many genes; unbalanced classes; heavy tails | `proposal.md`, section 2; `protocol.md`, section 2 |
+| 3. The estimand, as a functional | The correlation of genes $i$ and $j$ in the sample's own subpopulation; for classification, the out-of-sample AUC gain of edges over E1, and its difference from the gain of the first-order features | `protocol.md`, section 3 |
+| 4. The target and the bias term | The exact closed form; the first-order form with remainder $O_p(N^{-1})$; equation (3) and the $(1 - 2\pi)$ law; the squared-factor term | `proposal.md`, section 4; `R/lioness.R`, `R/partial.R`; tests |
+| 5. The simulation that confirms it | Three pilots; the third, on the E1 base: N1 against F1 within 0.0038 in nine cells, N1 over E1 0.109 with a co-expression change, N1 and N2 against E1 within 0.0014 when only interferon differs | `pilot-c/results/` |
+| 6. A correction or a diagnostic | The squared IFN score in the base (E1 holds it); the first-order edges as the matched competitor and as a replacement for the network | `pilot-c/results/verdict.rds` |
+| 7. The application | PRECISESADS, untreated SLE against untreated RA, access not yet requested; public replication in GSE17755 and GSE326777 | `protocol.md`, sections 7 and 8 |
+
+## Step 1 (revision 4): the study promoted
+
+- `analysis/01_simulation.R` now runs the full design of `protocol.md` (`StudyDesign()`): S1 (`S1Replicate()`), S2 (`RunReplicate()` with the nine simulated models), and the test settings (`TestReplicate()`), in seeded blocks of replicates on three workers.
+- New code paths, each with a test (`tests/testthat/test-study.R`): IFN differences "none", "small", and "very large"; $t_3$ noise; the elastic-net mixing as a design column; the ten-gene score with the gene set 11 to 50; the S1 replicate against equation (3); the test replicate's two decisions; seeds that overlap no pilot's. The first two pilots' draws are unchanged (the existing tests, and the quick acceptance test against `pilot-b/`, pass).
+- `analysis/00_download.R` fetches GSE17755 and GSE326777 (`log/02-pilot.md`, D-S5).
+- Acceptance: the third pilot's functions are the study's; the quick acceptance test reproduces the second pilot's replicates exactly.
+
+## Step 3.2 (revision 4): the design, chosen by the user
+
+The design of `protocol.md` is the one the user chose on 2026-11-06 while refining the proposal: the models of revision 4 with E1 as the base, E4 kept, E2, E3, and N3 to N8 dropped, and 400 replicates per S2 setting ("ADD E_4, I WANT LESSER REPLICATE", choosing 400 over 500; `log/01-idea-review.md`, D21), with S1, S2, and the test settings as proposed at the first design stop (step 3.2 above) minus the dropped models. The user then asked for stage 3 to proceed ("do ... stage 3").
+
+### Decisions made in place of the design stop
+
+- D-S6. The design stop is taken as answered by those choices, since the user chose every element that changed and asked to go on; `protocol.md` records the design and can be amended before production. What the user should check: the runtime, about 10.5 hours for production (`protocol.md`, section 6), longer than the 6 to 7 hours estimated on 2026-11-06 before N2 was timed at large sizes.
+- D-S7. Replication data: GSE17755 and GSE326777, as the user approved; GSE235508 is not downloaded. The checks and their criteria are fixed in `protocol.md`, section 8, before either dataset is opened beyond its first lines.
+- D-S8. GSE17755 has no composition data; composition terms are dropped there rather than estimated from the genes (the proposal's plan), since no signature matrix is in the reference list. GSE326777 is a single cell type and needs none.
