@@ -247,7 +247,29 @@ Two comparisons follow from @eq-exact and @eq-factor. First, a classifier given 
 
 ## Models and evaluation
 
-All models classify one class against the other. $R_0$ is a logistic regression on age, sex, composition, and the residual IFN score, the score's residual on composition. $R_1$ adds the squared residual score and squared composition. E1 adds the genes of a gene set $G$. Four models add one feature set to E1: E5, the pairwise products and squares of the standardized genes; F1, the first-order edges; N1, the exact LIONESS edges; and N2, the LIONESS edges of the partial correlation given the IFN score and composition. E4 is a regularized discriminant analysis on the genes with composition and the score, the quadratic discriminant beside them. A ninth model, N1 with $R_0$, puts the LIONESS edges on $R_0$ alone, to show the interferon artifact. Every model with genes or edges is an elastic net [@friedman2010glmnet] with the base terms unpenalized, so that genes and edges must earn their place; the penalty is chosen by inner five-fold cross-validation. Every derived quantity, including the standardization, the reference correlation, and the reference set of the edges, is computed inside each training fold, and test samples are scored by @eq-addone.
+All models classify one class against the other (@tbl-models). $R_0$ is a logistic regression on age, sex, composition, and the residual IFN score, the score's residual on composition. $R_1$ adds the squared residual score and squared composition. E1 adds the genes of a gene set $G$. Four models add one feature set to E1: E5, the pairwise products and squares of the standardized genes; F1, the first-order edges; N1, the exact LIONESS edges; and N2, the LIONESS edges of the partial correlation given the IFN score and composition. E4 is a regularized discriminant analysis on the genes with composition and the score, the quadratic discriminant beside them. A ninth model, N1 with $R_0$, puts the LIONESS edges on $R_0$ alone, to show the interferon artifact. Every model with genes or edges is an elastic net [@friedman2010glmnet] with the base terms unpenalized, so that genes and edges must earn their place; the penalty is chosen by inner five-fold cross-validation. Every derived quantity, including the standardization, the reference correlation, and the reference set of the edges, is computed inside each training fold, and test samples are scored by @eq-addone.
+
+```{r}
+#| label: tbl-models
+#| tbl-cap: "The models. Each model after E1 adds one penalized feature set to E1, so every comparison asks whether that set adds to a fixed base; N1 with the first base stands outside the nesting to show the interferon artifact. Composition is the cell composition; the IFN score is adjusted for composition."
+
+kable_w(data.frame(
+  Model = c("$R_0$", "$R_1$", "E1", "E4", "E5", "F1", "N1", "N2", "N1 with $R_0$"),
+  Inputs = c("Age, sex, composition, IFN score",
+             "$R_0$ with the squared IFN score and squared composition",
+             "$R_1$ with the gene levels",
+             "Regularized discriminant analysis on the genes, composition, and the IFN score",
+             "E1 with the pairwise products and squares of the standardized genes",
+             "E1 with the first-order edges",
+             "E1 with the LIONESS edges",
+             "E1 with the partial-correlation LIONESS edges, given the IFN score and composition",
+             "$R_0$ with the LIONESS edges"),
+  Role = c("The interferon base", "The base with the squared factor (the fix)",
+           "The expression base of every model below it", "The classical quadratic classifier",
+           "The quadratic information as separate terms", "The first-order formula, the matched competitor",
+           "The main network model", "The conditioned network", "The interferon artifact"),
+  check.names = FALSE), c(16, 50, 34))
+```
 
 The contrasts are, for a model's out-of-sample area under the ROC curve (AUC),
 

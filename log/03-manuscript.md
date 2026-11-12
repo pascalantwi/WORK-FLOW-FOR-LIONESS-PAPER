@@ -192,3 +192,4 @@ Checker: no errors; markers 7 to confirm, 0 claims without a source.
 | Comment | Change | Where |
 |---|---|---|
 | The user asked whether the models are defined in the manuscript | They are, in prose; the count was wrong ("A tenth model" with nine models, since B1 and B2 need batch and are not in the paper) and is corrected to "A ninth model" | Methods, Models and evaluation |
+| The user asked for a table of the models | Added @tbl-models (model, inputs, role) after the models paragraph, which now refers to it | Methods, Models and evaluation |
