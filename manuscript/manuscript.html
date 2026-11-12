@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Authors are set by tools/authors.R before the final render">
-<meta name="dcterms.date" content="2026-11-06">
+<meta name="dcterms.date" content="2026-11-12">
 
 <title>LIONESS edges are quadratic functions of expression: closed forms, an interferon artifact, and equivalence with first-order features</title>
 <style>
@@ -2409,7 +2409,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 6, 2026</p>
+      <p class="date">November 12, 2026</p>
     </div>
   </div>
   
@@ -2517,7 +2517,7 @@ e_q &amp;= (N + 1)\, r_{(+q)} - N r .
 </section>
 <section id="models-and-evaluation" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="models-and-evaluation"><span class="header-section-number">2.4</span> Models and evaluation</h2>
-<p>All models classify one class against the other. <span class="math inline">\(R_0\)</span> is a logistic regression on age, sex, composition, and the residual IFN score, the score’s residual on composition. <span class="math inline">\(R_1\)</span> adds the squared residual score and squared composition. E1 adds the genes of a gene set <span class="math inline">\(G\)</span>. Four models add one feature set to E1: E5, the pairwise products and squares of the standardized genes; F1, the first-order edges; N1, the exact LIONESS edges; and N2, the LIONESS edges of the partial correlation given the IFN score and composition. E4 is a regularized discriminant analysis on the genes with composition and the score, the quadratic discriminant beside them. A tenth model, N1 with <span class="math inline">\(R_0\)</span>, puts the LIONESS edges on <span class="math inline">\(R_0\)</span> alone, to show the interferon artifact. Every model with genes or edges is an elastic net <span class="citation" data-cites="friedman2010glmnet">[<a href="#ref-friedman2010glmnet" role="doc-biblioref">12</a>]</span> with the base terms unpenalized, so that genes and edges must earn their place; the penalty is chosen by inner five-fold cross-validation. Every derived quantity, including the standardization, the reference correlation, and the reference set of the edges, is computed inside each training fold, and test samples are scored by <a href="#eq-addone" class="quarto-xref">Equation 3</a>.</p>
+<p>All models classify one class against the other. <span class="math inline">\(R_0\)</span> is a logistic regression on age, sex, composition, and the residual IFN score, the score’s residual on composition. <span class="math inline">\(R_1\)</span> adds the squared residual score and squared composition. E1 adds the genes of a gene set <span class="math inline">\(G\)</span>. Four models add one feature set to E1: E5, the pairwise products and squares of the standardized genes; F1, the first-order edges; N1, the exact LIONESS edges; and N2, the LIONESS edges of the partial correlation given the IFN score and composition. E4 is a regularized discriminant analysis on the genes with composition and the score, the quadratic discriminant beside them. A ninth model, N1 with <span class="math inline">\(R_0\)</span>, puts the LIONESS edges on <span class="math inline">\(R_0\)</span> alone, to show the interferon artifact. Every model with genes or edges is an elastic net <span class="citation" data-cites="friedman2010glmnet">[<a href="#ref-friedman2010glmnet" role="doc-biblioref">12</a>]</span> with the base terms unpenalized, so that genes and edges must earn their place; the penalty is chosen by inner five-fold cross-validation. Every derived quantity, including the standardization, the reference correlation, and the reference set of the edges, is computed inside each training fold, and test samples are scored by <a href="#eq-addone" class="quarto-xref">Equation 3</a>.</p>
 <p>The contrasts are, for a model’s out-of-sample area under the ROC curve (AUC),</p>
 <p><span id="eq-contrasts"><span class="math display">\[
 \begin{aligned}
